@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tajikistan AllergyCast</title>
+<title>AllergyTJ</title>
 <style>
   :root {
     --green: #4caf50;
@@ -237,7 +237,7 @@
 <body>
 
 <header>
-  <h1>Tajikistan AllergyCast</h1>
+  <h1>AllergyTJ</h1>
   <p>Seasonal allergy tracker for Tajikistan — based on seasonal data &amp; live weather</p>
 </header>
 
@@ -247,17 +247,36 @@
     <select id="city-select">
       <option value="38.5598,68.7740">Dushanbe</option>
       <option value="40.2833,69.6333">Khujand</option>
-      <option value="37.8364,68.7650">Bokhtar (Qurghonteppa)</option>
-      <option value="38.5383,68.9500">Vahdat</option>
-      <option value="38.4000,69.6833">Roghun</option>
       <option value="37.9139,69.8028">Kulob</option>
-      <option value="37.5383,71.5128">Khorugh</option>
+      <option value="37.8364,68.7650">Bokhtar (Qurghonteppa)</option>
       <option value="39.1667,67.9833">Istaravshan</option>
-      <option value="40.5167,69.0000">Buston (Chkalovsk)</option>
-      <option value="39.5500,68.6167">Panjakent</option>
+      <option value="40.5253,70.9400">Konibodom</option>
+      <option value="38.5383,68.9500">Vahdat</option>
       <option value="38.5500,67.8333">Tursunzoda</option>
       <option value="40.2167,69.3167">Isfara</option>
-      <option value="40.5253,70.9400">Konibodom</option>
+      <option value="39.5500,68.6167">Panjakent</option>
+      <option value="37.5383,71.5128">Khorugh</option>
+      <option value="36.7167,71.6167">Ishkoshim</option>
+      <option value="38.5253,68.5514">Hisor</option>
+      <option value="37.0000,69.7833">Danghara</option>
+      <option value="37.2167,68.1333">Vose</option>
+      <option value="37.3000,68.3333">Parkhar</option>
+      <option value="40.5167,69.0000">Buston (Chkalovsk)</option>
+      <option value="37.1667,68.5000">Chubek</option>
+      <option value="37.8167,68.2167">Kolkhozobod</option>
+      <option value="38.3833,69.3167">Norak</option>
+      <option value="38.3167,69.0833">Yovon</option>
+      <option value="37.7833,68.6000">Vakhsh</option>
+      <option value="40.3833,69.6000">Ghafurov</option>
+      <option value="40.3500,69.8000">Spitamen</option>
+      <option value="37.4000,67.8333">Shahritus</option>
+      <option value="40.5667,69.6333">Taboshar</option>
+      <option value="38.7167,70.6333">Murghab</option>
+      <option value="38.9833,69.8667">Rasht</option>
+      <option value="38.6000,69.1667">Obigarm</option>
+      <option value="38.4000,69.6833">Roghun</option>
+      <option value="40.5333,69.1500">Adrasmon</option>
+      <option value="38.5833,68.3167">Boshkengash</option>
     </select>
     <button class="btn btn-primary" id="fetch-btn" onclick="fetchData()">Get Pollen Risk</button>
     <button class="btn btn-secondary" id="gps-btn" onclick="useGPS()">Use GPS</button>
@@ -318,17 +337,36 @@
 var CITIES = [
   { name: "Dushanbe", lat: 38.5598, lng: 68.7740 },
   { name: "Khujand", lat: 40.2833, lng: 69.6333 },
-  { name: "Bokhtar", lat: 37.8364, lng: 68.7650 },
-  { name: "Vahdat", lat: 38.5383, lng: 68.9500 },
-  { name: "Roghun", lat: 38.4000, lng: 69.6833 },
   { name: "Kulob", lat: 37.9139, lng: 69.8028 },
-  { name: "Khorugh", lat: 37.5383, lng: 71.5128 },
+  { name: "Bokhtar", lat: 37.8364, lng: 68.7650 },
   { name: "Istaravshan", lat: 39.1667, lng: 67.9833 },
-  { name: "Buston", lat: 40.5167, lng: 69.0000 },
-  { name: "Panjakent", lat: 39.5500, lng: 68.6167 },
+  { name: "Konibodom", lat: 40.5253, lng: 70.9400 },
+  { name: "Vahdat", lat: 38.5383, lng: 68.9500 },
   { name: "Tursunzoda", lat: 38.5500, lng: 67.8333 },
   { name: "Isfara", lat: 40.2167, lng: 69.3167 },
-  { name: "Konibodom", lat: 40.5253, lng: 70.9400 },
+  { name: "Panjakent", lat: 39.5500, lng: 68.6167 },
+  { name: "Khorugh", lat: 37.5383, lng: 71.5128 },
+  { name: "Ishkoshim", lat: 36.7167, lng: 71.6167 },
+  { name: "Hisor", lat: 38.5253, lng: 68.5514 },
+  { name: "Danghara", lat: 37.0000, lng: 69.7833 },
+  { name: "Vose", lat: 37.2167, lng: 68.1333 },
+  { name: "Parkhar", lat: 37.3000, lng: 68.3333 },
+  { name: "Buston", lat: 40.5167, lng: 69.0000 },
+  { name: "Chubek", lat: 37.1667, lng: 68.5000 },
+  { name: "Kolkhozobod", lat: 37.8167, lng: 68.2167 },
+  { name: "Norak", lat: 38.3833, lng: 69.3167 },
+  { name: "Yovon", lat: 38.3167, lng: 69.0833 },
+  { name: "Vakhsh", lat: 37.7833, lng: 68.6000 },
+  { name: "Ghafurov", lat: 40.3833, lng: 69.6000 },
+  { name: "Spitamen", lat: 40.3500, lng: 69.8000 },
+  { name: "Shahritus", lat: 37.4000, lng: 67.8333 },
+  { name: "Taboshar", lat: 40.5667, lng: 69.6333 },
+  { name: "Murghab", lat: 38.7167, lng: 70.6333 },
+  { name: "Rasht", lat: 38.9833, lng: 69.8667 },
+  { name: "Obigarm", lat: 38.6000, lng: 69.1667 },
+  { name: "Roghun", lat: 38.4000, lng: 69.6833 },
+  { name: "Adrasmon", lat: 40.5333, lng: 69.1500 },
+  { name: "Boshkengash", lat: 38.5833, lng: 68.3167 },
 ];
 
 // ── Seasonal Pollen Intensity (0-4 per month) ──
