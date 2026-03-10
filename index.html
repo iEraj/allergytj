@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tajikistan Pollen Tracker</title>
+<style>
+  :root {
+    --green: #4caf50;
+    --yellow: #f9a825;
+    --orange: #ff7043;
+    --red: #e53935;
+    --bg: #f5f7fa;
+    --card: #ffffff;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0 0 40px;
+  }
+  header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    padding: 28px 20px;
+    text-align: center;
+  }
+  header h1 { font-size: 1.5rem; margin-bottom: 4px; }
+  header p { font-size: 0.85rem; opacity: 0.8; }
+  .container { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+
+  /* City Picker */
+  .picker {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .picker select {
+    flex: 1;
+    min-width: 180px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background: white;
+    cursor: pointer;
+  }
+  .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-primary { background: #2563eb; color: white; }
+  .btn-secondary { background: #e5e7eb; color: var(--text); }
+
+  /* Status */
+  .status {
+    text-align: center;
+    padding: 12px;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .status.error { color: var(--red); }
+
+  /* Section titles */
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 28px 0 12px;
+    padding-left: 4px;
+  }
+
+  /* Overall Risk Banner */
+  .risk-banner {
+    border-radius: var(--radius);
+    padding: 24px 20px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    margin-bottom: 16px;
+    color: white;
+  }
+  .risk-banner .level { font-size: 1.8rem; font-weight: 800; margin-bottom: 4px; }
+  .risk-banner .desc { font-size: 0.85rem; opacity: 0.9; }
+
+  /* Pollen Cards */
+  .pollen-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 4px;
+  }
+  .pollen-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 18px 14px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    border-top: 4px solid var(--border);
+  }
+  .pollen-card .type { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 6px; }
+  .pollen-card .risk-label {
+    font-size: 1.3rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px;
+  }
+  .pollen-card .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: white;
+  }
+  .pollen-card .allergens { font-size: 0.68rem; color: var(--muted); margin-top: 8px; line-height: 1.4; }
+
+  .badge-low { background: var(--green); }
+  .badge-moderate { background: var(--yellow); color: #333 !important; }
+  .badge-high { background: var(--orange); }
+  .badge-veryhigh { background: var(--red); }
+
+  /* Weather strip */
+  .weather-strip {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 0.85rem;
+    margin-top: 12px;
+  }
+  .weather-strip .wx-item { text-align: center; }
+  .weather-strip .wx-val { font-weight: 700; font-size: 1.1rem; }
+  .weather-strip .wx-label { color: var(--muted); font-size: 0.7rem; }
+
+  /* Forecast */
+  .forecast-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+  .forecast-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 14px 8px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .forecast-card .day { font-size: 0.75rem; font-weight: 700; margin-bottom: 6px; color: var(--muted); }
+  .forecast-card .fc-risk { font-size: 1rem; font-weight: 800; margin-bottom: 4px; }
+  .forecast-card .fc-temp { font-size: 0.7rem; color: var(--muted); }
+  .forecast-card .fc-detail { font-size: 0.6rem; color: var(--muted); margin-top: 4px; }
+  .forecast-card .fc-bar {
+    height: 6px; border-radius: 3px; margin: 6px auto 0; width: 80%;
+  }
+
+  /* Air Quality */
+  .aqi-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .aqi-circle {
+    width: 80px; height: 80px; border-radius: 50%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: white; font-weight: 800; flex-shrink: 0;
+  }
+  .aqi-circle .aqi-num { font-size: 1.5rem; line-height: 1; }
+  .aqi-circle .aqi-lbl { font-size: 0.55rem; opacity: 0.9; margin-top: 2px; }
+  .aqi-details { font-size: 0.85rem; }
+  .aqi-details .aqi-status { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+  .aqi-details .aqi-desc { color: var(--muted); font-size: 0.8rem; }
+  .aqi-pills { display: flex; gap: 8px; margin-top: 8px; }
+  .aqi-pill { background: var(--bg); padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; }
+
+  /* Seasonal Calendar */
+  .calendar {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    overflow-x: auto;
+  }
+  .calendar table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+  .calendar th, .calendar td { padding: 8px 4px; text-align: center; }
+  .calendar th { color: var(--muted); font-weight: 600; font-size: 0.7rem; }
+  .calendar .allergen-name { text-align: left; font-weight: 600; white-space: nowrap; }
+  .cal-none { background: transparent; }
+  .cal-low { background: #c8e6c9; border-radius: 4px; }
+  .cal-mod { background: #fff9c4; border-radius: 4px; }
+  .cal-high { background: #ffccbc; border-radius: 4px; }
+  .cal-vhigh { background: #ef9a9a; border-radius: 4px; }
+  .calendar .legend { display: flex; gap: 16px; margin-top: 12px; font-size: 0.7rem; color: var(--muted); flex-wrap: wrap; }
+  .calendar .legend span { display: flex; align-items: center; gap: 4px; }
+  .calendar .legend .swatch { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+
+  .note {
+    text-align: center;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 24px;
+    padding: 0 8px;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 600px) {
+    .pollen-cards { grid-template-columns: 1fr; }
+    .forecast-row { grid-template-columns: repeat(3, 1fr); }
+    .picker { flex-direction: column; }
+    .picker select, .btn { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Tajikistan Pollen Tracker</h1>
+  <p>Allergy risk levels for Tajikistan — based on seasonal data &amp; live weather</p>
+</header>
+
+<div class="container">
+
+  <div class="picker">
+    <select id="city-select">
+      <option value="38.5598,68.7740">Dushanbe</option>
+      <option value="40.2833,69.6333">Khujand</option>
+      <option value="37.8364,68.7650">Bokhtar (Qurghonteppa)</option>
+      <option value="38.5383,68.9500">Vahdat</option>
+      <option value="38.4000,69.6833">Roghun</option>
+      <option value="37.9139,69.8028">Kulob</option>
+      <option value="37.5383,71.5128">Khorugh</option>
+      <option value="39.1667,67.9833">Istaravshan</option>
+      <option value="40.5167,69.0000">Buston (Chkalovsk)</option>
+      <option value="39.5500,68.6167">Panjakent</option>
+      <option value="38.5500,67.8333">Tursunzoda</option>
+      <option value="40.2167,69.3167">Isfara</option>
+      <option value="40.5253,70.9400">Konibodom</option>
+    </select>
+    <button class="btn btn-primary" id="fetch-btn" onclick="fetchData()">Get Pollen Risk</button>
+    <button class="btn btn-secondary" id="gps-btn" onclick="useGPS()">Use GPS</button>
+  </div>
+
+  <div class="status" id="status"></div>
+
+  <!-- Live Results -->
+  <div id="results" style="display:none;">
+
+    <!-- Overall risk banner -->
+    <div class="risk-banner" id="risk-banner">
+      <div class="level" id="banner-level">—</div>
+      <div class="desc" id="banner-desc"></div>
+    </div>
+
+    <!-- Tree / Grass / Weed cards -->
+    <div class="pollen-cards" id="pollen-cards"></div>
+
+    <!-- Current weather conditions -->
+    <div class="weather-strip" id="weather-strip"></div>
+
+    <!-- Air Quality -->
+    <div class="section-title">Air Quality</div>
+    <div class="aqi-card" id="aqi-card"></div>
+
+    <!-- 5-day forecast -->
+    <div class="section-title">5-Day Pollen Risk Forecast</div>
+    <div class="forecast-row" id="forecast-cards"></div>
+  </div>
+
+  <!-- Seasonal Calendar (always visible) -->
+  <div class="section-title">Seasonal Pollen Calendar — Tajikistan</div>
+  <div class="calendar">
+    <table id="calendar-table"></table>
+    <div class="legend">
+      <span><span class="swatch cal-none" style="border:1px solid #ddd;"></span> None</span>
+      <span><span class="swatch cal-low"></span> Low</span>
+      <span><span class="swatch cal-mod"></span> Moderate</span>
+      <span><span class="swatch cal-high"></span> High</span>
+      <span><span class="swatch cal-vhigh"></span> Very High</span>
+    </div>
+  </div>
+
+  <p class="note">
+    Pollen risk is estimated by combining a seasonal pollen calendar for Tajikistan's known allergenic flora
+    with live weather conditions from Open-Meteo. No pollen monitoring stations exist in Tajikistan — risk levels
+    reflect seasonal patterns adjusted for today's weather (rain, temperature, humidity, wind).
+    Air quality (AQI, PM2.5, PM10) is modeled data from Open-Meteo CAMS. Not medical advice.
+  </p>
+  <p class="note" style="margin-top:12px;">
+    Built by Eraj Ismatulloev using Claude Code
+  </p>
+</div>
+
+<script>
+// ── Cities ──
+var CITIES = [
+  { name: "Dushanbe", lat: 38.5598, lng: 68.7740 },
+  { name: "Khujand", lat: 40.2833, lng: 69.6333 },
+  { name: "Bokhtar", lat: 37.8364, lng: 68.7650 },
+  { name: "Vahdat", lat: 38.5383, lng: 68.9500 },
+  { name: "Roghun", lat: 38.4000, lng: 69.6833 },
+  { name: "Kulob", lat: 37.9139, lng: 69.8028 },
+  { name: "Khorugh", lat: 37.5383, lng: 71.5128 },
+  { name: "Istaravshan", lat: 39.1667, lng: 67.9833 },
+  { name: "Buston", lat: 40.5167, lng: 69.0000 },
+  { name: "Panjakent", lat: 39.5500, lng: 68.6167 },
+  { name: "Tursunzoda", lat: 38.5500, lng: 67.8333 },
+  { name: "Isfara", lat: 40.2167, lng: 69.3167 },
+  { name: "Konibodom", lat: 40.5253, lng: 70.9400 },
+];
+
+// ── Seasonal Pollen Intensity (0-4 per month) ──
+// Based on known Tajik flora. Each category has species + monthly intensity.
+var TREE_SEASON =  [0, 1, 2, 4, 3, 1, 0, 0, 0, 0, 0, 0]; // poplar, willow, birch, plane tree peak Apr
+var GRASS_SEASON = [0, 0, 0, 1, 3, 4, 3, 1, 0, 0, 0, 0]; // grass peaks Jun
+var WEED_SEASON =  [0, 0, 0, 0, 0, 1, 2, 4, 4, 2, 0, 0]; // mugwort, chenopod, ragweed peak Aug-Sep
+
+var TREE_SPECIES =  ["Poplar", "Cottonwood", "Willow", "Birch", "Alder", "Plane tree", "Mulberry"];
+var GRASS_SPECIES = ["Bermuda grass", "Timothy", "Ryegrass", "Bluegrass"];
+var WEED_SPECIES =  ["Mugwort", "Chenopod", "Pigweed", "Ragweed"];
+
+// ── Calendar data for the static table ──
+var SEASONAL = [
+  { name: "Poplar / Cottonwood", months: [0,1,3,4,3,1,0,0,0,0,0,0] },
+  { name: "Willow",              months: [0,1,2,3,2,0,0,0,0,0,0,0] },
+  { name: "Birch / Alder",       months: [0,0,2,3,2,0,0,0,0,0,0,0] },
+  { name: "Plane Tree",          months: [0,0,1,3,3,1,0,0,0,0,0,0] },
+  { name: "Mulberry",            months: [0,0,0,2,3,2,0,0,0,0,0,0] },
+  { name: "Grass (general)",     months: [0,0,0,1,3,4,3,1,0,0,0,0] },
+  { name: "Mugwort (Artemisia)", months: [0,0,0,0,0,1,2,4,4,2,0,0] },
+  { name: "Chenopod / Pigweed",  months: [0,0,0,0,0,1,3,4,3,1,0,0] },
+  { name: "Ragweed",             months: [0,0,0,0,0,0,1,3,3,1,0,0] },
+];
+var MONTH_LABELS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+var CAL_CLASSES = ["cal-none","cal-low","cal-mod","cal-high","cal-vhigh"];
+
+// ── Risk level colors & labels ──
+var RISK_LEVELS = [
+  { max: 0, label: "None",      color: "#9e9e9e", bg: "#e0e0e0", badge: "badge-low",      advice: "No significant pollen activity expected." },
+  { max: 1, label: "Low",       color: "#4caf50", bg: "#4caf50", badge: "badge-low",      advice: "Minimal pollen. Enjoy the outdoors." },
+  { max: 2, label: "Moderate",  color: "#f9a825", bg: "#f9a825", badge: "badge-moderate", advice: "Sensitive individuals may notice symptoms. Consider antihistamines." },
+  { max: 3, label: "High",      color: "#ff7043", bg: "#ff7043", badge: "badge-high",     advice: "Allergy sufferers should limit outdoor exposure and take medication." },
+  { max: 4, label: "Very High", color: "#e53935", bg: "#e53935", badge: "badge-veryhigh", advice: "Stay indoors if possible. Keep windows closed. Take allergy medication." },
+];
+
+function getRiskInfo(score) {
+  // score 0-4 (can be fractional)
+  var idx = Math.min(Math.round(score), 4);
+  return RISK_LEVELS[idx];
+}
+
+// ── Weather modifier ──
+// Adjusts seasonal base score based on current weather conditions
+function weatherModifier(temp, humidity, wind, precip) {
+  var mod = 0;
+  // Temperature: warm = more pollen release
+  if (temp > 25) mod += 0.5;
+  else if (temp > 18) mod += 0.25;
+  else if (temp < 5) mod -= 0.5;
+
+  // Humidity: very dry = pollen stays airborne; very humid = settles
+  if (humidity < 40) mod += 0.5;
+  else if (humidity < 60) mod += 0.1;
+  else if (humidity > 80) mod -= 0.3;
+
+  // Wind: more wind = more pollen dispersal
+  if (wind > 20) mod += 0.5;
+  else if (wind > 10) mod += 0.25;
+
+  // Rain: washes pollen out of the air
+  if (precip > 5) mod -= 1.0;
+  else if (precip > 1) mod -= 0.5;
+  else if (precip > 0) mod -= 0.2;
+
+  return mod;
+}
+
+function computeRisk(seasonBase, wxMod) {
+  return Math.max(0, Math.min(4, seasonBase + wxMod));
+}
+
+// ── Build Calendar ──
+function buildCalendar() {
+  var table = document.getElementById("calendar-table");
+  var curMonth = new Date().getMonth();
+  var html = "<tr><th></th>";
+  for (var i = 0; i < 12; i++) {
+    var hl = i === curMonth ? ' style="color:#2563eb;font-weight:800;"' : '';
+    html += "<th" + hl + ">" + MONTH_LABELS[i] + "</th>";
+  }
+  html += "</tr>";
+  for (var j = 0; j < SEASONAL.length; j++) {
+    var a = SEASONAL[j];
+    html += '<tr><td class="allergen-name">' + a.name + '</td>';
+    for (var m = 0; m < 12; m++) {
+      var cls = CAL_CLASSES[a.months[m]];
+      var brd = m === curMonth ? "outline:2px solid #2563eb;outline-offset:-1px;" : "";
+      html += '<td class="' + cls + '" style="' + brd + '"></td>';
+    }
+    html += "</tr>";
+  }
+  table.innerHTML = html;
+}
+
+// ── Interpolate seasonal base for a specific date ──
+function getSeasonalBase(seasonArr, date) {
+  var month = date.getMonth();
+  var day = date.getDate();
+  var daysInMonth = new Date(date.getFullYear(), month + 1, 0).getDate();
+  var frac = day / daysInMonth;
+
+  var cur = seasonArr[month];
+  var next = seasonArr[(month + 1) % 12];
+  // Smooth interpolation between months
+  return cur + (next - cur) * frac;
+}
+
+// ── Weather description ──
+function wxDescription(code) {
+  var descs = {
+    0: "Clear sky", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast",
+    45: "Fog", 48: "Rime fog",
+    51: "Light drizzle", 53: "Moderate drizzle", 55: "Dense drizzle",
+    61: "Slight rain", 63: "Moderate rain", 65: "Heavy rain",
+    71: "Slight snow", 73: "Moderate snow", 75: "Heavy snow",
+    80: "Rain showers", 81: "Moderate showers", 82: "Violent showers",
+    95: "Thunderstorm", 96: "Thunderstorm + hail", 99: "Thunderstorm + heavy hail",
+  };
+  return descs[code] || "—";
+}
+
+// ── AQI rating ──
+function aqiInfo(aqi) {
+  if (aqi <= 50) return { label: "Good", color: "#4caf50", desc: "Air quality is satisfactory." };
+  if (aqi <= 100) return { label: "Moderate", color: "#f9a825", desc: "Acceptable. Sensitive groups may be affected." };
+  if (aqi <= 150) return { label: "Unhealthy (SG)", color: "#ff7043", desc: "Sensitive groups should reduce outdoor activity." };
+  if (aqi <= 200) return { label: "Unhealthy", color: "#e53935", desc: "Everyone may begin to experience health effects." };
+  return { label: "Very Unhealthy", color: "#7b1fa2", desc: "Health alert. Avoid outdoor activity." };
+}
+
+// ── Fetch Data ──
+async function fetchData() {
+  var sel = document.getElementById("city-select");
+  var parts = sel.value.split(",");
+  var lat = parts[0], lng = parts[1];
+  var cityName = sel.options[sel.selectedIndex].text;
+
+  var status = document.getElementById("status");
+  var btn = document.getElementById("fetch-btn");
+
+  btn.disabled = true;
+  btn.textContent = "Loading...";
+  status.className = "status";
+  status.textContent = "Fetching weather & air quality for " + cityName + "...";
+  document.getElementById("results").style.display = "none";
+
+  try {
+    // Fetch weather and air quality in parallel
+    var wxUrl = "https://api.open-meteo.com/v1/forecast?" + new URLSearchParams({
+      latitude: lat, longitude: lng,
+      current: "temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation,weather_code",
+      daily: "temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max,relative_humidity_2m_mean,weather_code",
+      forecast_days: "6",
+      timezone: "auto",
+    });
+    var aqUrl = "https://air-quality-api.open-meteo.com/v1/air-quality?" + new URLSearchParams({
+      latitude: lat, longitude: lng,
+      current: "pm2_5,pm10,us_aqi",
+      timezone: "auto",
+    });
+
+    var responses = await Promise.all([fetch(wxUrl), fetch(aqUrl)]);
+    var wx = await responses[0].json();
+    var aq = await responses[1].json();
+
+    if (wx.error) {
+      status.className = "status error";
+      status.textContent = "Weather API error: " + (wx.reason || wx.error);
+      return;
+    }
+
+    var now = new Date();
+    var curWx = wx.current;
+    var daily = wx.daily;
+
+    // Use TODAY's daily totals for pollen risk (not single-hour snapshot)
+    // This captures the full day's rain, max wind, etc.
+    var todayTemp = daily.temperature_2m_max[0]; // today's high (drives pollen release)
+    var todayHumidity = daily.relative_humidity_2m_mean ? daily.relative_humidity_2m_mean[0] : curWx.relative_humidity_2m;
+    var todayWind = daily.wind_speed_10m_max[0]; // today's peak wind
+    var todayPrecip = daily.precipitation_sum[0]; // today's TOTAL rain/snow
+    var todayWxCode = daily.weather_code[0]; // today's dominant weather
+
+    // Also factor in snow/rain weather codes as extra suppression
+    // Codes 61-82 = rain, 71-77 = snow — these actively wash pollen from the air
+    var wxCodePenalty = 0;
+    if (todayWxCode >= 71 && todayWxCode <= 77) wxCodePenalty = -0.5; // snow
+    if (todayWxCode >= 61 && todayWxCode <= 67) wxCodePenalty = -0.3; // rain
+    if (todayWxCode >= 80 && todayWxCode <= 82) wxCodePenalty = -0.4; // showers
+
+    // Compute current pollen risk using full-day weather
+    var wxMod = weatherModifier(todayTemp, todayHumidity, todayWind, todayPrecip) + wxCodePenalty;
+    var treeBase = getSeasonalBase(TREE_SEASON, now);
+    var grassBase = getSeasonalBase(GRASS_SEASON, now);
+    var weedBase = getSeasonalBase(WEED_SEASON, now);
+
+    var treeRisk = computeRisk(treeBase, wxMod);
+    var grassRisk = computeRisk(grassBase, wxMod);
+    var weedRisk = computeRisk(weedBase, wxMod);
+    var overallRisk = Math.max(treeRisk, grassRisk, weedRisk);
+
+    // Render — show current conditions for the weather strip, but use daily for risk
+    renderBanner(overallRisk, cityName, wxMod);
+    renderPollenCards(treeRisk, grassRisk, weedRisk, now);
+    renderWeather(curWx.temperature_2m, curWx.relative_humidity_2m, curWx.wind_speed_10m,
+                  todayPrecip, curWx.weather_code, todayWxCode);
+    renderAqi(aq);
+    renderForecast(wx.daily, now);
+
+    document.getElementById("results").style.display = "block";
+    status.textContent = "";
+
+  } catch (e) {
+    status.className = "status error";
+    status.textContent = "Network error. Check seasonal calendar below for estimates.";
+    console.error(e);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Get Pollen Risk";
+  }
+}
+
+function renderBanner(overall, cityName, wxMod) {
+  var info = getRiskInfo(overall);
+  var banner = document.getElementById("risk-banner");
+  banner.style.background = info.bg;
+  banner.style.color = info.label === "None" ? "#333" : "white";
+  document.getElementById("banner-level").textContent = info.label + " Pollen Risk";
+
+  // Explain what weather is doing
+  var wxNote = "";
+  if (wxMod <= -1.5) wxNote = " Weather is strongly suppressing pollen (rain/snow, cold, high humidity).";
+  else if (wxMod <= -0.5) wxNote = " Weather conditions are reducing pollen levels.";
+  else if (wxMod >= 1.0) wxNote = " Weather is amplifying pollen (hot, dry, windy).";
+  else if (wxMod >= 0.5) wxNote = " Weather conditions are slightly elevating pollen.";
+
+  document.getElementById("banner-desc").textContent = cityName + " — " + info.advice + wxNote;
+}
+
+function renderPollenCards(tree, grass, weed, now) {
+  var month = now.getMonth();
+  var cards = [
+    { type: "Tree Pollen", risk: tree, species: getActiveSpecies(TREE_SPECIES, TREE_SEASON, month) },
+    { type: "Grass Pollen", risk: grass, species: getActiveSpecies(GRASS_SPECIES, GRASS_SEASON, month) },
+    { type: "Weed Pollen", risk: weed, species: getActiveSpecies(WEED_SPECIES, WEED_SEASON, month) },
+  ];
+
+  var container = document.getElementById("pollen-cards");
+  container.innerHTML = cards.map(function(c) {
+    var info = getRiskInfo(c.risk);
+    return '<div class="pollen-card" style="border-top-color:' + info.color + '">' +
+      '<div class="type">' + c.type + '</div>' +
+      '<div class="risk-label" style="color:' + info.color + '">' + info.label + '</div>' +
+      '<span class="badge ' + info.badge + '">' + c.risk.toFixed(1) + ' / 4</span>' +
+      (c.species ? '<div class="allergens">' + c.species + '</div>' : '') +
+      '</div>';
+  }).join("");
+}
+
+function getActiveSpecies(speciesList, seasonArr, month) {
+  if (seasonArr[month] === 0) return "Not in season";
+  return speciesList.join(", ");
+}
+
+function renderWeather(temp, humidity, wind, todayPrecip, code, dailyCode) {
+  var strip = document.getElementById("weather-strip");
+  var items = [
+    { val: temp + "\u00B0C", label: "Right Now" },
+    { val: humidity + "%", label: "Humidity" },
+    { val: wind + " km/h", label: "Wind" },
+    { val: todayPrecip + " mm", label: "Rain Today" },
+    { val: wxDescription(code), label: "Now" },
+    { val: wxDescription(dailyCode), label: "Today Overall" },
+  ];
+  strip.innerHTML = items.map(function(it) {
+    return '<div class="wx-item"><div class="wx-val">' + it.val + '</div><div class="wx-label">' + it.label + '</div></div>';
+  }).join("");
+}
+
+function renderAqi(aq) {
+  var card = document.getElementById("aqi-card");
+  var cur = aq.current || {};
+  var aqi = cur.us_aqi;
+  var pm25 = cur.pm2_5;
+  var pm10 = cur.pm10;
+
+  if (aqi === null || aqi === undefined) {
+    card.innerHTML = '<div style="color:var(--muted)">Air quality data unavailable</div>';
+    return;
+  }
+
+  var info = aqiInfo(aqi);
+  card.innerHTML =
+    '<div class="aqi-circle" style="background:' + info.color + '">' +
+      '<div class="aqi-num">' + aqi + '</div>' +
+      '<div class="aqi-lbl">US AQI</div>' +
+    '</div>' +
+    '<div class="aqi-details">' +
+      '<div class="aqi-status" style="color:' + info.color + '">' + info.label + '</div>' +
+      '<div class="aqi-desc">' + info.desc + '</div>' +
+      '<div class="aqi-pills">' +
+        '<span class="aqi-pill">PM2.5: ' + (pm25 !== null ? pm25 + ' \u00B5g/m\u00B3' : '—') + '</span>' +
+        '<span class="aqi-pill">PM10: ' + (pm10 !== null ? pm10 + ' \u00B5g/m\u00B3' : '—') + '</span>' +
+      '</div>' +
+    '</div>';
+}
+
+function renderForecast(daily, now) {
+  var container = document.getElementById("forecast-cards");
+  var html = "";
+
+  // Skip today (index 0), show next 5 days
+  for (var i = 1; i <= 5 && i < daily.time.length; i++) {
+    var d = new Date(daily.time[i] + "T12:00:00");
+    var label = d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+
+    var dayTemp = daily.temperature_2m_max[i];
+    var dayLow = daily.temperature_2m_min[i];
+    var dayPrecip = daily.precipitation_sum[i];
+    var dayWind = daily.wind_speed_10m_max[i];
+    var dayHumidity = daily.relative_humidity_2m_mean ? daily.relative_humidity_2m_mean[i] : 50;
+
+    var fcWxCode = daily.weather_code[i];
+    var fcCodePenalty = 0;
+    if (fcWxCode >= 71 && fcWxCode <= 77) fcCodePenalty = -0.5;
+    if (fcWxCode >= 61 && fcWxCode <= 67) fcCodePenalty = -0.3;
+    if (fcWxCode >= 80 && fcWxCode <= 82) fcCodePenalty = -0.4;
+
+    var wxMod = weatherModifier(dayTemp, dayHumidity, dayWind, dayPrecip) + fcCodePenalty;
+    var treeR = computeRisk(getSeasonalBase(TREE_SEASON, d), wxMod);
+    var grassR = computeRisk(getSeasonalBase(GRASS_SEASON, d), wxMod);
+    var weedR = computeRisk(getSeasonalBase(WEED_SEASON, d), wxMod);
+    var peak = Math.max(treeR, grassR, weedR);
+    var info = getRiskInfo(peak);
+
+    html += '<div class="forecast-card">' +
+      '<div class="day">' + label + '</div>' +
+      '<div class="fc-risk" style="color:' + info.color + '">' + info.label + '</div>' +
+      '<div class="fc-bar" style="background:' + info.color + ';opacity:0.7;"></div>' +
+      '<div class="fc-temp">' + Math.round(dayLow) + '\u00B0 / ' + Math.round(dayTemp) + '\u00B0C</div>' +
+      '<div class="fc-detail">' +
+        (dayPrecip > 0 ? dayPrecip + 'mm rain' : 'No rain') +
+        ' \u00B7 ' + Math.round(dayWind) + 'km/h' +
+      '</div>' +
+    '</div>';
+  }
+
+  container.innerHTML = html;
+}
+
+// ── GPS ──
+function useGPS() {
+  var status = document.getElementById("status");
+  var gpsBtn = document.getElementById("gps-btn");
+
+  if (!navigator.geolocation) {
+    status.className = "status error";
+    status.textContent = "Geolocation not supported by your browser.";
+    return;
+  }
+
+  gpsBtn.disabled = true;
+  gpsBtn.textContent = "Locating...";
+  status.textContent = "Getting your location...";
+
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+      var latitude = pos.coords.latitude;
+      var longitude = pos.coords.longitude;
+      var nearest = CITIES[0], minDist = Infinity;
+      CITIES.forEach(function(c) {
+        var dist = Math.hypot(c.lat - latitude, c.lng - longitude);
+        if (dist < minDist) { minDist = dist; nearest = c; }
+      });
+
+      var sel = document.getElementById("city-select");
+      var val = nearest.lat + "," + nearest.lng;
+      for (var i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === val) { sel.selectedIndex = i; break; }
+      }
+
+      status.textContent = "Located near " + nearest.name;
+      gpsBtn.disabled = false;
+      gpsBtn.textContent = "Use GPS";
+      fetchData();
+    },
+    function(err) {
+      status.className = "status error";
+      status.textContent = "Could not get location. Please select a city manually.";
+      gpsBtn.disabled = false;
+      gpsBtn.textContent = "Use GPS";
+    },
+    { timeout: 10000 }
+  );
+}
+
+// ── Init ──
+buildCalendar();
+</script>
+</body>
+</html>
