@@ -1,35 +1,47 @@
 # AllergyTJ
 
-Real-time pollen levels for cities across Tajikistan, powered by Open-Meteo Air Quality API.
+Tajikistan Seasonal Allergy Tracker — pollen risk forecast based on seasonal flora data + live weather.
 
 **No API key needed.** Just run and open.
 
+**Live**: https://allergytj.vercel.app
+
 ## Features
 
-- **13 Tajik cities** — Dushanbe, Khujand, Bokhtar, Kulob, Khorugh, and more
-- **GPS detection** — auto-finds nearest city
-- **Current pollen levels** — tree, grass, weed counts with risk indicators (grains/m³)
-- **5-day forecast** — daily pollen outlook
+- **32 cities** across all regions of Tajikistan
+- **Pollen risk estimation** — combines seasonal pollen calendar with real-time weather (temperature, humidity, wind, precipitation)
+- **5-day forecast** — daily pollen risk outlook based on weather forecast
+- **Air quality** — live US AQI, PM2.5, PM10 data
 - **Seasonal calendar** — month-by-month pollen guide for local allergens (poplar, mugwort, chenopod, etc.), always visible
+- **GPS detection** — auto-finds nearest city (HTTPS only)
 
-## Run
+## How it works
+
+No pollen monitoring stations exist in Tajikistan. AllergyTJ estimates pollen risk by combining:
+
+1. **Seasonal pollen calendar** — monthly intensity data for Tajikistan's known allergenic flora (poplar, cottonwood, willow, birch, plane tree, mulberry, grasses, mugwort, chenopod, ragweed)
+2. **Live weather from Open-Meteo** — temperature, humidity, wind, and precipitation adjust the seasonal baseline up or down (hot + dry + windy = higher risk, rain/snow = lower)
+3. **Air quality from Open-Meteo CAMS** — real PM2.5, PM10, US AQI data
+
+## Run locally
 
 ```bash
 pip install flask
-cd CentralAsia_AllergyTracker
 python api_proxy.py
 ```
 
 Open http://localhost:5000
 
-## How it works
+## Tech
 
-- `index.html` — entire frontend (HTML + CSS + JS, zero dependencies), calls Open-Meteo directly
+- `index.html` — entire frontend (HTML + CSS + JS, zero dependencies)
 - `api_proxy.py` — Flask server that serves the HTML file
-
-Open-Meteo's Air Quality API provides pollen data (alder, birch, grass, mugwort, olive, ragweed) for any lat/lng globally, for free, with no API key. The frontend calls it directly via CORS.
+- No API key, no build step, no framework
 
 ## Data sources
 
-- **Live data**: [Open-Meteo Air Quality API](https://open-meteo.com/en/docs/air-quality-api) — pollen counts in grains/m³
-- **Seasonal calendar**: Curated from Tajikistan's known allergenic flora — poplar, cottonwood, willow, birch, plane tree, mulberry, grasses, mugwort (Artemisia), chenopod, ragweed
+- **Weather**: [Open-Meteo Forecast API](https://open-meteo.com/en/docs) — temperature, humidity, wind, precipitation
+- **Air quality**: [Open-Meteo Air Quality API](https://open-meteo.com/en/docs/air-quality-api) — PM2.5, PM10, US AQI
+- **Seasonal calendar**: Curated from Tajikistan's known allergenic flora
+
+Built by Eraj Ismatulloev using Claude Code
