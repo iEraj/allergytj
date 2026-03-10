@@ -1,4 +1,4 @@
-# Tajikistan Pollen Tracker
+# Tajikistan AllergyCast
 
 Real-time pollen levels for cities across Tajikistan, powered by Open-Meteo Air Quality API.
 
