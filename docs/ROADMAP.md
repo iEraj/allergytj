@@ -39,10 +39,7 @@ Priority: **High-Medium**
 
 Priority: **Medium** | Goal: Make it stickier and useful every day
 
-- [ ] Allergy symptom tips/recommendations based on current risk level
-- [ ] Offline support with a service worker (cache last-viewed city for spotty connectivity)
-- [ ] "Last updated" timestamp to show data freshness
-- [ ] UV index alongside pollen and AQI (Open-Meteo provides this)
+- [x] UV index in weather strip (Open-Meteo, shows "—" on wttr.in fallback)
 - [ ] About / How it works section accessible from the UI
 - [ ] Loading skeleton/shimmer states instead of plain text status
 - [ ] Share button — shareable snapshot/link of current conditions
