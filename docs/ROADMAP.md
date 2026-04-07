@@ -23,21 +23,17 @@
 - [x] Save preferred city in localStorage — return visitors see their city automatically
 - [x] Remove buttons — data loads on city dropdown change, GPS is a 📍 icon
 - [x] Abort-and-replace pattern for rapid city switching
+- [x] Mobile layout fix — language dropdown top-right, GPS icon inline, touch targets, spacing
+- [x] Yellow/moderate contrast accessibility fix (dark text on yellow banner)
+- [x] Language switcher as dropdown (replaces button toggles)
 
 ---
 
-## Phase 1 — Remaining Discoverability
+## Next Up
 
-Priority: **High** | Goal: Search engines can find the site
+Priority: **High-Medium**
 
-- [ ] Geo-targeting signals — `<meta>` geo tags for Tajikistan, register with Google Search Console, Yandex Webmaster
-
-## Phase 2 — Calm, Focused UI
-
-Priority: **High** | Goal: Show the answer, not the homework
-
-- [ ] Calm, focused UI — lead with risk banner + pollen cards; collapse weather details, AQI, forecast, and calendar behind expandable sections
-- [ ] Reduce visual noise — fewer competing colors, more whitespace between sections, tighter typography scale (3-4 sizes max)
+- [ ] Geo-targeting signals — `<meta>` geo tags for Tajikistan, register with Google Search Console, Yandex Webmaster (manual, postponed)
 
 ## Phase 3 — Daily Utility
 
