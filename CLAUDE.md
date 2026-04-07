@@ -43,6 +43,25 @@ The app uses a sequential fallback to handle weather API outages:
 - `mapWttrWeatherCode` converts WWO weather codes to WMO codes used by `wxDescription()`
 - `fetchWithTimeout` uses `AbortController` to properly cancel requests on timeout
 
+### Internationalization (i18n)
+
+The app supports 3 languages: English, Russian, and Tajik.
+
+- **Translation files**: `lang/en.json`, `lang/ru.json`, `lang/tj.json` (~148 keys each)
+- **`t(key, params)`** helper looks up the current language, falls back to English, then to the raw key
+- **`setLanguage(lang)`** updates all DOM text (via `data-i18n` sweep), city dropdown, buttons, calendar, meta tags, OG tags, and JSON-LD
+- **Browser auto-detection**: First visit detects `navigator.language` (ru → Russian, tg/tj → Tajik, else English)
+- **localStorage persistence**: Saved as `allergytj-lang`, restored on page load
+- **Language code**: Tajik uses `tj` internally, `tg` for `<html lang>` attribute (ISO 639-1)
+- **Re-render on switch**: `lastRenderState` stores fetch results so language switch re-renders without re-fetching
+
+### SEO and Discoverability
+
+- Localized `<meta description>`, `<meta keywords>`, Open Graph tags (`og:title`, `og:description`, `og:locale`)
+- JSON-LD structured data (`WebApplication` schema for Google/Yandex rich results)
+- Inline SVG emoji favicon (🌿)
+- All meta tags update dynamically on language switch
+
 ## Development
 
 ### Run locally
