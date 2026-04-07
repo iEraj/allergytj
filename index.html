@@ -61,26 +61,22 @@
     position: absolute;
     top: 12px;
     right: 16px;
-    display: flex;
-    gap: 4px;
   }
-  .lang-btn {
+  .lang-select {
     background: rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.3);
-    color: rgba(255,255,255,0.7);
-    padding: 4px 10px;
+    border: 1px solid rgba(255,255,255,0.4);
+    color: white;
+    padding: 6px 12px;
     border-radius: 6px;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    appearance: auto;
   }
-  .lang-btn.active {
-    background: rgba(255,255,255,0.25);
-    color: white;
-    border-color: rgba(255,255,255,0.6);
+  .lang-select option {
+    color: #333;
+    background: white;
   }
-  .lang-btn:hover { background: rgba(255,255,255,0.2); }
   header h1 { font-size: 1.5rem; margin-bottom: 4px; }
   header p { font-size: 0.85rem; opacity: 0.8; }
   .container { max-width: 760px; margin: 0 auto; padding: 0 16px; }
@@ -89,8 +85,8 @@
   .picker {
     background: var(--card);
     border-radius: var(--radius);
-    padding: 20px;
-    margin: 20px 0;
+    padding: 14px 16px;
+    margin: 16px 0 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     display: flex;
     gap: 10px;
@@ -109,24 +105,26 @@
   }
   .gps-icon {
     background: none;
-    border: 1px solid var(--border);
+    border: none;
     cursor: pointer;
     font-size: 1.3rem;
-    padding: 8px 12px;
+    padding: 8px;
     border-radius: 8px;
-    transition: background 0.2s;
+    transition: opacity 0.2s;
     line-height: 1;
+    opacity: 0.7;
   }
-  .gps-icon:hover { background: var(--border); }
+  .gps-icon:hover { opacity: 1; }
   .gps-icon.locating { opacity: 0.5; pointer-events: none; }
 
   /* Status */
   .status {
     text-align: center;
-    padding: 12px;
+    padding: 4px 12px;
     color: var(--muted);
     font-size: 0.9rem;
   }
+  .status:empty { padding: 0; }
   .status.error { color: var(--red); }
 
   /* Section titles */
@@ -279,12 +277,7 @@
   @media (max-width: 600px) {
     header { padding: 16px 16px 12px; }
     header h1 { font-size: 1.3rem; }
-    .lang-switch {
-      position: static;
-      justify-content: center;
-      margin-top: 10px;
-    }
-    .lang-btn { padding: 8px 14px; }
+    .lang-select { padding: 8px 12px; font-size: 0.85rem; }
     .gps-icon { padding: 10px 14px; font-size: 1.4rem; }
     .picker select { flex: 1; min-width: 0; }
     .pollen-cards { grid-template-columns: 1fr; }
@@ -300,9 +293,11 @@
   <h1 data-i18n="header.title">AllergyTJ</h1>
   <p data-i18n="header.subtitle">Seasonal allergy tracker for Tajikistan — based on seasonal data &amp; live weather</p>
   <div class="lang-switch">
-    <button onclick="setLanguage('en')" id="lang-en" class="lang-btn active" aria-label="Switch to English">EN</button>
-    <button onclick="setLanguage('ru')" id="lang-ru" class="lang-btn" aria-label="Переключить на русский">РУ</button>
-    <button onclick="setLanguage('tj')" id="lang-tj" class="lang-btn" aria-label="Ба забони тоҷикӣ гузаштан">ТҶ</button>
+    <select class="lang-select" id="lang-select" onchange="setLanguage(this.value)" aria-label="Language">
+      <option value="en">EN</option>
+      <option value="ru">РУ</option>
+      <option value="tj">ТҶ</option>
+    </select>
   </div>
 </header>
 
@@ -1083,10 +1078,9 @@ async function setLanguage(lang) {
   await loadTranslations("en"); // ensure English fallback is always available
   document.documentElement.lang = lang === "tj" ? "tg" : lang;
 
-  // Update lang switcher active state
-  document.querySelectorAll(".lang-btn").forEach(function(btn) {
-    btn.classList.toggle("active", btn.id === "lang-" + lang);
-  });
+  // Update lang switcher dropdown
+  var langSelect = document.getElementById("lang-select");
+  if (langSelect) langSelect.value = lang;
 
   // Sweep data-i18n elements
   document.querySelectorAll("[data-i18n]").forEach(function(el) {
@@ -1174,10 +1168,9 @@ async function setLanguage(lang) {
 
   document.documentElement.lang = LANG === "tj" ? "tg" : LANG;
 
-  // Highlight active lang button
-  document.querySelectorAll(".lang-btn").forEach(function(b) { b.classList.remove("active"); });
-  var activeBtn = document.getElementById("lang-" + LANG);
-  if (activeBtn) activeBtn.classList.add("active");
+  // Set lang dropdown to active language
+  var langSelect = document.getElementById("lang-select");
+  if (langSelect) langSelect.value = LANG;
 
   // Apply translations to static HTML
   document.querySelectorAll("[data-i18n]").forEach(function(el) {
