@@ -72,6 +72,7 @@
   "wx.label.rainToday": "Rain Today",
   "wx.label.now": "Now",
   "wx.label.todayOverall": "Today Overall",
+  "wx.label.uv": "UV Index",
 
   "wx.mod.strongSuppress": " Weather is strongly suppressing pollen (rain/snow, cold, high humidity).",
   "wx.mod.reducing": " Weather conditions are reducing pollen levels.",

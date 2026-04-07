@@ -72,6 +72,7 @@
   "wx.label.rainToday": "Осадки сегодня",
   "wx.label.now": "Сейчас",
   "wx.label.todayOverall": "За день",
+  "wx.label.uv": "УФ-индекс",
 
   "wx.mod.strongSuppress": " Погода сильно подавляет пыльцу (дождь/снег, холод, высокая влажность).",
   "wx.mod.reducing": " Погодные условия снижают уровень пыльцы.",
