@@ -1024,6 +1024,8 @@ function useGPS() {
   }
 
   gpsBtn.classList.add("locating");
+  gpsBtn.textContent = "⏳";
+  status.className = "status";
   status.textContent = t("status.gettingLocation");
 
   navigator.geolocation.getCurrentPosition(
@@ -1037,19 +1039,24 @@ function useGPS() {
       });
 
       var sel = document.getElementById("city-select");
-      var val = nearest.lat + "," + nearest.lng;
       for (var i = 0; i < sel.options.length; i++) {
-        if (sel.options[i].value === val) { sel.selectedIndex = i; break; }
+        var parts = sel.options[i].value.split(",");
+        if (parseFloat(parts[0]) === nearest.lat && parseFloat(parts[1]) === nearest.lng) {
+          sel.selectedIndex = i;
+          break;
+        }
       }
 
       status.textContent = t("status.located", { city: t("city." + nearest.idx) });
       gpsBtn.classList.remove("locating");
+      gpsBtn.textContent = "📍";
       fetchData();
     },
     function(err) {
       status.className = "status error";
       status.textContent = t("status.geoFailed");
       gpsBtn.classList.remove("locating");
+      gpsBtn.textContent = "📍";
     },
     { timeout: 10000 }
   );
