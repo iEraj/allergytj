@@ -48,6 +48,7 @@
     color: var(--text);
     min-height: 100vh;
     padding: 0 0 40px;
+    line-height: 1.5;
   }
   header {
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
@@ -93,7 +94,7 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     display: flex;
     gap: 10px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
   }
   .picker select {
@@ -132,7 +133,7 @@
   .section-title {
     font-size: 1.1rem;
     font-weight: 700;
-    margin: 28px 0 12px;
+    margin: 24px 0 10px;
     padding-left: 4px;
   }
 
@@ -142,10 +143,10 @@
     padding: 24px 20px;
     text-align: center;
     box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    margin-bottom: 16px;
+    margin-bottom: 20px;
     color: white;
   }
-  .risk-banner .level { font-size: 1.8rem; font-weight: 800; margin-bottom: 4px; }
+  .risk-banner .level { font-size: 1.5rem; font-weight: 800; margin-bottom: 4px; }
   .risk-banner .desc { font-size: 0.85rem; opacity: 0.9; }
 
   /* Pollen Cards */
@@ -153,7 +154,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    margin-bottom: 4px;
+    margin-bottom: 16px;
   }
   .pollen-card {
     background: var(--card);
@@ -193,7 +194,7 @@
     flex-wrap: wrap;
     justify-content: center;
     font-size: 0.85rem;
-    margin-top: 12px;
+    margin: 16px 0;
   }
   .weather-strip .wx-item { text-align: center; }
   .weather-strip .wx-val { font-weight: 700; font-size: 1.1rem; }
@@ -275,10 +276,20 @@
   }
 
   @media (max-width: 600px) {
-    .pollen-cards { grid-template-columns: 1fr; }
-    .forecast-row { grid-template-columns: repeat(3, 1fr); }
-    .picker { flex-direction: row; }
+    header { padding: 16px 16px 12px; }
+    header h1 { font-size: 1.3rem; }
+    .lang-switch {
+      position: static;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    .lang-btn { padding: 8px 14px; }
+    .gps-icon { padding: 10px 14px; font-size: 1.4rem; }
     .picker select { flex: 1; min-width: 0; }
+    .pollen-cards { grid-template-columns: 1fr; }
+    .forecast-row { grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
+    .risk-banner { padding: 20px 16px; }
+    .risk-banner .desc { font-size: 0.8rem; }
   }
 </style>
 </head>
@@ -884,7 +895,8 @@ function renderBanner(overall, cityName, wxMod) {
   var info = getRiskInfo(overall);
   var banner = document.getElementById("risk-banner");
   banner.style.background = info.bg;
-  banner.style.color = info.label === t("risk.0.label") ? "#333" : "white";
+  var useDarkText = (info.label === t("risk.0.label") || info.label === t("risk.2.label"));
+  banner.style.color = useDarkText ? "#333" : "white";
   document.getElementById("banner-level").textContent = info.label + " " + t("pollen.riskSuffix");
 
   var wxNote = "";
