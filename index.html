@@ -154,7 +154,7 @@
   /* Forecast */
   .forecast-row {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 10px;
   }
   .forecast-card {
@@ -283,6 +283,7 @@
   </div>
 
   <div class="status" id="status"></div>
+  <div class="status" id="tier-notice" style="display:none;"></div>
 
   <!-- Live Results -->
   <div id="results" style="display:none;">
@@ -304,7 +305,7 @@
     <div class="aqi-card" id="aqi-card"></div>
 
     <!-- 5-day forecast -->
-    <div class="section-title">5-Day Pollen Risk Forecast</div>
+    <div class="section-title" id="forecast-title">5-Day Pollen Risk Forecast</div>
     <div class="forecast-row" id="forecast-cards"></div>
   </div>
 
@@ -498,7 +499,167 @@ function aqiInfo(aqi) {
   return { label: "Very Unhealthy", color: "#7b1fa2", desc: "Health alert. Avoid outdoor activity." };
 }
 
-// ── Fetch Data ──
+// ── Fetch with timeout (AbortController) ──
+function fetchWithTimeout(url, ms) {
+  var controller = new AbortController();
+  var timeout = setTimeout(function() { controller.abort(); }, ms);
+  return fetch(url, { signal: controller.signal })
+    .finally(function() { clearTimeout(timeout); });
+}
+
+// ── Air quality fetch (independent, never blocks weather) ──
+async function fetchAirQuality(lat, lng) {
+  try {
+    var aqUrl = "https://air-quality-api.open-meteo.com/v1/air-quality?" + new URLSearchParams({
+      latitude: lat, longitude: lng,
+      current: "pm2_5,pm10,us_aqi",
+      timezone: "auto",
+    });
+    var res = await fetchWithTimeout(aqUrl, 6000);
+    return await res.json();
+  } catch (e) {
+    console.warn("Air quality fetch failed:", e.message);
+    return null;
+  }
+}
+
+// ── wttr.in WWO → WMO weather code mapping ──
+// wttr.in uses World Weather Online codes; our wxDescription() uses WMO codes.
+// See: https://www.worldweatheronline.com/developer/api/docs/weather-icons.aspx
+function mapWttrWeatherCode(wwoCode) {
+  var code = parseInt(wwoCode);
+  var map = {
+    113: 0,   // Clear/Sunny → Clear sky
+    116: 2,   // Partly cloudy
+    119: 3,   // Cloudy → Overcast
+    122: 3,   // Overcast
+    143: 45,  // Mist → Fog
+    176: 61,  // Patchy rain → Slight rain
+    179: 71,  // Patchy snow → Slight snow
+    182: 61,  // Patchy sleet
+    185: 51,  // Patchy freezing drizzle → Light drizzle
+    200: 95,  // Thundery outbreaks → Thunderstorm
+    227: 71,  // Blowing snow → Slight snow
+    230: 75,  // Blizzard → Heavy snow
+    248: 45,  // Fog
+    260: 48,  // Freezing fog → Rime fog
+    263: 51,  // Patchy light drizzle
+    266: 53,  // Light drizzle → Moderate drizzle
+    281: 51,  // Freezing drizzle
+    284: 55,  // Heavy freezing drizzle → Dense drizzle
+    293: 61,  // Patchy light rain
+    296: 61,  // Light rain
+    299: 63,  // Moderate rain at times
+    302: 63,  // Moderate rain
+    305: 65,  // Heavy rain at times
+    308: 65,  // Heavy rain
+    311: 61,  // Light freezing rain
+    314: 63,  // Moderate freezing rain
+    317: 61,  // Light sleet
+    320: 63,  // Moderate sleet
+    323: 71,  // Patchy light snow
+    326: 71,  // Light snow
+    329: 73,  // Patchy moderate snow
+    332: 73,  // Moderate snow
+    335: 75,  // Patchy heavy snow
+    338: 75,  // Heavy snow
+    353: 80,  // Light rain shower
+    356: 81,  // Moderate rain shower
+    359: 82,  // Torrential rain shower
+    362: 80,  // Light sleet shower
+    365: 81,  // Moderate sleet shower
+    368: 71,  // Light snow shower
+    371: 73,  // Moderate snow shower
+    386: 95,  // Patchy thunderstorm with rain
+    389: 99,  // Moderate/heavy thunderstorm with rain
+    392: 96,  // Patchy thunderstorm with snow
+    395: 99,  // Moderate/heavy thunderstorm with snow
+  };
+  return map[code] !== undefined ? map[code] : 3; // default to overcast
+}
+
+// ── wttr.in adapter: reshapes response to match Open-Meteo structure ──
+// Expected wttr.in format=j1 response shape:
+//   { current_condition: [{ temp_C, humidity, windspeedKmph, weatherCode, ... }],
+//     weather: [{ date, maxtempC, mintempC, hourly: [{ precipMM, windspeedKmph, humidity, weatherCode }] }] }
+async function fetchWeatherFromWttr(lat, lng) {
+  var url = "https://wttr.in/" + lat + "," + lng + "?format=j1";
+  var res = await fetchWithTimeout(url, 5000);
+  if (!res.ok) throw new Error("HTTP " + res.status);
+  var data = await res.json();
+
+  // Validate response shape (wttr.in may return Cloudflare challenge or unexpected format)
+  if (!data || !data.current_condition || !data.current_condition[0] || !data.weather) {
+    throw new Error("Invalid wttr.in response shape");
+  }
+
+  var cur = data.current_condition[0];
+  var forecasts = data.weather; // 3 days: today + 2
+
+  var current = {
+    temperature_2m: parseFloat(cur.temp_C),
+    relative_humidity_2m: parseInt(cur.humidity),
+    wind_speed_10m: parseFloat(cur.windspeedKmph),
+    precipitation: 0,
+    weather_code: mapWttrWeatherCode(cur.weatherCode),
+  };
+
+  var daily = {
+    time: [],
+    temperature_2m_max: [],
+    temperature_2m_min: [],
+    precipitation_sum: [],
+    wind_speed_10m_max: [],
+    relative_humidity_2m_mean: [],
+    weather_code: [],
+  };
+
+  for (var i = 0; i < forecasts.length; i++) {
+    var day = forecasts[i];
+    daily.time.push(day.date);
+    daily.temperature_2m_max.push(parseFloat(day.maxtempC));
+    daily.temperature_2m_min.push(parseFloat(day.mintempC));
+
+    var totalPrecip = 0;
+    var maxWind = 0;
+    var totalHumidity = 0;
+    var hours = day.hourly;
+    for (var h = 0; h < hours.length; h++) {
+      totalPrecip += parseFloat(hours[h].precipMM);
+      var w = parseFloat(hours[h].windspeedKmph);
+      if (w > maxWind) maxWind = w;
+      totalHumidity += parseInt(hours[h].humidity);
+    }
+    daily.precipitation_sum.push(totalPrecip);
+    daily.wind_speed_10m_max.push(maxWind);
+    daily.relative_humidity_2m_mean.push(Math.round(totalHumidity / hours.length));
+    // Use midday hour (index 4 of 8 3-hour slots) for daily weather code
+    var middayIdx = Math.min(4, hours.length - 1);
+    daily.weather_code.push(mapWttrWeatherCode(hours[middayIdx].weatherCode));
+  }
+
+  return { current: current, daily: daily };
+}
+
+// ── Tier notice rendering ──
+function renderTierNotice(tier) {
+  var el = document.getElementById("tier-notice");
+  if (tier === 1) {
+    el.style.display = "none";
+  } else if (tier === 2) {
+    el.style.display = "";
+    el.style.color = "#f9a825";
+    el.style.fontWeight = "600";
+    el.textContent = "\u26A0 Using backup weather source (wttr.in). Forecast limited to 2 days.";
+  } else if (tier === 3) {
+    el.style.display = "";
+    el.style.color = "#e53935";
+    el.style.fontWeight = "600";
+    el.textContent = "\u26A0 Weather data unavailable. Showing seasonal pollen estimates only.";
+  }
+}
+
+// ── Fetch Data (3-tier fallback) ──
 async function fetchData() {
   var sel = document.getElementById("city-select");
   var parts = sel.value.split(",");
@@ -507,15 +668,23 @@ async function fetchData() {
 
   var status = document.getElementById("status");
   var btn = document.getElementById("fetch-btn");
+  var fcTitle = document.getElementById("forecast-title");
 
   btn.disabled = true;
   btn.textContent = "Loading...";
   status.className = "status";
   status.textContent = "Fetching weather & air quality for " + cityName + "...";
   document.getElementById("results").style.display = "none";
+  document.getElementById("tier-notice").style.display = "none";
 
+  var wx = null;
+  var weatherTier = 0;
+
+  // Air quality: fetch independently (never blocks weather)
+  var aqPromise = fetchAirQuality(lat, lng);
+
+  // Tier 1: Open-Meteo
   try {
-    // Fetch weather and air quality in parallel
     var wxUrl = "https://api.open-meteo.com/v1/forecast?" + new URLSearchParams({
       latitude: lat, longitude: lng,
       current: "temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation,weather_code",
@@ -523,66 +692,108 @@ async function fetchData() {
       forecast_days: "6",
       timezone: "auto",
     });
-    var aqUrl = "https://air-quality-api.open-meteo.com/v1/air-quality?" + new URLSearchParams({
-      latitude: lat, longitude: lng,
-      current: "pm2_5,pm10,us_aqi",
-      timezone: "auto",
-    });
+    var wxRes = await fetchWithTimeout(wxUrl, 6000);
+    if (!wxRes.ok) throw new Error("HTTP " + wxRes.status);
+    wx = await wxRes.json();
+    if (wx.error) throw new Error(wx.reason || wx.error);
+    weatherTier = 1;
+  } catch (e) {
+    console.warn("Open-Meteo failed:", e.message);
+  }
 
-    var responses = await Promise.all([fetch(wxUrl), fetch(aqUrl)]);
-    var wx = await responses[0].json();
-    var aq = await responses[1].json();
+  // Tier 2: wttr.in (only if Tier 1 failed)
+  if (!weatherTier) {
+    status.textContent = "Primary weather source unavailable, trying backup...";
+    try {
+      wx = await fetchWeatherFromWttr(lat, lng);
+      weatherTier = 2;
+    } catch (e) {
+      console.warn("wttr.in failed:", e.message);
+    }
+  }
 
-    if (wx.error) {
-      status.className = "status error";
-      status.textContent = "Weather API error: " + (wx.reason || wx.error);
-      return;
+  // Tier 3: seasonal-only (both APIs failed)
+  if (!weatherTier) {
+    weatherTier = 3;
+  }
+
+  // Await air quality
+  var aq = await aqPromise;
+
+  // Render based on tier
+  try {
+    var now = new Date();
+
+    if (weatherTier === 1 || weatherTier === 2) {
+      var curWx = wx.current;
+      var daily = wx.daily;
+
+      // Use TODAY's daily totals for pollen risk
+      var todayTemp = daily.temperature_2m_max[0];
+      var todayHumidity = daily.relative_humidity_2m_mean ? daily.relative_humidity_2m_mean[0] : curWx.relative_humidity_2m;
+      var todayWind = daily.wind_speed_10m_max[0];
+      var todayPrecip = daily.precipitation_sum[0];
+      var todayWxCode = daily.weather_code[0];
+
+      // Weather code penalty for rain/snow
+      var wxCodePenalty = 0;
+      if (todayWxCode >= 71 && todayWxCode <= 77) wxCodePenalty = -0.5; // snow
+      if (todayWxCode >= 61 && todayWxCode <= 67) wxCodePenalty = -0.3; // rain
+      if (todayWxCode >= 80 && todayWxCode <= 82) wxCodePenalty = -0.4; // showers
+
+      var wxMod = weatherModifier(todayTemp, todayHumidity, todayWind, todayPrecip) + wxCodePenalty;
+      var treeBase = getSeasonalBase(TREE_SEASON, now);
+      var grassBase = getSeasonalBase(GRASS_SEASON, now);
+      var weedBase = getSeasonalBase(WEED_SEASON, now);
+
+      var treeRisk = computeRisk(treeBase, wxMod);
+      var grassRisk = computeRisk(grassBase, wxMod);
+      var weedRisk = computeRisk(weedBase, wxMod);
+      var overallRisk = Math.max(treeRisk, grassRisk, weedRisk);
+
+      renderBanner(overallRisk, cityName, wxMod);
+      renderPollenCards(treeRisk, grassRisk, weedRisk, now);
+      renderWeather(curWx.temperature_2m, curWx.relative_humidity_2m, curWx.wind_speed_10m,
+                    todayPrecip, curWx.weather_code, todayWxCode);
+      renderForecast(daily, now);
+
+      document.getElementById("weather-strip").style.display = "";
+      fcTitle.textContent = weatherTier === 2 ? "2-Day Pollen Risk Forecast" : "5-Day Pollen Risk Forecast";
+
+    } else {
+      // Tier 3: seasonal-only, no weather adjustment
+      var wxMod = 0;
+      var treeBase = getSeasonalBase(TREE_SEASON, now);
+      var grassBase = getSeasonalBase(GRASS_SEASON, now);
+      var weedBase = getSeasonalBase(WEED_SEASON, now);
+
+      var treeRisk = computeRisk(treeBase, wxMod);
+      var grassRisk = computeRisk(grassBase, wxMod);
+      var weedRisk = computeRisk(weedBase, wxMod);
+      var overallRisk = Math.max(treeRisk, grassRisk, weedRisk);
+
+      renderBanner(overallRisk, cityName, wxMod);
+      renderPollenCards(treeRisk, grassRisk, weedRisk, now);
+
+      document.getElementById("weather-strip").style.display = "none";
+      document.getElementById("forecast-cards").innerHTML = "";
+      fcTitle.textContent = "Forecast Unavailable";
     }
 
-    var now = new Date();
-    var curWx = wx.current;
-    var daily = wx.daily;
+    // Air quality: always render independently
+    if (aq) {
+      renderAqi(aq);
+    } else {
+      document.getElementById("aqi-card").innerHTML = '<div style="color:var(--muted)">Air quality data unavailable</div>';
+    }
 
-    // Use TODAY's daily totals for pollen risk (not single-hour snapshot)
-    // This captures the full day's rain, max wind, etc.
-    var todayTemp = daily.temperature_2m_max[0]; // today's high (drives pollen release)
-    var todayHumidity = daily.relative_humidity_2m_mean ? daily.relative_humidity_2m_mean[0] : curWx.relative_humidity_2m;
-    var todayWind = daily.wind_speed_10m_max[0]; // today's peak wind
-    var todayPrecip = daily.precipitation_sum[0]; // today's TOTAL rain/snow
-    var todayWxCode = daily.weather_code[0]; // today's dominant weather
-
-    // Also factor in snow/rain weather codes as extra suppression
-    // Codes 61-82 = rain, 71-77 = snow — these actively wash pollen from the air
-    var wxCodePenalty = 0;
-    if (todayWxCode >= 71 && todayWxCode <= 77) wxCodePenalty = -0.5; // snow
-    if (todayWxCode >= 61 && todayWxCode <= 67) wxCodePenalty = -0.3; // rain
-    if (todayWxCode >= 80 && todayWxCode <= 82) wxCodePenalty = -0.4; // showers
-
-    // Compute current pollen risk using full-day weather
-    var wxMod = weatherModifier(todayTemp, todayHumidity, todayWind, todayPrecip) + wxCodePenalty;
-    var treeBase = getSeasonalBase(TREE_SEASON, now);
-    var grassBase = getSeasonalBase(GRASS_SEASON, now);
-    var weedBase = getSeasonalBase(WEED_SEASON, now);
-
-    var treeRisk = computeRisk(treeBase, wxMod);
-    var grassRisk = computeRisk(grassBase, wxMod);
-    var weedRisk = computeRisk(weedBase, wxMod);
-    var overallRisk = Math.max(treeRisk, grassRisk, weedRisk);
-
-    // Render — show current conditions for the weather strip, but use daily for risk
-    renderBanner(overallRisk, cityName, wxMod);
-    renderPollenCards(treeRisk, grassRisk, weedRisk, now);
-    renderWeather(curWx.temperature_2m, curWx.relative_humidity_2m, curWx.wind_speed_10m,
-                  todayPrecip, curWx.weather_code, todayWxCode);
-    renderAqi(aq);
-    renderForecast(wx.daily, now);
-
+    renderTierNotice(weatherTier);
     document.getElementById("results").style.display = "block";
     status.textContent = "";
 
   } catch (e) {
     status.className = "status error";
-    status.textContent = "Network error. Check seasonal calendar below for estimates.";
+    status.textContent = "Error displaying results. Check seasonal calendar below for estimates.";
     console.error(e);
   } finally {
     btn.disabled = false;

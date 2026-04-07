@@ -1,5 +1,33 @@
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+venv/
+.venv/
+
+# Environment / secrets
 .env
+.env.*
+*.key
+*.pem
+
+# Vercel
 .vercel/
-.vercel
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Node (shouldn't exist, but safety net)
+node_modules/
+
+# OS
+desktop.ini
