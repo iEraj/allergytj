@@ -365,7 +365,7 @@
     <div class="aqi-card" id="aqi-card"></div>
 
     <!-- 5-day forecast -->
-    <div class="section-title" id="forecast-title">5-Day Pollen Risk Forecast</div>
+    <div class="section-title" id="forecast-title">3-Day Pollen Risk Forecast</div>
     <div class="forecast-row" id="forecast-cards"></div>
   </div>
 
@@ -772,7 +772,7 @@ async function fetchData() {
       latitude: lat, longitude: lng,
       current: "temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation,weather_code,uv_index",
       daily: "temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max,relative_humidity_2m_mean,weather_code",
-      forecast_days: "6",
+      forecast_days: "4",
       timezone: "auto",
     });
     var wxRes = await fetchWithTimeout(wxUrl, 6000);
@@ -985,7 +985,7 @@ function renderForecast(daily, now) {
   var WEEKDAYS_TJ = ["Яш","Дш","Сш","Чш","Пш","Ҷм","Шб"];
   var weekdays = LANG === "ru" ? WEEKDAYS_RU : LANG === "tj" ? WEEKDAYS_TJ : WEEKDAYS_EN;
 
-  for (var i = 1; i <= 5 && i < daily.time.length; i++) {
+  for (var i = 1; i <= 3 && i < daily.time.length; i++) {
     var d = new Date(daily.time[i] + "T12:00:00");
     var label = weekdays[d.getDay()] + ", " + t("month." + d.getMonth()) + " " + d.getDate();
 
