@@ -1,0 +1,92 @@
+# CLAUDE.md — AllergyTJ
+
+## Project Overview
+
+AllergyTJ is a seasonal allergy (pollen risk) tracker for Tajikistan. It estimates pollen levels by combining a curated seasonal pollen calendar with live weather and air quality data from Open-Meteo. No pollen monitoring stations exist in Tajikistan, so the model is inference-based.
+
+**Live site**: https://allergytj.vercel.app
+
+## Architecture
+
+This is a **zero-dependency static site** — the entire app lives in a single `index.html` file (HTML + CSS + inline JS). There is no build step, no framework, and no bundler.
+
+- `index.html` — Complete frontend: UI, pollen calendar data, risk algorithm, API calls to Open-Meteo
+- `api_proxy.py` — Local development only. Flask server that serves `index.html` on `localhost:5000`
+- `vercel.json` — Production deployment config (static hosting, security headers, SPA rewrite)
+
+### Data flow
+
+1. User selects a city (or GPS auto-detects nearest)
+2. Frontend calls Open-Meteo Forecast API for weather (temp, humidity, wind, precipitation)
+3. Frontend calls Open-Meteo Air Quality API for AQI, PM2.5, PM10
+4. JS combines weather with the built-in seasonal pollen calendar to compute risk scores
+5. All computation happens client-side — no backend needed in production
+
+### External APIs (no keys required)
+
+- `https://api.open-meteo.com` — Weather forecast (primary)
+- `https://wttr.in` — Weather fallback (used when Open-Meteo is down)
+- `https://air-quality-api.open-meteo.com` — Air quality (CAMS, always fetched independently)
+
+### Weather API Fallback (3-tier)
+
+The app uses a sequential fallback to handle weather API outages:
+
+| Tier | Source | Timeout | Coverage | UI indicator |
+|------|--------|---------|----------|--------------|
+| 1 | Open-Meteo | 6s | Full weather + 5-day forecast | None (normal) |
+| 2 | wttr.in | 5s | Current weather + 2-day forecast | Yellow warning |
+| 3 | Seasonal-only | — | Calendar baseline, no weather adjustment | Red warning |
+
+- Air quality is **always fetched independently** — never blocked by weather failures
+- The wttr.in adapter (`fetchWeatherFromWttr`) reshapes its response to match the exact Open-Meteo structure so all render functions work unchanged
+- `mapWttrWeatherCode` converts WWO weather codes to WMO codes used by `wxDescription()`
+- `fetchWithTimeout` uses `AbortController` to properly cancel requests on timeout
+
+## Development
+
+### Run locally
+
+```bash
+pip install -r requirements.txt
+python api_proxy.py
+```
+
+Opens at http://localhost:5000. The Flask server is only a convenience wrapper — it just serves the static HTML file.
+
+### Alternative (no Python)
+
+Open `index.html` directly in a browser. GPS auto-detection requires HTTPS, so it won't work over `file://`, but city selection works fine.
+
+## Deployment
+
+### Vercel (production)
+
+The site deploys as a **static site** on Vercel. Key config in `vercel.json`:
+- `outputDirectory: "."` — serves from the repo root
+- SPA rewrite: all routes → `index.html`
+- Security headers: CSP, HSTS, X-Frame-Options, etc.
+
+Push to `master` triggers auto-deploy via Vercel Git integration.
+
+### Manual deployment
+
+Since the app is a single static HTML file, it can be deployed anywhere that serves static files:
+1. Copy `index.html` to the hosting root
+2. Ensure the server allows outbound requests to `api.open-meteo.com`, `air-quality-api.open-meteo.com`, and `wttr.in`
+3. HTTPS is required for GPS geolocation to work
+
+## Conventions
+
+- **Single-file frontend**: All HTML, CSS, and JS stay in `index.html`. Do not split into separate files unless the app grows significantly.
+- **No API keys**: The app must remain zero-config. Only use free, keyless APIs.
+- **No build step**: No webpack, no npm, no transpilation. Keep it simple.
+- **32 cities**: City data is embedded in the JS. When adding cities, include lat/lon and region.
+- **Pollen calendar**: Monthly intensity values (0-10 scale) per allergen are hardcoded in JS. Update these based on botanical/clinical data for Tajikistan.
+
+## Files to never commit
+
+- `.env`, credentials, API keys
+- `__pycache__/`, `*.pyc`
+- `.vercel/` (contains project-specific IDs)
+- `node_modules/` (shouldn't exist, but just in case)
