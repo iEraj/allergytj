@@ -103,7 +103,7 @@ Since the app is a single static HTML file, it can be deployed anywhere that ser
 - **Single-file frontend**: All HTML, CSS, and JS stay in `index.html`. Do not split into separate files unless the app grows significantly.
 - **No API keys**: The app must remain zero-config. Only use free, keyless APIs.
 - **No build step**: No webpack, no npm, no transpilation. Keep it simple.
-- **32 cities**: City data is embedded in the JS. When adding cities, include lat/lon and region.
+- **32 cities**: City data is embedded in the JS. When adding cities, include lat/lon and region. **Important**: GPS city matching uses `parseFloat()` comparison, not string comparison, because JS drops trailing zeros from numbers (e.g., `68.7740` → `"68.774"`).
 - **Pollen calendar**: Monthly intensity values (0-10 scale) per allergen are hardcoded in JS. Update these based on botanical/clinical data for Tajikistan.
 
 ## Files to never commit
