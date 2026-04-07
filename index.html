@@ -4,7 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" id="meta-desc" content="Seasonal allergy and pollen risk tracker for Tajikistan. Live pollen forecast, air quality, and 5-day outlook for 32 cities.">
+<meta name="keywords" id="meta-keywords" content="pollen, allergy, Tajikistan, pollen forecast, air quality, Dushanbe, allergy tracker, pollen risk, AQI, seasonal allergy">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://allergytj.vercel.app/">
+<meta property="og:title" id="og-title" content="AllergyTJ — Pollen & Allergy Tracker for Tajikistan">
+<meta property="og:description" id="og-desc" content="Seasonal allergy and pollen risk tracker for Tajikistan. Live pollen forecast, air quality, and 5-day outlook for 32 cities.">
+<meta property="og:locale" content="en">
+<meta property="og:locale:alternate" content="ru">
+<meta property="og:locale:alternate" content="tg">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
 <title>AllergyTJ</title>
+<script type="application/ld+json" id="jsonld">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "AllergyTJ",
+  "url": "https://allergytj.vercel.app",
+  "description": "Seasonal allergy and pollen risk tracker for Tajikistan. Live pollen forecast, air quality, and 5-day outlook for 32 cities.",
+  "applicationCategory": "HealthApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "inLanguage": ["en", "ru", "tg"],
+  "areaServed": { "@type": "Country", "name": "Tajikistan" }
+}
+</script>
 <style>
   :root {
     --green: #4caf50;
@@ -1052,10 +1075,22 @@ async function setLanguage(lang) {
     el.textContent = t(el.getAttribute("data-i18n"));
   });
 
-  // Page title and meta description
+  // Page title, meta description, keywords, OG tags, JSON-LD
   document.title = t("title");
   var metaDesc = document.getElementById("meta-desc");
   if (metaDesc) metaDesc.setAttribute("content", t("meta.desc"));
+  var metaKw = document.getElementById("meta-keywords");
+  if (metaKw) metaKw.setAttribute("content", t("meta.keywords"));
+  var ogTitle = document.getElementById("og-title");
+  if (ogTitle) ogTitle.setAttribute("content", t("og.title"));
+  var ogDesc = document.getElementById("og-desc");
+  if (ogDesc) ogDesc.setAttribute("content", t("meta.desc"));
+  var ogLocale = document.querySelector('meta[property="og:locale"]');
+  if (ogLocale) ogLocale.setAttribute("content", lang === "tj" ? "tg" : lang);
+  var jsonld = document.getElementById("jsonld");
+  if (jsonld) {
+    try { var ld = JSON.parse(jsonld.textContent); ld.description = t("meta.desc"); jsonld.textContent = JSON.stringify(ld); } catch(e) {}
+  }
 
   // Update city dropdown
   var sel = document.getElementById("city-select");
@@ -1139,6 +1174,18 @@ async function setLanguage(lang) {
   document.title = t("title");
   var metaDesc = document.getElementById("meta-desc");
   if (metaDesc) metaDesc.setAttribute("content", t("meta.desc"));
+  var metaKw = document.getElementById("meta-keywords");
+  if (metaKw) metaKw.setAttribute("content", t("meta.keywords"));
+  var ogTitle = document.getElementById("og-title");
+  if (ogTitle) ogTitle.setAttribute("content", t("og.title"));
+  var ogDesc = document.getElementById("og-desc");
+  if (ogDesc) ogDesc.setAttribute("content", t("meta.desc"));
+  var ogLocale = document.querySelector('meta[property="og:locale"]');
+  if (ogLocale) ogLocale.setAttribute("content", LANG === "tj" ? "tg" : LANG);
+  var jsonld = document.getElementById("jsonld");
+  if (jsonld) {
+    try { var ld = JSON.parse(jsonld.textContent); ld.description = t("meta.desc"); jsonld.textContent = JSON.stringify(ld); } catch(e) {}
+  }
 
   // Update city dropdown
   var sel = document.getElementById("city-select");
