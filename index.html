@@ -680,6 +680,7 @@ async function fetchWeatherFromWttr(lat, lng) {
     wind_speed_10m: parseFloat(cur.windspeedKmph),
     precipitation: 0,
     weather_code: mapWttrWeatherCode(cur.weatherCode),
+    uv_index: null,
   };
 
   var daily = {
@@ -768,7 +769,7 @@ async function fetchData() {
   try {
     var wxUrl = "https://api.open-meteo.com/v1/forecast?" + new URLSearchParams({
       latitude: lat, longitude: lng,
-      current: "temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation,weather_code",
+      current: "temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation,weather_code,uv_index",
       daily: "temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max,relative_humidity_2m_mean,weather_code",
       forecast_days: "6",
       timezone: "auto",
@@ -838,7 +839,7 @@ async function fetchData() {
       renderBanner(overallRisk, cityName, wxMod);
       renderPollenCards(treeRisk, grassRisk, weedRisk, now);
       renderWeather(curWx.temperature_2m, curWx.relative_humidity_2m, curWx.wind_speed_10m,
-                    todayPrecip, curWx.weather_code, todayWxCode);
+                    todayPrecip, curWx.weather_code, todayWxCode, curWx.uv_index);
       renderForecast(daily, now);
 
       document.getElementById("weather-strip").style.display = "";
@@ -929,13 +930,14 @@ function getActiveSpecies(speciesKey, seasonArr, month) {
   return t("species." + speciesKey);
 }
 
-function renderWeather(temp, humidity, wind, todayPrecip, code, dailyCode) {
+function renderWeather(temp, humidity, wind, todayPrecip, code, dailyCode, uv) {
   var strip = document.getElementById("weather-strip");
   var items = [
     { val: temp + "\u00B0C", label: t("wx.label.rightNow") },
     { val: humidity + "%", label: t("wx.label.humidity") },
     { val: wind + " " + t("fc.wind", {kmh: ""}).replace(/^/, "").trim(), label: t("wx.label.wind") },
     { val: todayPrecip + " mm", label: t("wx.label.rainToday") },
+    { val: uv !== null && uv !== undefined ? uv.toFixed(1) : "\u2014", label: t("wx.label.uv") },
     { val: wxDescription(code), label: t("wx.label.now") },
     { val: wxDescription(dailyCode), label: t("wx.label.todayOverall") },
   ];
@@ -1140,7 +1142,7 @@ async function setLanguage(lang) {
       renderBanner(overallRisk, cityName, wxMod);
       renderPollenCards(treeRisk, grassRisk, weedRisk, now);
       renderWeather(curWx.temperature_2m, curWx.relative_humidity_2m, curWx.wind_speed_10m,
-                    todayPrecip, curWx.weather_code, todayWxCode);
+                    todayPrecip, curWx.weather_code, todayWxCode, curWx.uv_index);
       renderForecast(daily, now);
       document.getElementById("forecast-title").textContent = s.weatherTier === 2 ? t("section.forecast2") : t("section.forecast5");
     } else {
