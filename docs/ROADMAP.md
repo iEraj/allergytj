@@ -6,7 +6,7 @@
 
 - [x] Core pollen risk estimation engine (seasonal calendar + weather modifiers)
 - [x] 32 cities across all regions of Tajikistan
-- [x] 5-day pollen risk forecast
+- [x] 3-day pollen risk forecast
 - [x] Air quality display (US AQI, PM2.5, PM10)
 - [x] Seasonal pollen calendar (month-by-month allergen guide)
 - [x] GPS auto-detection of nearest city
@@ -34,7 +34,6 @@
 Priority: **High-Medium**
 
 - [x] Google Search Console — verified and indexed
-- [ ] Yandex Webmaster — register when ready (postponed)
 
 ## Phase 3 — Daily Utility
 
