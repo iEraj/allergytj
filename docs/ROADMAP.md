@@ -33,7 +33,8 @@
 
 Priority: **High-Medium**
 
-- [ ] Geo-targeting signals — `<meta>` geo tags for Tajikistan, register with Google Search Console, Yandex Webmaster (manual, postponed)
+- [x] Google Search Console — verified and indexed
+- [ ] Yandex Webmaster — register when ready (postponed)
 
 ## Phase 3 — Daily Utility
 
