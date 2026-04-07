@@ -16,11 +16,14 @@ This is a **zero-dependency static site** — the entire app lives in a single `
 
 ### Data flow
 
-1. User selects a city (or GPS auto-detects nearest)
-2. Frontend calls Open-Meteo Forecast API for weather (temp, humidity, wind, precipitation)
-3. Frontend calls Open-Meteo Air Quality API for AQI, PM2.5, PM10
-4. JS combines weather with the built-in seasonal pollen calendar to compute risk scores
-5. All computation happens client-side — no backend needed in production
+1. Page loads → auto-fetches data for Dushanbe (or last saved city from localStorage)
+2. User changes city dropdown → data fetches instantly (no button, `onchange` trigger)
+3. GPS icon (📍) finds nearest city and fetches automatically
+4. Frontend calls Open-Meteo Forecast API for weather (temp, humidity, wind, precipitation)
+5. Frontend calls Open-Meteo Air Quality API for AQI, PM2.5, PM10
+6. JS combines weather with the built-in seasonal pollen calendar to compute risk scores
+7. All computation happens client-side — no backend needed in production
+8. Rapid city changes use abort-and-replace (`_fetchId`) to prevent stale data
 
 ### External APIs (no keys required)
 

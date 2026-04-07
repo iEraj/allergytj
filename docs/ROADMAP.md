@@ -17,26 +17,25 @@
 - [x] Decoupled air quality fetch (independent of weather)
 - [x] Project documentation (CLAUDE.md, updated README)
 - [x] Multilingual support (EN/RU/TJ) — language toggle, external translation files (lang/*.json), browser auto-detection, localStorage persistence
+- [x] Trilingual SEO — localized meta keywords, Open Graph tags, JSON-LD structured data
+- [x] Favicon — inline SVG emoji (🌿)
+- [x] Auto-load Dushanbe on page open — instant data, no button click
+- [x] Save preferred city in localStorage — return visitors see their city automatically
+- [x] Remove buttons — data loads on city dropdown change, GPS is a 📍 icon
+- [x] Abort-and-replace pattern for rapid city switching
 
 ---
 
-## Phase 1 — Reach and Discoverability
+## Phase 1 — Remaining Discoverability
 
-Priority: **Highest** | Goal: Users in Tajikistan can find and use this site
+Priority: **High** | Goal: Search engines can find the site
 
-- [x] Trilingual SEO — localized `<meta keywords>` in EN/RU/TJ
-- [x] Open Graph + social meta tags — localized OG title/description for WhatsApp/Telegram sharing
-- [x] Favicon — inline SVG emoji (🌿) for browser tabs
-- [x] Structured data (JSON-LD) — schema.org WebApplication markup
-- [ ] Geo-targeting signals — proper `<meta>` geo tags for Tajikistan, register with Google Search Console, Yandex Webmaster (Yandex is widely used in Central Asia)
+- [ ] Geo-targeting signals — `<meta>` geo tags for Tajikistan, register with Google Search Console, Yandex Webmaster
 
-## Phase 2 — Instant, Frictionless Experience
+## Phase 2 — Calm, Focused UI
 
-Priority: **High** | Goal: Open the page, get your answer
+Priority: **High** | Goal: Show the answer, not the homework
 
-- [ ] Auto-load Dushanbe on page open — show pollen risk immediately without requiring a button click
-- [ ] Save preferred city in localStorage so it auto-loads on return visits
-- [ ] Remove "Get Pollen Risk" / "Use GPS" buttons — data loads on city selection, GPS becomes a small icon or link
 - [ ] Calm, focused UI — lead with risk banner + pollen cards; collapse weather details, AQI, forecast, and calendar behind expandable sections
 - [ ] Reduce visual noise — fewer competing colors, more whitespace between sections, tighter typography scale (3-4 sizes max)
 
