@@ -173,6 +173,7 @@
     padding: 3px 10px;
     border-radius: 20px;
     font-size: 0.7rem;
+    line-height: 1;
     font-weight: 600;
     color: white;
   }
@@ -895,8 +896,8 @@ function renderBanner(overall, cityName, wxMod) {
   var info = getRiskInfo(overall);
   var banner = document.getElementById("risk-banner");
   banner.style.background = info.bg;
-  var useDarkText = (info.label === t("risk.0.label") || info.label === t("risk.2.label"));
-  banner.style.color = useDarkText ? "#333" : "white";
+  var riskIdx = Math.min(Math.round(overall), 4);
+  banner.style.color = (riskIdx === 0 || riskIdx === 2) ? "#333" : "white";
   document.getElementById("banner-level").textContent = info.label + " " + t("pollen.riskSuffix");
 
   var wxNote = "";
