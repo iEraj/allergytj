@@ -17,7 +17,9 @@ No pollen monitoring stations exist in Tajikistan. AllergyTJ fills the gap by es
 - **Seasonal calendar** — month-by-month pollen guide for local allergens (poplar, mugwort, chenopod, etc.)
 - **GPS detection** — auto-finds nearest city (HTTPS required)
 - **Zero config** — no API keys, no build step, no framework
+- **Trilingual** — English, Russian, and Tajik with browser auto-detection
 - **3-tier weather fallback** — automatically switches to backup weather source (wttr.in) or seasonal-only mode if the primary API is down
+- **SEO-ready** — Open Graph tags, JSON-LD structured data, localized meta tags
 
 ## How It Works
 
@@ -49,6 +51,10 @@ Open `index.html` directly in a browser. City selection works immediately; GPS r
 ```
 AllergyTJ/
 ├── index.html          # Entire frontend (HTML + CSS + JS) — the app
+├── lang/
+│   ├── en.json         # English translations
+│   ├── ru.json         # Russian translations
+│   └── tj.json         # Tajik translations
 ├── api_proxy.py        # Local dev server (Flask, serves index.html)
 ├── vercel.json         # Vercel deployment config + security headers
 ├── requirements.txt    # Python dependencies (flask)
