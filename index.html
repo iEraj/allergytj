@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" id="meta-desc" content="Seasonal allergy and pollen risk tracker for Tajikistan. Live pollen forecast, air quality, and 5-day outlook for 32 cities.">
 <title>AllergyTJ</title>
 <style>
   :root {
@@ -30,7 +31,32 @@
     color: white;
     padding: 28px 20px;
     text-align: center;
+    position: relative;
   }
+  .lang-switch {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    display: flex;
+    gap: 4px;
+  }
+  .lang-btn {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.7);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .lang-btn.active {
+    background: rgba(255,255,255,0.25);
+    color: white;
+    border-color: rgba(255,255,255,0.6);
+  }
+  .lang-btn:hover { background: rgba(255,255,255,0.2); }
   header h1 { font-size: 1.5rem; margin-bottom: 4px; }
   header p { font-size: 0.85rem; opacity: 0.8; }
   .container { max-width: 760px; margin: 0 auto; padding: 0 16px; }
@@ -237,8 +263,13 @@
 <body>
 
 <header>
-  <h1>AllergyTJ</h1>
-  <p>Seasonal allergy tracker for Tajikistan — based on seasonal data &amp; live weather</p>
+  <h1 data-i18n="header.title">AllergyTJ</h1>
+  <p data-i18n="header.subtitle">Seasonal allergy tracker for Tajikistan — based on seasonal data &amp; live weather</p>
+  <div class="lang-switch">
+    <button onclick="setLanguage('en')" id="lang-en" class="lang-btn active" aria-label="Switch to English">EN</button>
+    <button onclick="setLanguage('ru')" id="lang-ru" class="lang-btn" aria-label="Переключить на русский">РУ</button>
+    <button onclick="setLanguage('tj')" id="lang-tj" class="lang-btn" aria-label="Ба забони тоҷикӣ гузаштан">ТҶ</button>
+  </div>
 </header>
 
 <div class="container">
@@ -301,7 +332,7 @@
     <div class="weather-strip" id="weather-strip"></div>
 
     <!-- Air Quality -->
-    <div class="section-title">Air Quality</div>
+    <div class="section-title" data-i18n="section.airQuality">Air Quality</div>
     <div class="aqi-card" id="aqi-card"></div>
 
     <!-- 5-day forecast -->
@@ -310,65 +341,94 @@
   </div>
 
   <!-- Seasonal Calendar (always visible) -->
-  <div class="section-title">Seasonal Pollen Calendar — Tajikistan</div>
+  <div class="section-title" data-i18n="section.calendar">Seasonal Pollen Calendar — Tajikistan</div>
   <div class="calendar">
     <table id="calendar-table"></table>
     <div class="legend">
-      <span><span class="swatch cal-none" style="border:1px solid #ddd;"></span> None</span>
-      <span><span class="swatch cal-low"></span> Low</span>
-      <span><span class="swatch cal-mod"></span> Moderate</span>
-      <span><span class="swatch cal-high"></span> High</span>
-      <span><span class="swatch cal-vhigh"></span> Very High</span>
+      <span><span class="swatch cal-none" style="border:1px solid #ddd;"></span> <span data-i18n="legend.none">None</span></span>
+      <span><span class="swatch cal-low"></span> <span data-i18n="legend.low">Low</span></span>
+      <span><span class="swatch cal-mod"></span> <span data-i18n="legend.moderate">Moderate</span></span>
+      <span><span class="swatch cal-high"></span> <span data-i18n="legend.high">High</span></span>
+      <span><span class="swatch cal-vhigh"></span> <span data-i18n="legend.veryHigh">Very High</span></span>
     </div>
   </div>
 
-  <p class="note">
+  <p class="note" data-i18n="footer.note1">
     Pollen risk is estimated by combining a seasonal pollen calendar for Tajikistan's known allergenic flora
     with live weather data (Open-Meteo or wttr.in backup). No pollen monitoring stations exist in Tajikistan — risk levels
     reflect seasonal patterns adjusted for today's weather (rain, temperature, humidity, wind).
     If weather data is unavailable, seasonal estimates are shown without weather adjustment.
     Air quality (AQI, PM2.5, PM10) is modeled data from Open-Meteo CAMS. Not medical advice.
   </p>
-  <p class="note" style="margin-top:12px;">
+  <p class="note" style="margin-top:12px;" data-i18n="footer.note2">
     Built by Eraj Ismatulloev using Claude Code
   </p>
 </div>
 
 <script>
+// ── i18n: Language detection and translation loading ──
+var browserLang = (navigator.language || "").slice(0, 2);
+var LANG = localStorage.getItem("allergytj-lang") || (browserLang === "ru" ? "ru" : browserLang === "tg" || browserLang === "tj" ? "tj" : "en");
+
+// Translation data loaded from lang/*.json files
+var T = { en: {}, ru: {}, tj: {} };
+
+async function loadTranslations(lang) {
+  if (Object.keys(T[lang]).length > 0) return; // already loaded
+  try {
+    var res = await fetch("lang/" + lang + ".json");
+    if (res.ok) T[lang] = await res.json();
+  } catch (e) {
+    console.warn("Failed to load " + lang + " translations:", e.message);
+  }
+}
+
+function t(key, params) {
+  var s = (T[LANG] && T[LANG][key]) || (T["en"] && T["en"][key]) || key;
+  if (params) {
+    Object.keys(params).forEach(function(k) {
+      s = s.replace("{" + k + "}", params[k]);
+    });
+  }
+  return s;
+}
+
+var lastRenderState = null;
+
 // ── Cities ──
 var CITIES = [
-  { name: "Dushanbe", lat: 38.5598, lng: 68.7740 },
-  { name: "Khujand", lat: 40.2833, lng: 69.6333 },
-  { name: "Kulob", lat: 37.9139, lng: 69.8028 },
-  { name: "Bokhtar", lat: 37.8364, lng: 68.7650 },
-  { name: "Istaravshan", lat: 39.1667, lng: 67.9833 },
-  { name: "Konibodom", lat: 40.5253, lng: 70.9400 },
-  { name: "Vahdat", lat: 38.5383, lng: 68.9500 },
-  { name: "Tursunzoda", lat: 38.5500, lng: 67.8333 },
-  { name: "Isfara", lat: 40.2167, lng: 69.3167 },
-  { name: "Panjakent", lat: 39.5500, lng: 68.6167 },
-  { name: "Khorugh", lat: 37.5383, lng: 71.5128 },
-  { name: "Ishkoshim", lat: 36.7167, lng: 71.6167 },
-  { name: "Hisor", lat: 38.5253, lng: 68.5514 },
-  { name: "Danghara", lat: 37.0000, lng: 69.7833 },
-  { name: "Vose", lat: 37.2167, lng: 68.1333 },
-  { name: "Parkhar", lat: 37.3000, lng: 68.3333 },
-  { name: "Buston", lat: 40.5167, lng: 69.0000 },
-  { name: "Chubek", lat: 37.1667, lng: 68.5000 },
-  { name: "Kolkhozobod", lat: 37.8167, lng: 68.2167 },
-  { name: "Norak", lat: 38.3833, lng: 69.3167 },
-  { name: "Yovon", lat: 38.3167, lng: 69.0833 },
-  { name: "Vakhsh", lat: 37.7833, lng: 68.6000 },
-  { name: "Ghafurov", lat: 40.3833, lng: 69.6000 },
-  { name: "Spitamen", lat: 40.3500, lng: 69.8000 },
-  { name: "Shahritus", lat: 37.4000, lng: 67.8333 },
-  { name: "Taboshar", lat: 40.5667, lng: 69.6333 },
-  { name: "Murghab", lat: 38.7167, lng: 70.6333 },
-  { name: "Rasht", lat: 38.9833, lng: 69.8667 },
-  { name: "Obigarm", lat: 38.6000, lng: 69.1667 },
-  { name: "Roghun", lat: 38.4000, lng: 69.6833 },
-  { name: "Adrasmon", lat: 40.5333, lng: 69.1500 },
-  { name: "Boshkengash", lat: 38.5833, lng: 68.3167 },
+  { idx: 0, lat: 38.5598, lng: 68.7740 },
+  { idx: 1, lat: 40.2833, lng: 69.6333 },
+  { idx: 2, lat: 37.9139, lng: 69.8028 },
+  { idx: 3, lat: 37.8364, lng: 68.7650 },
+  { idx: 4, lat: 39.1667, lng: 67.9833 },
+  { idx: 5, lat: 40.5253, lng: 70.9400 },
+  { idx: 6, lat: 38.5383, lng: 68.9500 },
+  { idx: 7, lat: 38.5500, lng: 67.8333 },
+  { idx: 8, lat: 40.2167, lng: 69.3167 },
+  { idx: 9, lat: 39.5500, lng: 68.6167 },
+  { idx: 10, lat: 37.5383, lng: 71.5128 },
+  { idx: 11, lat: 36.7167, lng: 71.6167 },
+  { idx: 12, lat: 38.5253, lng: 68.5514 },
+  { idx: 13, lat: 37.0000, lng: 69.7833 },
+  { idx: 14, lat: 37.2167, lng: 68.1333 },
+  { idx: 15, lat: 37.3000, lng: 68.3333 },
+  { idx: 16, lat: 40.5167, lng: 69.0000 },
+  { idx: 17, lat: 37.1667, lng: 68.5000 },
+  { idx: 18, lat: 37.8167, lng: 68.2167 },
+  { idx: 19, lat: 38.3833, lng: 69.3167 },
+  { idx: 20, lat: 38.3167, lng: 69.0833 },
+  { idx: 21, lat: 37.7833, lng: 68.6000 },
+  { idx: 22, lat: 40.3833, lng: 69.6000 },
+  { idx: 23, lat: 40.3500, lng: 69.8000 },
+  { idx: 24, lat: 37.4000, lng: 67.8333 },
+  { idx: 25, lat: 40.5667, lng: 69.6333 },
+  { idx: 26, lat: 38.7167, lng: 70.6333 },
+  { idx: 27, lat: 38.9833, lng: 69.8667 },
+  { idx: 28, lat: 38.6000, lng: 69.1667 },
+  { idx: 29, lat: 38.4000, lng: 69.6833 },
+  { idx: 30, lat: 40.5333, lng: 69.1500 },
+  { idx: 31, lat: 38.5833, lng: 68.3167 },
 ];
 
 // ── Seasonal Pollen Intensity (0-4 per month) ──
@@ -377,9 +437,7 @@ var TREE_SEASON =  [0, 1, 2, 4, 3, 1, 0, 0, 0, 0, 0, 0]; // poplar, willow, birc
 var GRASS_SEASON = [0, 0, 0, 1, 3, 4, 3, 1, 0, 0, 0, 0]; // grass peaks Jun
 var WEED_SEASON =  [0, 0, 0, 0, 0, 1, 2, 4, 4, 2, 0, 0]; // mugwort, chenopod, ragweed peak Aug-Sep
 
-var TREE_SPECIES =  ["Poplar", "Cottonwood", "Willow", "Birch", "Alder", "Plane tree", "Mulberry"];
-var GRASS_SPECIES = ["Bermuda grass", "Timothy", "Ryegrass", "Bluegrass"];
-var WEED_SPECIES =  ["Mugwort", "Chenopod", "Pigweed", "Ragweed"];
+// Species names now come from translations: t("species.tree"), t("species.grass"), t("species.weed")
 
 // ── Calendar data for the static table ──
 var SEASONAL = [
@@ -396,19 +454,19 @@ var SEASONAL = [
 var MONTH_LABELS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 var CAL_CLASSES = ["cal-none","cal-low","cal-mod","cal-high","cal-vhigh"];
 
-// ── Risk level colors & labels ──
+// ── Risk level colors (labels/advice come from translations) ──
 var RISK_LEVELS = [
-  { max: 0, label: "None",      color: "#9e9e9e", bg: "#e0e0e0", badge: "badge-low",      advice: "No significant pollen activity expected." },
-  { max: 1, label: "Low",       color: "#4caf50", bg: "#4caf50", badge: "badge-low",      advice: "Minimal pollen. Enjoy the outdoors." },
-  { max: 2, label: "Moderate",  color: "#f9a825", bg: "#f9a825", badge: "badge-moderate", advice: "Sensitive individuals may notice symptoms. Consider antihistamines." },
-  { max: 3, label: "High",      color: "#ff7043", bg: "#ff7043", badge: "badge-high",     advice: "Allergy sufferers should limit outdoor exposure and take medication." },
-  { max: 4, label: "Very High", color: "#e53935", bg: "#e53935", badge: "badge-veryhigh", advice: "Stay indoors if possible. Keep windows closed. Take allergy medication." },
+  { color: "#9e9e9e", bg: "#e0e0e0", badge: "badge-low" },
+  { color: "#4caf50", bg: "#4caf50", badge: "badge-low" },
+  { color: "#f9a825", bg: "#f9a825", badge: "badge-moderate" },
+  { color: "#ff7043", bg: "#ff7043", badge: "badge-high" },
+  { color: "#e53935", bg: "#e53935", badge: "badge-veryhigh" },
 ];
 
 function getRiskInfo(score) {
-  // score 0-4 (can be fractional)
   var idx = Math.min(Math.round(score), 4);
-  return RISK_LEVELS[idx];
+  var r = RISK_LEVELS[idx];
+  return { label: t("risk." + idx + ".label"), color: r.color, bg: r.bg, badge: r.badge, advice: t("risk." + idx + ".advice") };
 }
 
 // ── Weather modifier ──
@@ -448,12 +506,12 @@ function buildCalendar() {
   var html = "<tr><th></th>";
   for (var i = 0; i < 12; i++) {
     var hl = i === curMonth ? ' style="color:#2563eb;font-weight:800;"' : '';
-    html += "<th" + hl + ">" + MONTH_LABELS[i] + "</th>";
+    html += "<th" + hl + ">" + t("month." + i) + "</th>";
   }
   html += "</tr>";
   for (var j = 0; j < SEASONAL.length; j++) {
     var a = SEASONAL[j];
-    html += '<tr><td class="allergen-name">' + a.name + '</td>';
+    html += '<tr><td class="allergen-name">' + t("cal." + j) + '</td>';
     for (var m = 0; m < 12; m++) {
       var cls = CAL_CLASSES[a.months[m]];
       var brd = m === curMonth ? "outline:2px solid #2563eb;outline-offset:-1px;" : "";
@@ -479,25 +537,16 @@ function getSeasonalBase(seasonArr, date) {
 
 // ── Weather description ──
 function wxDescription(code) {
-  var descs = {
-    0: "Clear sky", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast",
-    45: "Fog", 48: "Rime fog",
-    51: "Light drizzle", 53: "Moderate drizzle", 55: "Dense drizzle",
-    61: "Slight rain", 63: "Moderate rain", 65: "Heavy rain",
-    71: "Slight snow", 73: "Moderate snow", 75: "Heavy snow",
-    80: "Rain showers", 81: "Moderate showers", 82: "Violent showers",
-    95: "Thunderstorm", 96: "Thunderstorm + hail", 99: "Thunderstorm + heavy hail",
-  };
-  return descs[code] || "—";
+  var key = "wx." + code;
+  var val = T[LANG][key] || T["en"][key];
+  return val || "\u2014";
 }
 
 // ── AQI rating ──
 function aqiInfo(aqi) {
-  if (aqi <= 50) return { label: "Good", color: "#4caf50", desc: "Air quality is satisfactory." };
-  if (aqi <= 100) return { label: "Moderate", color: "#f9a825", desc: "Acceptable. Sensitive groups may be affected." };
-  if (aqi <= 150) return { label: "Unhealthy (SG)", color: "#ff7043", desc: "Sensitive groups should reduce outdoor activity." };
-  if (aqi <= 200) return { label: "Unhealthy", color: "#e53935", desc: "Everyone may begin to experience health effects." };
-  return { label: "Very Unhealthy", color: "#7b1fa2", desc: "Health alert. Avoid outdoor activity." };
+  var idx = aqi <= 50 ? 0 : aqi <= 100 ? 1 : aqi <= 150 ? 2 : aqi <= 200 ? 3 : 4;
+  var colors = ["#4caf50", "#f9a825", "#ff7043", "#e53935", "#7b1fa2"];
+  return { label: t("aqi." + idx + ".label"), color: colors[idx], desc: t("aqi." + idx + ".desc") };
 }
 
 // ── Fetch with timeout (AbortController) ──
@@ -651,12 +700,12 @@ function renderTierNotice(tier) {
     el.style.display = "";
     el.style.color = "#f9a825";
     el.style.fontWeight = "600";
-    el.textContent = "\u26A0 Using backup weather source (wttr.in). Forecast limited to 2 days.";
+    el.textContent = t("tier.2");
   } else if (tier === 3) {
     el.style.display = "";
     el.style.color = "#e53935";
     el.style.fontWeight = "600";
-    el.textContent = "\u26A0 Weather data unavailable. Showing seasonal pollen estimates only.";
+    el.textContent = t("tier.3");
   }
 }
 
@@ -671,10 +720,12 @@ async function fetchData() {
   var btn = document.getElementById("fetch-btn");
   var fcTitle = document.getElementById("forecast-title");
 
+  var cityIndex = sel.selectedIndex;
+
   btn.disabled = true;
-  btn.textContent = "Loading...";
+  btn.textContent = t("btn.loading");
   status.className = "status";
-  status.textContent = "Fetching weather & air quality for " + cityName + "...";
+  status.textContent = t("status.fetching", { city: cityName });
   document.getElementById("results").style.display = "none";
   document.getElementById("tier-notice").style.display = "none";
 
@@ -704,7 +755,7 @@ async function fetchData() {
 
   // Tier 2: wttr.in (only if Tier 1 failed)
   if (!weatherTier) {
-    status.textContent = "Primary weather source unavailable, trying backup...";
+    status.textContent = t("status.backupTrying");
     try {
       wx = await fetchWeatherFromWttr(lat, lng);
       weatherTier = 2;
@@ -759,7 +810,7 @@ async function fetchData() {
       renderForecast(daily, now);
 
       document.getElementById("weather-strip").style.display = "";
-      fcTitle.textContent = weatherTier === 2 ? "2-Day Pollen Risk Forecast" : "5-Day Pollen Risk Forecast";
+      fcTitle.textContent = weatherTier === 2 ? t("section.forecast2") : t("section.forecast5");
 
     } else {
       // Tier 3: seasonal-only, no weather adjustment
@@ -778,15 +829,18 @@ async function fetchData() {
 
       document.getElementById("weather-strip").style.display = "none";
       document.getElementById("forecast-cards").innerHTML = "";
-      fcTitle.textContent = "Forecast Unavailable";
+      fcTitle.textContent = t("section.forecastNone");
     }
 
     // Air quality: always render independently
     if (aq) {
       renderAqi(aq);
     } else {
-      document.getElementById("aqi-card").innerHTML = '<div style="color:var(--muted)">Air quality data unavailable</div>';
+      document.getElementById("aqi-card").innerHTML = '<div style="color:var(--muted)">' + t("aqi.unavailable") + '</div>';
     }
+
+    // Store render state for language switch re-render
+    lastRenderState = { weatherTier: weatherTier, wx: wx, aq: aq, cityIndex: cityIndex };
 
     renderTierNotice(weatherTier);
     document.getElementById("results").style.display = "block";
@@ -794,11 +848,11 @@ async function fetchData() {
 
   } catch (e) {
     status.className = "status error";
-    status.textContent = "Error displaying results. Check seasonal calendar below for estimates.";
+    status.textContent = t("status.error");
     console.error(e);
   } finally {
     btn.disabled = false;
-    btn.textContent = "Get Pollen Risk";
+    btn.textContent = t("btn.fetch");
   }
 }
 
@@ -806,25 +860,24 @@ function renderBanner(overall, cityName, wxMod) {
   var info = getRiskInfo(overall);
   var banner = document.getElementById("risk-banner");
   banner.style.background = info.bg;
-  banner.style.color = info.label === "None" ? "#333" : "white";
-  document.getElementById("banner-level").textContent = info.label + " Pollen Risk";
+  banner.style.color = info.label === t("risk.0.label") ? "#333" : "white";
+  document.getElementById("banner-level").textContent = info.label + " " + t("pollen.riskSuffix");
 
-  // Explain what weather is doing
   var wxNote = "";
-  if (wxMod <= -1.5) wxNote = " Weather is strongly suppressing pollen (rain/snow, cold, high humidity).";
-  else if (wxMod <= -0.5) wxNote = " Weather conditions are reducing pollen levels.";
-  else if (wxMod >= 1.0) wxNote = " Weather is amplifying pollen (hot, dry, windy).";
-  else if (wxMod >= 0.5) wxNote = " Weather conditions are slightly elevating pollen.";
+  if (wxMod <= -1.5) wxNote = t("wx.mod.strongSuppress");
+  else if (wxMod <= -0.5) wxNote = t("wx.mod.reducing");
+  else if (wxMod >= 1.0) wxNote = t("wx.mod.amplifying");
+  else if (wxMod >= 0.5) wxNote = t("wx.mod.slightElevating");
 
-  document.getElementById("banner-desc").textContent = cityName + " — " + info.advice + wxNote;
+  document.getElementById("banner-desc").textContent = cityName + " \u2014 " + info.advice + wxNote;
 }
 
 function renderPollenCards(tree, grass, weed, now) {
   var month = now.getMonth();
   var cards = [
-    { type: "Tree Pollen", risk: tree, species: getActiveSpecies(TREE_SPECIES, TREE_SEASON, month) },
-    { type: "Grass Pollen", risk: grass, species: getActiveSpecies(GRASS_SPECIES, GRASS_SEASON, month) },
-    { type: "Weed Pollen", risk: weed, species: getActiveSpecies(WEED_SPECIES, WEED_SEASON, month) },
+    { type: t("pollen.tree"), risk: tree, species: getActiveSpecies("tree", TREE_SEASON, month) },
+    { type: t("pollen.grass"), risk: grass, species: getActiveSpecies("grass", GRASS_SEASON, month) },
+    { type: t("pollen.weed"), risk: weed, species: getActiveSpecies("weed", WEED_SEASON, month) },
   ];
 
   var container = document.getElementById("pollen-cards");
@@ -839,20 +892,20 @@ function renderPollenCards(tree, grass, weed, now) {
   }).join("");
 }
 
-function getActiveSpecies(speciesList, seasonArr, month) {
-  if (seasonArr[month] === 0) return "Not in season";
-  return speciesList.join(", ");
+function getActiveSpecies(speciesKey, seasonArr, month) {
+  if (seasonArr[month] === 0) return t("pollen.notInSeason");
+  return t("species." + speciesKey);
 }
 
 function renderWeather(temp, humidity, wind, todayPrecip, code, dailyCode) {
   var strip = document.getElementById("weather-strip");
   var items = [
-    { val: temp + "\u00B0C", label: "Right Now" },
-    { val: humidity + "%", label: "Humidity" },
-    { val: wind + " km/h", label: "Wind" },
-    { val: todayPrecip + " mm", label: "Rain Today" },
-    { val: wxDescription(code), label: "Now" },
-    { val: wxDescription(dailyCode), label: "Today Overall" },
+    { val: temp + "\u00B0C", label: t("wx.label.rightNow") },
+    { val: humidity + "%", label: t("wx.label.humidity") },
+    { val: wind + " " + t("fc.wind", {kmh: ""}).replace(/^/, "").trim(), label: t("wx.label.wind") },
+    { val: todayPrecip + " mm", label: t("wx.label.rainToday") },
+    { val: wxDescription(code), label: t("wx.label.now") },
+    { val: wxDescription(dailyCode), label: t("wx.label.todayOverall") },
   ];
   strip.innerHTML = items.map(function(it) {
     return '<div class="wx-item"><div class="wx-val">' + it.val + '</div><div class="wx-label">' + it.label + '</div></div>';
@@ -867,7 +920,7 @@ function renderAqi(aq) {
   var pm10 = cur.pm10;
 
   if (aqi === null || aqi === undefined) {
-    card.innerHTML = '<div style="color:var(--muted)">Air quality data unavailable</div>';
+    card.innerHTML = '<div style="color:var(--muted)">' + t("aqi.unavailable") + '</div>';
     return;
   }
 
@@ -875,7 +928,7 @@ function renderAqi(aq) {
   card.innerHTML =
     '<div class="aqi-circle" style="background:' + info.color + '">' +
       '<div class="aqi-num">' + aqi + '</div>' +
-      '<div class="aqi-lbl">US AQI</div>' +
+      '<div class="aqi-lbl">' + t("aqi.usAqi") + '</div>' +
     '</div>' +
     '<div class="aqi-details">' +
       '<div class="aqi-status" style="color:' + info.color + '">' + info.label + '</div>' +
@@ -892,9 +945,14 @@ function renderForecast(daily, now) {
   var html = "";
 
   // Skip today (index 0), show next 5 days
+  var WEEKDAYS_EN = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  var WEEKDAYS_RU = ["Вс","Пн","Вт","Ср","Чт","Пт","Сб"];
+  var WEEKDAYS_TJ = ["Яш","Дш","Сш","Чш","Пш","Ҷм","Шб"];
+  var weekdays = LANG === "ru" ? WEEKDAYS_RU : LANG === "tj" ? WEEKDAYS_TJ : WEEKDAYS_EN;
+
   for (var i = 1; i <= 5 && i < daily.time.length; i++) {
     var d = new Date(daily.time[i] + "T12:00:00");
-    var label = d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+    var label = weekdays[d.getDay()] + ", " + t("month." + d.getMonth()) + " " + d.getDate();
 
     var dayTemp = daily.temperature_2m_max[i];
     var dayLow = daily.temperature_2m_min[i];
@@ -921,8 +979,8 @@ function renderForecast(daily, now) {
       '<div class="fc-bar" style="background:' + info.color + ';opacity:0.7;"></div>' +
       '<div class="fc-temp">' + Math.round(dayLow) + '\u00B0 / ' + Math.round(dayTemp) + '\u00B0C</div>' +
       '<div class="fc-detail">' +
-        (dayPrecip > 0 ? dayPrecip + 'mm rain' : 'No rain') +
-        ' \u00B7 ' + Math.round(dayWind) + 'km/h' +
+        (dayPrecip > 0 ? t("fc.rain", {mm: dayPrecip}) : t("fc.noRain")) +
+        ' \u00B7 ' + t("fc.wind", {kmh: Math.round(dayWind)}) +
       '</div>' +
     '</div>';
   }
@@ -937,13 +995,13 @@ function useGPS() {
 
   if (!navigator.geolocation) {
     status.className = "status error";
-    status.textContent = "Geolocation not supported by your browser.";
+    status.textContent = t("status.geoNotSupported");
     return;
   }
 
   gpsBtn.disabled = true;
-  gpsBtn.textContent = "Locating...";
-  status.textContent = "Getting your location...";
+  gpsBtn.textContent = t("btn.locating");
+  status.textContent = t("status.gettingLocation");
 
   navigator.geolocation.getCurrentPosition(
     function(pos) {
@@ -961,23 +1019,140 @@ function useGPS() {
         if (sel.options[i].value === val) { sel.selectedIndex = i; break; }
       }
 
-      status.textContent = "Located near " + nearest.name;
+      status.textContent = t("status.located", { city: t("city." + nearest.idx) });
       gpsBtn.disabled = false;
-      gpsBtn.textContent = "Use GPS";
+      gpsBtn.textContent = t("btn.gps");
       fetchData();
     },
     function(err) {
       status.className = "status error";
-      status.textContent = "Could not get location. Please select a city manually.";
+      status.textContent = t("status.geoFailed");
       gpsBtn.disabled = false;
-      gpsBtn.textContent = "Use GPS";
+      gpsBtn.textContent = t("btn.gps");
     },
     { timeout: 10000 }
   );
 }
 
+// ── Language switching ──
+async function setLanguage(lang) {
+  LANG = lang;
+  localStorage.setItem("allergytj-lang", lang);
+  await loadTranslations(lang);
+  await loadTranslations("en"); // ensure English fallback is always available
+  document.documentElement.lang = lang === "tj" ? "tg" : lang;
+
+  // Update lang switcher active state
+  document.querySelectorAll(".lang-btn").forEach(function(btn) {
+    btn.classList.toggle("active", btn.id === "lang-" + lang);
+  });
+
+  // Sweep data-i18n elements
+  document.querySelectorAll("[data-i18n]").forEach(function(el) {
+    el.textContent = t(el.getAttribute("data-i18n"));
+  });
+
+  // Page title and meta description
+  document.title = t("title");
+  var metaDesc = document.getElementById("meta-desc");
+  if (metaDesc) metaDesc.setAttribute("content", t("meta.desc"));
+
+  // Update city dropdown
+  var sel = document.getElementById("city-select");
+  for (var i = 0; i < sel.options.length; i++) {
+    sel.options[i].text = t("city." + i);
+  }
+
+  // Update buttons (only if not in loading state)
+  var fetchBtn = document.getElementById("fetch-btn");
+  if (!fetchBtn.disabled) fetchBtn.textContent = t("btn.fetch");
+  var gpsBtn = document.getElementById("gps-btn");
+  if (!gpsBtn.disabled) gpsBtn.textContent = t("btn.gps");
+
+  // Rebuild calendar with translated month/allergen names
+  buildCalendar();
+
+  // Re-render results if visible (from stored state, no re-fetch)
+  if (lastRenderState && document.getElementById("results").style.display !== "none") {
+    var s = lastRenderState;
+    var now = new Date();
+    var cityName = t("city." + s.cityIndex);
+
+    if (s.weatherTier === 1 || s.weatherTier === 2) {
+      var curWx = s.wx.current;
+      var daily = s.wx.daily;
+      var todayTemp = daily.temperature_2m_max[0];
+      var todayHumidity = daily.relative_humidity_2m_mean ? daily.relative_humidity_2m_mean[0] : curWx.relative_humidity_2m;
+      var todayWind = daily.wind_speed_10m_max[0];
+      var todayPrecip = daily.precipitation_sum[0];
+      var todayWxCode = daily.weather_code[0];
+      var wxCodePenalty = 0;
+      if (todayWxCode >= 71 && todayWxCode <= 77) wxCodePenalty = -0.5;
+      if (todayWxCode >= 61 && todayWxCode <= 67) wxCodePenalty = -0.3;
+      if (todayWxCode >= 80 && todayWxCode <= 82) wxCodePenalty = -0.4;
+      var wxMod = weatherModifier(todayTemp, todayHumidity, todayWind, todayPrecip) + wxCodePenalty;
+      var treeRisk = computeRisk(getSeasonalBase(TREE_SEASON, now), wxMod);
+      var grassRisk = computeRisk(getSeasonalBase(GRASS_SEASON, now), wxMod);
+      var weedRisk = computeRisk(getSeasonalBase(WEED_SEASON, now), wxMod);
+      var overallRisk = Math.max(treeRisk, grassRisk, weedRisk);
+
+      renderBanner(overallRisk, cityName, wxMod);
+      renderPollenCards(treeRisk, grassRisk, weedRisk, now);
+      renderWeather(curWx.temperature_2m, curWx.relative_humidity_2m, curWx.wind_speed_10m,
+                    todayPrecip, curWx.weather_code, todayWxCode);
+      renderForecast(daily, now);
+      document.getElementById("forecast-title").textContent = s.weatherTier === 2 ? t("section.forecast2") : t("section.forecast5");
+    } else {
+      var wxMod = 0;
+      var treeRisk = computeRisk(getSeasonalBase(TREE_SEASON, now), wxMod);
+      var grassRisk = computeRisk(getSeasonalBase(GRASS_SEASON, now), wxMod);
+      var weedRisk = computeRisk(getSeasonalBase(WEED_SEASON, now), wxMod);
+      var overallRisk = Math.max(treeRisk, grassRisk, weedRisk);
+
+      renderBanner(overallRisk, cityName, wxMod);
+      renderPollenCards(treeRisk, grassRisk, weedRisk, now);
+      document.getElementById("forecast-title").textContent = t("section.forecastNone");
+    }
+
+    if (s.aq) renderAqi(s.aq);
+    renderTierNotice(s.weatherTier);
+  }
+}
+
 // ── Init ──
-buildCalendar();
+(async function() {
+  // Load active language + English fallback
+  await loadTranslations(LANG);
+  if (LANG !== "en") await loadTranslations("en");
+
+  document.documentElement.lang = LANG === "tj" ? "tg" : LANG;
+
+  // Highlight active lang button
+  document.querySelectorAll(".lang-btn").forEach(function(b) { b.classList.remove("active"); });
+  var activeBtn = document.getElementById("lang-" + LANG);
+  if (activeBtn) activeBtn.classList.add("active");
+
+  // Apply translations to static HTML
+  document.querySelectorAll("[data-i18n]").forEach(function(el) {
+    el.textContent = t(el.getAttribute("data-i18n"));
+  });
+  document.title = t("title");
+  var metaDesc = document.getElementById("meta-desc");
+  if (metaDesc) metaDesc.setAttribute("content", t("meta.desc"));
+
+  // Update city dropdown
+  var sel = document.getElementById("city-select");
+  for (var i = 0; i < sel.options.length; i++) {
+    sel.options[i].text = t("city." + i);
+  }
+
+  // Update buttons
+  document.getElementById("fetch-btn").textContent = t("btn.fetch");
+  document.getElementById("gps-btn").textContent = t("btn.gps");
+
+  // Build calendar
+  buildCalendar();
+})();
 </script>
 </body>
 </html>
