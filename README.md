@@ -12,8 +12,9 @@ No pollen monitoring stations exist in Tajikistan. AllergyTJ fills the gap by es
 
 - **32 cities** across all regions of Tajikistan
 - **Pollen risk estimation** — combines seasonal pollen calendar with real-time weather (temperature, humidity, wind, precipitation)
-- **5-day forecast** — daily pollen risk outlook based on weather forecast
+- **3-day forecast** — daily pollen risk outlook based on weather forecast
 - **Air quality** — live US AQI, PM2.5, PM10 data
+- **UV index** — real-time UV data from Open-Meteo
 - **Seasonal calendar** — month-by-month pollen guide for local allergens (poplar, mugwort, chenopod, etc.)
 - **GPS detection** — auto-finds nearest city (HTTPS required)
 - **Zero config** — no API keys, no build step, no framework
