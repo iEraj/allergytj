@@ -24,10 +24,10 @@
 
 Priority: **Highest** | Goal: Users in Tajikistan can find and use this site
 
-- [ ] Trilingual SEO — localized `<meta keywords>` in EN/RU/TJ so search engines index the site for allergy/pollen queries in all 3 languages
-- [ ] Open Graph + social meta tags — localized OG title/description for WhatsApp/Telegram sharing (primary sharing channels in Tajikistan)
-- [ ] Favicon — branded icon for browser tabs and bookmarks
-- [ ] Structured data (JSON-LD) — schema.org markup for health/weather tool so search engines understand what the page is
+- [x] Trilingual SEO — localized `<meta keywords>` in EN/RU/TJ
+- [x] Open Graph + social meta tags — localized OG title/description for WhatsApp/Telegram sharing
+- [x] Favicon — inline SVG emoji (🌿) for browser tabs
+- [x] Structured data (JSON-LD) — schema.org WebApplication markup
 - [ ] Geo-targeting signals — proper `<meta>` geo tags for Tajikistan, register with Google Search Console, Yandex Webmaster (Yandex is widely used in Central Asia)
 
 ## Phase 2 — Instant, Frictionless Experience

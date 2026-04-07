@@ -106,19 +106,18 @@
     background: white;
     cursor: pointer;
   }
-  .btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 600;
+  .gps-icon {
+    background: none;
+    border: 1px solid var(--border);
     cursor: pointer;
-    transition: opacity 0.2s;
+    font-size: 1.3rem;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    line-height: 1;
   }
-  .btn:hover { opacity: 0.85; }
-  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  .btn-primary { background: #2563eb; color: white; }
-  .btn-secondary { background: #e5e7eb; color: var(--text); }
+  .gps-icon:hover { background: var(--border); }
+  .gps-icon.locating { opacity: 0.5; pointer-events: none; }
 
   /* Status */
   .status {
@@ -278,8 +277,8 @@
   @media (max-width: 600px) {
     .pollen-cards { grid-template-columns: 1fr; }
     .forecast-row { grid-template-columns: repeat(3, 1fr); }
-    .picker { flex-direction: column; }
-    .picker select, .btn { width: 100%; }
+    .picker { flex-direction: row; }
+    .picker select { flex: 1; min-width: 0; }
   }
 </style>
 </head>
@@ -298,7 +297,7 @@
 <div class="container">
 
   <div class="picker">
-    <select id="city-select">
+    <select id="city-select" onchange="fetchData()">
       <option value="38.5598,68.7740">Dushanbe</option>
       <option value="40.2833,69.6333">Khujand</option>
       <option value="37.9139,69.8028">Kulob</option>
@@ -332,8 +331,7 @@
       <option value="40.5333,69.1500">Adrasmon</option>
       <option value="38.5833,68.3167">Boshkengash</option>
     </select>
-    <button class="btn btn-primary" id="fetch-btn" onclick="fetchData()">Get Pollen Risk</button>
-    <button class="btn btn-secondary" id="gps-btn" onclick="useGPS()">Use GPS</button>
+    <button class="gps-icon" id="gps-btn" onclick="useGPS()" aria-label="Use GPS" title="Use GPS">📍</button>
   </div>
 
   <div class="status" id="status"></div>
@@ -733,20 +731,21 @@ function renderTierNotice(tier) {
 }
 
 // ── Fetch Data (3-tier fallback) ──
+var _fetchId = 0; // abort-and-replace: each call gets an incrementing ID
 async function fetchData() {
+  var myId = ++_fetchId; // capture this call's ID
+
   var sel = document.getElementById("city-select");
   var parts = sel.value.split(",");
   var lat = parts[0], lng = parts[1];
   var cityName = sel.options[sel.selectedIndex].text;
 
   var status = document.getElementById("status");
-  var btn = document.getElementById("fetch-btn");
   var fcTitle = document.getElementById("forecast-title");
 
   var cityIndex = sel.selectedIndex;
+  localStorage.setItem("allergytj-city", sel.value);
 
-  btn.disabled = true;
-  btn.textContent = t("btn.loading");
   status.className = "status";
   status.textContent = t("status.fetching", { city: cityName });
   document.getElementById("results").style.display = "none";
@@ -794,6 +793,9 @@ async function fetchData() {
 
   // Await air quality
   var aq = await aqPromise;
+
+  // Abort if a newer fetchData() call has started
+  if (myId !== _fetchId) return;
 
   // Render based on tier
   try {
@@ -874,8 +876,7 @@ async function fetchData() {
     status.textContent = t("status.error");
     console.error(e);
   } finally {
-    btn.disabled = false;
-    btn.textContent = t("btn.fetch");
+    // no button to re-enable
   }
 }
 
@@ -1022,8 +1023,7 @@ function useGPS() {
     return;
   }
 
-  gpsBtn.disabled = true;
-  gpsBtn.textContent = t("btn.locating");
+  gpsBtn.classList.add("locating");
   status.textContent = t("status.gettingLocation");
 
   navigator.geolocation.getCurrentPosition(
@@ -1043,15 +1043,13 @@ function useGPS() {
       }
 
       status.textContent = t("status.located", { city: t("city." + nearest.idx) });
-      gpsBtn.disabled = false;
-      gpsBtn.textContent = t("btn.gps");
+      gpsBtn.classList.remove("locating");
       fetchData();
     },
     function(err) {
       status.className = "status error";
       status.textContent = t("status.geoFailed");
-      gpsBtn.disabled = false;
-      gpsBtn.textContent = t("btn.gps");
+      gpsBtn.classList.remove("locating");
     },
     { timeout: 10000 }
   );
@@ -1097,12 +1095,6 @@ async function setLanguage(lang) {
   for (var i = 0; i < sel.options.length; i++) {
     sel.options[i].text = t("city." + i);
   }
-
-  // Update buttons (only if not in loading state)
-  var fetchBtn = document.getElementById("fetch-btn");
-  if (!fetchBtn.disabled) fetchBtn.textContent = t("btn.fetch");
-  var gpsBtn = document.getElementById("gps-btn");
-  if (!gpsBtn.disabled) gpsBtn.textContent = t("btn.gps");
 
   // Rebuild calendar with translated month/allergen names
   buildCalendar();
@@ -1193,12 +1185,19 @@ async function setLanguage(lang) {
     sel.options[i].text = t("city." + i);
   }
 
-  // Update buttons
-  document.getElementById("fetch-btn").textContent = t("btn.fetch");
-  document.getElementById("gps-btn").textContent = t("btn.gps");
-
   // Build calendar
   buildCalendar();
+
+  // Restore last selected city from localStorage (saved as lat,lng value)
+  var savedCity = localStorage.getItem("allergytj-city");
+  if (savedCity) {
+    for (var j = 0; j < sel.options.length; j++) {
+      if (sel.options[j].value === savedCity) { sel.selectedIndex = j; break; }
+    }
+  }
+
+  // Auto-fetch pollen data for selected city
+  fetchData();
 })();
 </script>
 </body>
