@@ -16,6 +16,7 @@
 - [x] 3-tier weather API fallback (Open-Meteo → wttr.in → seasonal-only)
 - [x] Decoupled air quality fetch (independent of weather)
 - [x] Project documentation (CLAUDE.md, updated README)
+- [x] Multilingual support (EN/RU/TJ) — language toggle, external translation files (lang/*.json), browser auto-detection, localStorage persistence
 
 ---
 
@@ -23,8 +24,7 @@
 
 Priority: **Highest** | Goal: Users in Tajikistan can find and use this site
 
-- [ ] Multilingual support — Russian/Tajik/English toggle; all UI text, city names, allergen names, risk labels, and advice in all 3 languages
-- [ ] Trilingual SEO — `<html lang>` switching, `hreflang` alternate links, localized `<title>`, `<meta description>`, and `<meta keywords>` in EN/RU/TJ so search engines index the site for allergy/pollen queries in all 3 languages
+- [ ] Trilingual SEO — localized `<meta keywords>` in EN/RU/TJ so search engines index the site for allergy/pollen queries in all 3 languages
 - [ ] Open Graph + social meta tags — localized OG title/description for WhatsApp/Telegram sharing (primary sharing channels in Tajikistan)
 - [ ] Favicon — branded icon for browser tabs and bookmarks
 - [ ] Structured data (JSON-LD) — schema.org markup for health/weather tool so search engines understand what the page is
