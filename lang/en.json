@@ -103,7 +103,8 @@
   "fc.wind": "{kmh}km/h",
 
   "footer.note1": "How it works: Pollen risk is estimated by combining a seasonal pollen calendar for Tajikistan's known allergenic flora with live weather data. As of early 2026, our research has not identified any public pollen monitoring stations in Tajikistan \u2014 risk levels reflect seasonal patterns adjusted for today's weather conditions (rain, temperature, humidity, wind). When weather data is unavailable, seasonal estimates are shown without weather adjustment. Air quality data (AQI, PM2.5, PM10) is based on atmospheric modeling and may not reflect exact local conditions. This is not medical advice.",
-  "footer.note2": "\u00A9 2026 Eraj Ismatulloev. All rights reserved.",
+  "footer.authorName": "Eraj Ismatulloev",
+  "footer.allRights": "All rights reserved.",
 
   "city.0": "Dushanbe", "city.1": "Khujand", "city.2": "Kulob", "city.3": "Bokhtar (Qurghonteppa)",
   "city.4": "Istaravshan", "city.5": "Konibodom", "city.6": "Vahdat", "city.7": "Tursunzoda",

@@ -6,6 +6,12 @@
 <meta name="google-site-verification" content="Dodf4c480Lb4XlPGXnVrHUyxFPyEH-bY06Pg-4re58w" />
 <meta name="description" id="meta-desc" content="Seasonal allergy and pollen risk tracker for Tajikistan. Live pollen forecast, air quality, and 5-day outlook for 32 cities.">
 <meta name="keywords" id="meta-keywords" content="pollen, allergy, Tajikistan, pollen forecast, air quality, Dushanbe, allergy tracker, pollen risk, AQI, seasonal allergy">
+<meta name="author" content="Eraj Ismatulloev">
+<link rel="canonical" href="https://allergytj.vercel.app/">
+<link rel="preconnect" href="https://api.open-meteo.com" crossorigin>
+<link rel="preconnect" href="https://air-quality-api.open-meteo.com" crossorigin>
+<link rel="dns-prefetch" href="https://api.open-meteo.com">
+<link rel="dns-prefetch" href="https://air-quality-api.open-meteo.com">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://allergytj.vercel.app/">
 <meta property="og:title" id="og-title" content="AllergyTJ — Pollen & Allergy Tracker for Tajikistan">
@@ -26,15 +32,16 @@
   "operatingSystem": "Any",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "inLanguage": ["en", "ru", "tg"],
-  "areaServed": { "@type": "Country", "name": "Tajikistan" }
+  "areaServed": { "@type": "Country", "name": "Tajikistan" },
+  "author": { "@type": "Person", "name": "Eraj Ismatulloev", "url": "https://ca.linkedin.com/in/erajismatulloev" }
 }
 </script>
 <style>
   :root {
-    --green: #4caf50;
+    --green: #1b5e20;
     --yellow: #f9a825;
-    --orange: #ff7043;
-    --red: #e53935;
+    --orange: #bf360c;
+    --red: #b71c1c;
     --bg: #f5f7fa;
     --card: #ffffff;
     --text: #1a1a2e;
@@ -179,7 +186,7 @@
   .pollen-card .allergens { font-size: 0.68rem; color: var(--muted); margin-top: 8px; line-height: 1.4; }
 
   .badge-low { background: var(--green); }
-  .badge-moderate { background: var(--yellow); color: #333 !important; }
+  .badge-moderate { background: var(--yellow); color: #000 !important; }
   .badge-high { background: var(--orange); }
   .badge-veryhigh { background: var(--red); }
 
@@ -252,6 +259,7 @@
     padding: 20px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     overflow-x: auto;
+    min-height: 380px;
   }
   .calendar table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
   .calendar th, .calendar td { padding: 8px 4px; text-align: center; }
@@ -274,6 +282,8 @@
     padding: 0 8px;
     line-height: 1.5;
   }
+  .note a { color: var(--muted); text-decoration: underline; }
+  .note a:hover { color: var(--text); }
 
   @media (max-width: 600px) {
     header { padding: 16px 16px 12px; }
@@ -302,10 +312,11 @@
   </div>
 </header>
 
+<main>
 <div class="container">
 
   <div class="picker">
-    <select id="city-select" onchange="fetchData()">
+    <select id="city-select" onchange="fetchData()" aria-label="Select city">
       <option value="38.5598,68.7740">Dushanbe</option>
       <option value="40.2833,69.6333">Khujand</option>
       <option value="37.9139,69.8028">Kulob</option>
@@ -361,16 +372,16 @@
     <div class="weather-strip" id="weather-strip"></div>
 
     <!-- Air Quality -->
-    <div class="section-title" data-i18n="section.airQuality">Air Quality</div>
+    <h2 class="section-title" data-i18n="section.airQuality">Air Quality</h2>
     <div class="aqi-card" id="aqi-card"></div>
 
     <!-- 5-day forecast -->
-    <div class="section-title" id="forecast-title">3-Day Pollen Risk Forecast</div>
+    <h2 class="section-title" id="forecast-title">3-Day Pollen Risk Forecast</h2>
     <div class="forecast-row" id="forecast-cards"></div>
   </div>
 
   <!-- Seasonal Calendar (always visible) -->
-  <div class="section-title" data-i18n="section.calendar">Seasonal Pollen Calendar — Tajikistan</div>
+  <h2 class="section-title" data-i18n="section.calendar">Seasonal Pollen Calendar — Tajikistan</h2>
   <div class="calendar">
     <table id="calendar-table"></table>
     <div class="legend">
@@ -389,10 +400,11 @@
     If weather data is unavailable, seasonal estimates are shown without weather adjustment.
     Air quality (AQI, PM2.5, PM10) is modeled data from Open-Meteo CAMS. Not medical advice.
   </p>
-  <p class="note" style="margin-top:12px;" data-i18n="footer.note2">
-    © 2026 Eraj Ismatulloev. All rights reserved.
+  <p class="note" style="margin-top:12px;">
+    © 2026 <a href="https://ca.linkedin.com/in/erajismatulloev" target="_blank" rel="noopener" data-i18n="footer.authorName">Eraj Ismatulloev</a>. <span data-i18n="footer.allRights">All rights reserved.</span>
   </p>
 </div>
+</main>
 
 <script>
 // ── i18n: Language detection and translation loading ──
@@ -485,11 +497,11 @@ var CAL_CLASSES = ["cal-none","cal-low","cal-mod","cal-high","cal-vhigh"];
 
 // ── Risk level colors (labels/advice come from translations) ──
 var RISK_LEVELS = [
-  { color: "#9e9e9e", bg: "#e0e0e0", badge: "badge-low" },
-  { color: "#4caf50", bg: "#4caf50", badge: "badge-low" },
-  { color: "#f9a825", bg: "#f9a825", badge: "badge-moderate" },
-  { color: "#ff7043", bg: "#ff7043", badge: "badge-high" },
-  { color: "#e53935", bg: "#e53935", badge: "badge-veryhigh" },
+  { color: "#757575", bg: "#e0e0e0", badge: "badge-low" },
+  { color: "#2e7d32", bg: "#1b5e20", badge: "badge-low" },
+  { color: "#8c6d00", bg: "#f9a825", badge: "badge-moderate" },
+  { color: "#d84315", bg: "#bf360c", badge: "badge-high" },
+  { color: "#c62828", bg: "#b71c1c", badge: "badge-veryhigh" },
 ];
 
 function getRiskInfo(score) {
@@ -532,15 +544,15 @@ function computeRisk(seasonBase, wxMod) {
 function buildCalendar() {
   var table = document.getElementById("calendar-table");
   var curMonth = new Date().getMonth();
-  var html = "<tr><th></th>";
+  var html = "<thead><tr><th></th>";
   for (var i = 0; i < 12; i++) {
     var hl = i === curMonth ? ' style="color:#2563eb;font-weight:800;"' : '';
-    html += "<th" + hl + ">" + t("month." + i) + "</th>";
+    html += '<th scope="col"' + hl + ">" + t("month." + i) + "</th>";
   }
-  html += "</tr>";
+  html += "</tr></thead><tbody>";
   for (var j = 0; j < SEASONAL.length; j++) {
     var a = SEASONAL[j];
-    html += '<tr><td class="allergen-name">' + t("cal." + j) + '</td>';
+    html += '<tr><th scope="row" class="allergen-name">' + t("cal." + j) + '</th>';
     for (var m = 0; m < 12; m++) {
       var cls = CAL_CLASSES[a.months[m]];
       var brd = m === curMonth ? "outline:2px solid #2563eb;outline-offset:-1px;" : "";
@@ -548,6 +560,7 @@ function buildCalendar() {
     }
     html += "</tr>";
   }
+  html += "</tbody>";
   table.innerHTML = html;
 }
 
@@ -574,7 +587,7 @@ function wxDescription(code) {
 // ── AQI rating ──
 function aqiInfo(aqi) {
   var idx = aqi <= 50 ? 0 : aqi <= 100 ? 1 : aqi <= 150 ? 2 : aqi <= 200 ? 3 : 4;
-  var colors = ["#4caf50", "#f9a825", "#ff7043", "#e53935", "#7b1fa2"];
+  var colors = ["#1b5e20", "#8c6d00", "#bf360c", "#b71c1c", "#4a148c"];
   return { label: t("aqi." + idx + ".label"), color: colors[idx], desc: t("aqi." + idx + ".desc") };
 }
 
@@ -894,7 +907,7 @@ function renderBanner(overall, cityName, wxMod) {
   var banner = document.getElementById("risk-banner");
   banner.style.background = info.bg;
   var riskIdx = Math.min(Math.round(overall), 4);
-  banner.style.color = (riskIdx === 0 || riskIdx === 2) ? "#333" : "white";
+  banner.style.color = (riskIdx === 0 || riskIdx === 2) ? "#000" : "white";
   document.getElementById("banner-level").textContent = info.label + " " + t("pollen.riskSuffix");
 
   var wxNote = "";
