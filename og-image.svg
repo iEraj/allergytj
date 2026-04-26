@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="100%" style="stop-color:#16213e"/>
+    </linearGradient>
+    <linearGradient id="greenGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2e7d32;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#1b5e20;stop-opacity:0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Subtle decorative circles -->
+  <circle cx="1050" cy="120" r="200" fill="rgba(76,175,80,0.06)"/>
+  <circle cx="1100" cy="180" r="140" fill="rgba(76,175,80,0.04)"/>
+  <circle cx="150" cy="500" r="180" fill="rgba(76,175,80,0.05)"/>
+
+  <!-- Top accent line -->
+  <rect x="80" y="80" width="60" height="4" rx="2" fill="#4caf50"/>
+
+  <!-- Leaf icon -->
+  <text x="80" y="155" font-size="52" fill="#4caf50" font-family="Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji">🌿</text>
+
+  <!-- Title -->
+  <text x="150" y="152" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="64" font-weight="800" fill="#ffffff" letter-spacing="-1">AllergyTJ</text>
+
+  <!-- Tagline -->
+  <text x="82" y="210" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="26" fill="rgba(255,255,255,0.75)" font-weight="400">Pollen &amp; Allergy Tracker for Tajikistan</text>
+
+  <!-- Divider -->
+  <rect x="82" y="240" width="400" height="1" fill="rgba(255,255,255,0.15)"/>
+
+  <!-- Feature pills (text centered via text-anchor + dominant-baseline) -->
+  <rect x="82" y="270" width="194" height="36" rx="18" fill="rgba(76,175,80,0.2)"/>
+  <text x="179" y="288" font-family="-apple-system, sans-serif" font-size="15" fill="#81c784" font-weight="600" text-anchor="middle" dominant-baseline="central">Live Pollen Forecast</text>
+
+  <rect x="290" y="270" width="138" height="36" rx="18" fill="rgba(249,168,37,0.2)"/>
+  <text x="359" y="288" font-family="-apple-system, sans-serif" font-size="15" fill="#ffd54f" font-weight="600" text-anchor="middle" dominant-baseline="central">Air Quality</text>
+
+  <rect x="442" y="270" width="120" height="36" rx="18" fill="rgba(191,54,12,0.2)"/>
+  <text x="502" y="288" font-family="-apple-system, sans-serif" font-size="15" fill="#ff8a65" font-weight="600" text-anchor="middle" dominant-baseline="central">32 Cities</text>
+
+  <!-- Mini calendar visual -->
+  <g transform="translate(82, 340)">
+    <!-- Calendar header -->
+    <text x="0" y="0" font-family="-apple-system, sans-serif" font-size="14" fill="rgba(255,255,255,0.5)" font-weight="600" letter-spacing="2">SEASONAL POLLEN CALENDAR</text>
+
+    <!-- Month labels -->
+    <g font-family="-apple-system, sans-serif" font-size="11" fill="rgba(255,255,255,0.4)" text-anchor="middle">
+      <text x="120" y="30">Jan</text><text x="175" y="30">Feb</text><text x="230" y="30">Mar</text>
+      <text x="285" y="30">Apr</text><text x="340" y="30">May</text><text x="395" y="30">Jun</text>
+      <text x="450" y="30">Jul</text><text x="505" y="30">Aug</text><text x="560" y="30">Sep</text>
+      <text x="615" y="30">Oct</text><text x="670" y="30">Nov</text><text x="725" y="30">Dec</text>
+    </g>
+
+    <!-- Row: Poplar -->
+    <text x="0" y="58" font-family="-apple-system, sans-serif" font-size="12" fill="rgba(255,255,255,0.6)">Poplar</text>
+    <rect x="100" y="44" width="48" height="20" rx="3" fill="rgba(255,255,255,0.05)"/>
+    <rect x="155" y="44" width="48" height="20" rx="3" fill="#c8e6c9" opacity="0.6"/>
+    <rect x="210" y="44" width="48" height="20" rx="3" fill="#ffccbc" opacity="0.7"/>
+    <rect x="265" y="44" width="48" height="20" rx="3" fill="#ef9a9a" opacity="0.8"/>
+    <rect x="320" y="44" width="48" height="20" rx="3" fill="#ffccbc" opacity="0.7"/>
+    <rect x="375" y="44" width="48" height="20" rx="3" fill="#c8e6c9" opacity="0.6"/>
+    <rect x="430" y="44" width="48" height="20" rx="3" fill="rgba(255,255,255,0.05)"/>
+    <rect x="485" y="44" width="48" height="20" rx="3" fill="rgba(255,255,255,0.05)"/>
+    <rect x="540" y="44" width="48" height="20" rx="3" fill="rgba(255,255,255,0.05)"/>
+    <rect x="595" y="44" width="48" height="20" rx="3" fill="rgba(255,255,255,0.05)"/>
+    <rect x="650" y="44" width="48" height="20" rx="3" fill="rgba(255,255,255,0.05)"/>
+    <rect x="705" y="44" width="48" height="20" rx="3" fill="rgba(255,255,255,0.05)"/>
+
+    <!-- Row: Grass -->
+    <text x="0" y="88" font-family="-apple-system, sans-serif" font-size="12" fill="rgba(255,255,255,0.6)">Grass</text>
+    <rect x="100" y="74" width="48" height="20" rx="3" fill="rgba(255,255,255,0.05)"/>
+    <rect x="155" y="74" width="48" height="20" rx="3" fill="rgba(255,255,255,0.05)"/>
+    <rect x="210" y="74" width="48" height="20" rx="3" fill="rgba(255,255,255,0.05)"/>
+    <rect x="265" y="74" width="48" height="20" rx="3" fill="#c8e6c9" opacity="0.6"/>
+    <rect x="320" y="74" width="48" height="20" rx="3" fill="#ffccbc" opacity="0.7"/>
+    <rect x="375" y="74" width="48" height="20" rx="3" fill="#ef9a9a" opacity="0.8"/>
+    <rect x="430" y="74" width="48" height="20" rx="3" fill="#ffccbc" opacity="0.7"/>
+    <rect x="485" y="74" width="48" height="20" rx="3" fill="#c8e6c9" opacity="0.6"/>
+    <rect x="540" y="74" width="48" height="20" rx="3" fill="rgba(255,255,255,0.05)"/>
+    <rect x="595" y="74" width="48" height="20" rx="3" fill="rgba(255,255,255,0.05)"/>
+    <rect x="650" y="74" width="48" height="20" rx="3" fill="rgba(255,255,255,0.05)"/>
+    <rect x="705" y="74" width="48" height="20" rx="3" fill="rgba(255,255,255,0.05)"/>
+
+    <!-- Row: Mugwort -->
+    <text x="0" y="118" font-family="-apple-system, sans-serif" font-size="12" fill="rgba(255,255,255,0.6)">Mugwort</text>
+    <rect x="100" y="104" width="48" height="20" rx="3" fill="rgba(255,255,255,0.05)"/>
+    <rect x="155" y="104" width="48" height="20" rx="3" fill="rgba(255,255,255,0.05)"/>
+    <rect x="210" y="104" width="48" height="20" rx="3" fill="rgba(255,255,255,0.05)"/>
+    <rect x="265" y="104" width="48" height="20" rx="3" fill="rgba(255,255,255,0.05)"/>
+    <rect x="320" y="104" width="48" height="20" rx="3" fill="rgba(255,255,255,0.05)"/>
+    <rect x="375" y="104" width="48" height="20" rx="3" fill="#c8e6c9" opacity="0.6"/>
+    <rect x="430" y="104" width="48" height="20" rx="3" fill="#fff9c4" opacity="0.6"/>
+    <rect x="485" y="104" width="48" height="20" rx="3" fill="#ef9a9a" opacity="0.8"/>
+    <rect x="540" y="104" width="48" height="20" rx="3" fill="#ef9a9a" opacity="0.8"/>
+    <rect x="595" y="104" width="48" height="20" rx="3" fill="#fff9c4" opacity="0.6"/>
+    <rect x="650" y="104" width="48" height="20" rx="3" fill="rgba(255,255,255,0.05)"/>
+    <rect x="705" y="104" width="48" height="20" rx="3" fill="rgba(255,255,255,0.05)"/>
+
+    <!-- Calendar legend -->
+    <rect x="100" y="140" width="12" height="12" rx="2" fill="#c8e6c9" opacity="0.6"/>
+    <text x="118" y="151" font-family="-apple-system, sans-serif" font-size="10" fill="rgba(255,255,255,0.4)">Low</text>
+    <rect x="155" y="140" width="12" height="12" rx="2" fill="#fff9c4" opacity="0.6"/>
+    <text x="173" y="151" font-family="-apple-system, sans-serif" font-size="10" fill="rgba(255,255,255,0.4)">Moderate</text>
+    <rect x="240" y="140" width="12" height="12" rx="2" fill="#ffccbc" opacity="0.7"/>
+    <text x="258" y="151" font-family="-apple-system, sans-serif" font-size="10" fill="rgba(255,255,255,0.4)">High</text>
+    <rect x="300" y="140" width="12" height="12" rx="2" fill="#ef9a9a" opacity="0.8"/>
+    <text x="318" y="151" font-family="-apple-system, sans-serif" font-size="10" fill="rgba(255,255,255,0.4)">Very High</text>
+  </g>
+
+  <!-- Bottom bar -->
+  <rect x="0" y="590" width="1200" height="40" fill="rgba(0,0,0,0.3)"/>
+  <text x="1118" y="616" font-family="-apple-system, sans-serif" font-size="14" fill="rgba(255,255,255,0.4)" text-anchor="end">32 cities &#183; 3 languages &#183; Free</text>
+</svg>
