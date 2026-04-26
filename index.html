@@ -259,7 +259,6 @@
     padding: 20px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     overflow-x: auto;
-    min-height: 380px;
   }
   .calendar table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
   .calendar th, .calendar td { padding: 8px 4px; text-align: center; }
@@ -285,14 +284,34 @@
   .note a { color: var(--muted); text-decoration: underline; }
   .note a:hover { color: var(--text); }
 
+  /* Loading Skeleton */
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  .skeleton {
+    background: linear-gradient(90deg, var(--border) 25%, #f0f0f0 50%, var(--border) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+    border-radius: var(--radius);
+  }
+  .skel-banner { height: 82px; margin-bottom: 20px; }
+  .skel-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+  .skel-card { height: 110px; }
+  .skel-strip { height: 64px; margin: 16px 0; }
+  .skel-label { height: 20px; width: 140px; margin: 24px 0 10px 4px; }
+  .skel-aqi { height: 90px; }
+  .skel-forecast { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+  .skel-fc { height: 120px; }
+
   @media (max-width: 600px) {
     header { padding: 16px 16px 12px; }
     header h1 { font-size: 1.3rem; }
     .lang-select { padding: 8px 12px; font-size: 0.85rem; }
     .gps-icon { padding: 10px 14px; font-size: 1.4rem; }
     .picker select { flex: 1; min-width: 0; }
-    .pollen-cards { grid-template-columns: 1fr; }
-    .forecast-row { grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
+    .pollen-cards, .skel-cards { grid-template-columns: 1fr; }
+    .forecast-row, .skel-forecast { grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
     .risk-banner { padding: 20px 16px; }
     .risk-banner .desc { font-size: 0.8rem; }
   }
@@ -356,7 +375,26 @@
   <div class="status" id="status"></div>
   <div class="status" id="tier-notice" style="display:none;"></div>
 
-  <!-- Live Results -->
+  <!-- Loading Skeleton (shown immediately, hidden when data loads) -->
+  <div id="results-skeleton">
+    <div class="skeleton skel-banner"></div>
+    <div class="skel-cards">
+      <div class="skeleton skel-card"></div>
+      <div class="skeleton skel-card"></div>
+      <div class="skeleton skel-card"></div>
+    </div>
+    <div class="skeleton skel-strip"></div>
+    <div class="skel-label skeleton"></div>
+    <div class="skeleton skel-aqi"></div>
+    <div class="skel-label skeleton"></div>
+    <div class="skel-forecast">
+      <div class="skeleton skel-fc"></div>
+      <div class="skeleton skel-fc"></div>
+      <div class="skeleton skel-fc"></div>
+    </div>
+  </div>
+
+  <!-- Live Results (hidden until data loads, replaces skeleton) -->
   <div id="results" style="display:none;">
 
     <!-- Overall risk banner -->
@@ -383,7 +421,22 @@
   <!-- Seasonal Calendar (always visible) -->
   <h2 class="section-title" data-i18n="section.calendar">Seasonal Pollen Calendar — Tajikistan</h2>
   <div class="calendar">
-    <table id="calendar-table"></table>
+    <table id="calendar-table">
+    <thead><tr><th></th>
+    <th scope="col" data-i18n="month.0">Jan</th><th scope="col" data-i18n="month.1">Feb</th><th scope="col" data-i18n="month.2">Mar</th><th scope="col" data-i18n="month.3">Apr</th><th scope="col" data-i18n="month.4">May</th><th scope="col" data-i18n="month.5">Jun</th><th scope="col" data-i18n="month.6">Jul</th><th scope="col" data-i18n="month.7">Aug</th><th scope="col" data-i18n="month.8">Sep</th><th scope="col" data-i18n="month.9">Oct</th><th scope="col" data-i18n="month.10">Nov</th><th scope="col" data-i18n="month.11">Dec</th>
+    </tr></thead>
+    <tbody>
+    <tr><th scope="row" class="allergen-name" data-i18n="cal.0">Poplar / Cottonwood</th><td class="cal-none"></td><td class="cal-low"></td><td class="cal-high"></td><td class="cal-vhigh"></td><td class="cal-high"></td><td class="cal-low"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td></tr>
+    <tr><th scope="row" class="allergen-name" data-i18n="cal.1">Willow</th><td class="cal-none"></td><td class="cal-low"></td><td class="cal-mod"></td><td class="cal-high"></td><td class="cal-mod"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td></tr>
+    <tr><th scope="row" class="allergen-name" data-i18n="cal.2">Birch / Alder</th><td class="cal-none"></td><td class="cal-none"></td><td class="cal-mod"></td><td class="cal-high"></td><td class="cal-mod"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td></tr>
+    <tr><th scope="row" class="allergen-name" data-i18n="cal.3">Plane Tree</th><td class="cal-none"></td><td class="cal-none"></td><td class="cal-low"></td><td class="cal-high"></td><td class="cal-high"></td><td class="cal-low"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td></tr>
+    <tr><th scope="row" class="allergen-name" data-i18n="cal.4">Mulberry</th><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-mod"></td><td class="cal-high"></td><td class="cal-mod"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td></tr>
+    <tr><th scope="row" class="allergen-name" data-i18n="cal.5">Grass (general)</th><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-low"></td><td class="cal-high"></td><td class="cal-vhigh"></td><td class="cal-high"></td><td class="cal-low"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td></tr>
+    <tr><th scope="row" class="allergen-name" data-i18n="cal.6">Mugwort (Artemisia)</th><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-low"></td><td class="cal-mod"></td><td class="cal-vhigh"></td><td class="cal-vhigh"></td><td class="cal-mod"></td><td class="cal-none"></td><td class="cal-none"></td></tr>
+    <tr><th scope="row" class="allergen-name" data-i18n="cal.7">Chenopod / Pigweed</th><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-low"></td><td class="cal-high"></td><td class="cal-vhigh"></td><td class="cal-high"></td><td class="cal-low"></td><td class="cal-none"></td><td class="cal-none"></td></tr>
+    <tr><th scope="row" class="allergen-name" data-i18n="cal.8">Ragweed</th><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-none"></td><td class="cal-low"></td><td class="cal-high"></td><td class="cal-high"></td><td class="cal-low"></td><td class="cal-none"></td><td class="cal-none"></td></tr>
+    </tbody>
+    </table>
     <div class="legend">
       <span><span class="swatch cal-none" style="border:1px solid #ddd;"></span> <span data-i18n="legend.none">None</span></span>
       <span><span class="swatch cal-low"></span> <span data-i18n="legend.low">Low</span></span>
@@ -544,24 +597,29 @@ function computeRisk(seasonBase, wxMod) {
 function buildCalendar() {
   var table = document.getElementById("calendar-table");
   var curMonth = new Date().getMonth();
-  var html = "<thead><tr><th></th>";
-  for (var i = 0; i < 12; i++) {
-    var hl = i === curMonth ? ' style="color:#2563eb;font-weight:800;"' : '';
-    html += '<th scope="col"' + hl + ">" + t("month." + i) + "</th>";
-  }
-  html += "</tr></thead><tbody>";
-  for (var j = 0; j < SEASONAL.length; j++) {
-    var a = SEASONAL[j];
-    html += '<tr><th scope="row" class="allergen-name">' + t("cal." + j) + '</th>';
-    for (var m = 0; m < 12; m++) {
-      var cls = CAL_CLASSES[a.months[m]];
-      var brd = m === curMonth ? "outline:2px solid #2563eb;outline-offset:-1px;" : "";
-      html += '<td class="' + cls + '" style="' + brd + '"></td>';
+  var headers = table.querySelectorAll("thead th");
+  for (var i = 1; i <= 12; i++) {
+    if (i - 1 === curMonth) {
+      headers[i].style.color = "#2563eb";
+      headers[i].style.fontWeight = "800";
+    } else {
+      headers[i].style.color = "";
+      headers[i].style.fontWeight = "";
     }
-    html += "</tr>";
   }
-  html += "</tbody>";
-  table.innerHTML = html;
+  var rows = table.querySelectorAll("tbody tr");
+  for (var j = 0; j < rows.length; j++) {
+    var cells = rows[j].querySelectorAll("td");
+    for (var m = 0; m < cells.length; m++) {
+      if (m === curMonth) {
+        cells[m].style.outline = "2px solid #2563eb";
+        cells[m].style.outlineOffset = "-1px";
+      } else {
+        cells[m].style.outline = "";
+        cells[m].style.outlineOffset = "";
+      }
+    }
+  }
 }
 
 // ── Interpolate seasonal base for a specific date ──
@@ -769,8 +827,9 @@ async function fetchData() {
   localStorage.setItem("allergytj-city", sel.value);
 
   status.className = "status";
-  status.textContent = t("status.fetching", { city: cityName });
+  status.textContent = "";
   document.getElementById("results").style.display = "none";
+  document.getElementById("results-skeleton").style.display = "";
   document.getElementById("tier-notice").style.display = "none";
 
   var wx = null;
@@ -890,10 +949,12 @@ async function fetchData() {
     lastRenderState = { weatherTier: weatherTier, wx: wx, aq: aq, cityIndex: cityIndex };
 
     renderTierNotice(weatherTier);
+    document.getElementById("results-skeleton").style.display = "none";
     document.getElementById("results").style.display = "block";
     status.textContent = "";
 
   } catch (e) {
+    document.getElementById("results-skeleton").style.display = "none";
     status.className = "status error";
     status.textContent = t("status.error");
     console.error(e);
