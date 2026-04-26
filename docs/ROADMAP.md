@@ -1,6 +1,6 @@
 # AllergyTJ — Product Roadmap
 
-> Last updated: 2026-04-07
+> Last updated: 2026-04-27
 
 ## Completed
 
@@ -26,6 +26,14 @@
 - [x] Mobile layout fix — language dropdown top-right, GPS icon inline, touch targets, spacing
 - [x] Yellow/moderate contrast accessibility fix (dark text on yellow banner)
 - [x] Language switcher as dropdown (replaces button toggles)
+- [x] WCAG AA color contrast — darkened all risk/AQI colors (12 contrast failures fixed)
+- [x] Semantic HTML — `<main>` landmark, `<h2>` section titles, `aria-label` on selects, `<th scope>` on calendar
+- [x] robots.txt + sitemap.xml — proper crawl directives (was returning HTML)
+- [x] SEO meta tags — canonical, author, preconnect hints for APIs
+- [x] JSON-LD author attribution — Person schema with LinkedIn URL
+- [x] Footer author hyperlink — name links to LinkedIn (all 3 languages)
+- [x] Pre-rendered calendar table — static HTML eliminates innerHTML rebuild CLS
+- [x] OG image — 1200x630 branded PNG with pollen calendar visual
 
 ---
 
@@ -41,7 +49,7 @@ Priority: **Medium** | Goal: Make it stickier and useful every day
 
 - [x] UV index in weather strip (Open-Meteo, shows "—" on wttr.in fallback)
 - [ ] About / How it works section accessible from the UI
-- [ ] Loading skeleton/shimmer states instead of plain text status
+- [x] Loading skeleton/shimmer states instead of plain text status
 - [ ] Share button — shareable snapshot/link of current conditions
 
 ## Phase 4 — Accuracy and Polish

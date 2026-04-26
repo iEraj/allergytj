@@ -20,7 +20,9 @@ No pollen monitoring stations exist in Tajikistan. AllergyTJ fills the gap by es
 - **Zero config** — no API keys, no build step, no framework
 - **Trilingual** — English, Russian, and Tajik with browser auto-detection
 - **3-tier weather fallback** — automatically switches to backup weather source (wttr.in) or seasonal-only mode if the primary API is down
-- **SEO-ready** — Open Graph tags, JSON-LD structured data, localized meta tags
+- **Loading skeleton** — shimmer placeholders shown while data loads, zero CLS
+- **SEO-ready** — Open Graph image, JSON-LD with author attribution, canonical, robots.txt, sitemap.xml
+- **Accessible** — WCAG AA color contrast, semantic HTML landmarks, ARIA labels, proper table headers
 
 ## How It Works
 
@@ -58,6 +60,9 @@ AllergyTJ/
 │   └── tj.json         # Tajik translations
 ├── api_proxy.py        # Local dev server (Flask, serves index.html)
 ├── vercel.json         # Vercel deployment config + security headers
+├── robots.txt          # Search engine crawl directives
+├── sitemap.xml         # Sitemap for search engines
+├── og-image.png        # Open Graph social preview image (1200×630)
 ├── requirements.txt    # Python dependencies (flask)
 ├── CLAUDE.md           # Development guidelines and architecture
 ├── docs/
@@ -101,4 +106,4 @@ Copy `index.html` to any static file server. Requirements:
 
 ## License
 
-All rights reserved. Built by [Eraj Ismatulloev](https://github.com/eismatulloev) using Claude Code.
+All rights reserved. Built by [Eraj Ismatulloev](https://ca.linkedin.com/in/erajismatulloev) using Claude Code.
