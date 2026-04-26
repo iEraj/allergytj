@@ -372,11 +372,11 @@
     <button class="gps-icon" id="gps-btn" onclick="useGPS()" aria-label="Use GPS" title="Use GPS">📍</button>
   </div>
 
-  <div class="status" id="status"></div>
+  <div class="status" id="status" role="status" aria-live="polite"></div>
   <div class="status" id="tier-notice" style="display:none;"></div>
 
   <!-- Loading Skeleton (shown immediately, hidden when data loads) -->
-  <div id="results-skeleton">
+  <div id="results-skeleton" aria-hidden="true">
     <div class="skeleton skel-banner"></div>
     <div class="skel-cards">
       <div class="skeleton skel-card"></div>
@@ -827,9 +827,14 @@ async function fetchData() {
   localStorage.setItem("allergytj-city", sel.value);
 
   status.className = "status";
-  status.textContent = "";
+  status.textContent = t("status.fetching", { city: cityName });
   document.getElementById("results").style.display = "none";
-  document.getElementById("results-skeleton").style.display = "";
+  var skel = document.getElementById("results-skeleton");
+  skel.style.display = "";
+  skel.querySelector(".skel-strip").style.display = "";
+  skel.querySelector(".skel-forecast").style.display = "";
+  var skelLabels = skel.querySelectorAll(".skel-label");
+  if (skelLabels[1]) skelLabels[1].style.display = "";
   document.getElementById("tier-notice").style.display = "none";
 
   var wx = null;
@@ -949,7 +954,14 @@ async function fetchData() {
     lastRenderState = { weatherTier: weatherTier, wx: wx, aq: aq, cityIndex: cityIndex };
 
     renderTierNotice(weatherTier);
-    document.getElementById("results-skeleton").style.display = "none";
+    var skel = document.getElementById("results-skeleton");
+    if (weatherTier === 3) {
+      skel.querySelector(".skel-strip").style.display = "none";
+      skel.querySelector(".skel-forecast").style.display = "none";
+      var skelLabels = skel.querySelectorAll(".skel-label");
+      if (skelLabels[1]) skelLabels[1].style.display = "none";
+    }
+    skel.style.display = "none";
     document.getElementById("results").style.display = "block";
     status.textContent = "";
 
