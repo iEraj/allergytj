@@ -106,4 +106,4 @@ Copy `index.html` to any static file server. Requirements:
 
 ## License
 
-All rights reserved. Built by [Eraj Ismatulloev](https://ca.linkedin.com/in/erajismatulloev) using Claude Code.
+© 2026 All rights reserved. Built by Eraj Ismatulloev using Claude Code.
