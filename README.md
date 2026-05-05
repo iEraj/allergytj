@@ -24,6 +24,10 @@ No pollen monitoring stations exist in Tajikistan. AllergyTJ fills the gap by es
 - **SEO-ready** — Open Graph image, JSON-LD with author attribution, canonical, robots.txt, sitemap.xml
 - **Accessible** — WCAG AA color contrast, semantic HTML landmarks, ARIA labels, proper table headers
 - **Analytics** — Vercel Web Analytics for privacy-friendly visitor and page view tracking
+- **Dark mode** — toggle with OS preference detection, persisted across sessions
+- **Share button** — share current pollen conditions via native share or clipboard copy
+- **About section** — collapsible methodology explainer with data sources, limitations, and author credit
+- **GEO-optimized** — hreflang tags, Twitter cards, FAQPage schema for AI search engine surfacing
 
 ## How It Works
 
