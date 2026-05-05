@@ -102,6 +102,32 @@
     --border: #e5e7eb;
     --radius: 12px;
   }
+  [data-theme="dark"] {
+    --bg: #121218;
+    --card: #1e1e2a;
+    --text: #e4e4e8;
+    --muted: #9ca3af;
+    --border: #2e2e3e;
+  }
+  [data-theme="dark"] .picker select {
+    background: var(--card);
+    color: var(--text);
+    border-color: var(--border);
+  }
+  [data-theme="dark"] .lang-select option {
+    color: var(--text);
+    background: var(--card);
+  }
+  [data-theme="dark"] .cal-low { background: #2e5930; }
+  [data-theme="dark"] .cal-mod { background: #5c5320; }
+  [data-theme="dark"] .cal-high { background: #6e3018; }
+  [data-theme="dark"] .cal-vhigh { background: #7a2020; }
+  [data-theme="dark"] .skeleton {
+    background: linear-gradient(90deg, var(--border) 25%, #2a2a3a 50%, var(--border) 75%);
+    background-size: 200% 100%;
+  }
+  [data-theme="dark"] .aqi-pill { background: var(--border); }
+  [data-theme="dark"] .about-toggle:hover { background: var(--border); }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -118,10 +144,30 @@
     text-align: center;
     position: relative;
   }
-  .lang-switch {
+  .header-controls {
     position: absolute;
     top: 12px;
     right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .theme-toggle {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.4);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+  .theme-toggle:hover { background: rgba(255,255,255,0.25); }
+  .lang-switch {
   }
   .lang-select {
     background: rgba(255,255,255,0.15);
@@ -430,6 +476,8 @@
   @media (max-width: 600px) {
     header { padding: 16px 16px 12px; }
     header h1 { font-size: 1.3rem; }
+    .header-controls { top: 8px; right: 10px; gap: 6px; }
+    .theme-toggle { width: 28px; height: 28px; font-size: 0.85rem; }
     .lang-select { padding: 8px 12px; font-size: 0.85rem; }
     .gps-icon { padding: 10px 14px; font-size: 1.4rem; }
     .picker select { flex: 1; min-width: 0; }
@@ -445,12 +493,15 @@
 <header>
   <h1 data-i18n="header.title">AllergyTJ</h1>
   <p data-i18n="header.subtitle">Seasonal allergy tracker for Tajikistan — based on seasonal data &amp; live weather</p>
-  <div class="lang-switch">
-    <select class="lang-select" id="lang-select" onchange="setLanguage(this.value)" aria-label="Language">
-      <option value="en">EN</option>
-      <option value="ru">РУ</option>
-      <option value="tj">ТҶ</option>
-    </select>
+  <div class="header-controls">
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙</button>
+    <div class="lang-switch">
+      <select class="lang-select" id="lang-select" onchange="setLanguage(this.value)" aria-label="Language">
+        <option value="en">EN</option>
+        <option value="ru">РУ</option>
+        <option value="tj">ТҶ</option>
+      </select>
+    </div>
   </div>
 </header>
 
@@ -1403,6 +1454,29 @@ async function setLanguage(lang) {
     renderTierNotice(s.weatherTier);
   }
 }
+
+// ── Theme toggle ──
+function applyTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  var btn = document.getElementById("theme-toggle");
+  if (btn) btn.textContent = theme === "dark" ? "☀️" : "🌙";
+}
+
+function toggleTheme() {
+  var current = document.documentElement.getAttribute("data-theme") || "light";
+  var next = current === "dark" ? "light" : "dark";
+  applyTheme(next);
+  localStorage.setItem("allergytj-theme", next);
+}
+
+(function() {
+  var saved = localStorage.getItem("allergytj-theme");
+  if (saved) {
+    applyTheme(saved);
+  } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    applyTheme("dark");
+  }
+})();
 
 // ── About toggle ──
 function toggleAbout() {
