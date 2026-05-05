@@ -1,17 +1,17 @@
 """Tajikistan Pollen Tracker — Simple Server.
 
-Serves index.html. The frontend calls Open-Meteo directly (no API key needed).
+Serves index.html and static assets. The frontend calls Open-Meteo directly (no API key needed).
 """
 
 import os
-from flask import Flask, send_file
+from flask import Flask, send_from_directory
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder=".", static_url_path="")
 
 
 @app.route("/")
 def index():
-    return send_file("index.html")
+    return send_from_directory(".", "index.html")
 
 
 if __name__ == "__main__":

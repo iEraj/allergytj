@@ -7,7 +7,12 @@
 <meta name="description" id="meta-desc" content="Seasonal allergy and pollen risk tracker for Tajikistan. Live pollen forecast, air quality, and 5-day outlook for 32 cities.">
 <meta name="keywords" id="meta-keywords" content="pollen, allergy, Tajikistan, pollen forecast, air quality, Dushanbe, allergy tracker, pollen risk, AQI, seasonal allergy">
 <meta name="author" content="Eraj Ismatulloev">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 <link rel="canonical" href="https://allergytj.vercel.app/">
+<link rel="alternate" hreflang="en" href="https://allergytj.vercel.app/">
+<link rel="alternate" hreflang="ru" href="https://allergytj.vercel.app/">
+<link rel="alternate" hreflang="tg" href="https://allergytj.vercel.app/">
+<link rel="alternate" hreflang="x-default" href="https://allergytj.vercel.app/">
 <link rel="preconnect" href="https://api.open-meteo.com" crossorigin>
 <link rel="preconnect" href="https://air-quality-api.open-meteo.com" crossorigin>
 <link rel="dns-prefetch" href="https://api.open-meteo.com">
@@ -23,6 +28,10 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="image/png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" id="twitter-title" content="AllergyTJ — Pollen & Allergy Tracker for Tajikistan">
+<meta name="twitter:description" id="twitter-desc" content="Seasonal allergy and pollen risk tracker for Tajikistan. Live pollen forecast, air quality, and 3-day outlook for 32 cities.">
+<meta name="twitter:image" content="https://allergytj.vercel.app/og-image.png">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
 <title>AllergyTJ</title>
 <script type="application/ld+json" id="jsonld">
@@ -38,6 +47,46 @@
   "inLanguage": ["en", "ru", "tg"],
   "areaServed": { "@type": "Country", "name": "Tajikistan" },
   "author": { "@type": "Person", "name": "Eraj Ismatulloev", "url": "https://ca.linkedin.com/in/erajismatulloev" }
+}
+</script>
+<script type="application/ld+json" id="faqld">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is there pollen monitoring in Tajikistan?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Based on our research as of early 2026, we have not been able to identify any public pollen monitoring stations in Tajikistan. AllergyTJ estimates pollen risk by combining a seasonal calendar of known allergenic flora with live weather data from Open-Meteo."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are the main allergens in Tajikistan?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The main allergenic plants in Tajikistan include poplar and cottonwood (March-May), willow and birch (March-May), grasses (May-July), mugwort/Artemisia (July-September), and chenopod/pigweed (June-September). Poplar is the dominant urban tree and a heavy pollen producer."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "When is pollen season in Dushanbe?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Pollen season in Dushanbe typically runs from late February through October. Tree pollen (poplar, willow, plane tree) peaks in April, grass pollen peaks in June, and weed pollen (mugwort, chenopod) peaks in August-September."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does AllergyTJ calculate pollen risk?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "AllergyTJ combines a seasonal pollen calendar for Tajikistan's allergenic flora with live weather data. Temperature, humidity, wind speed, and precipitation adjust the seasonal baseline: hot, dry, windy conditions increase risk, while rain and cold suppress it. The result is a score from 0 to 4 (None to Very High)."
+      }
+    }
+  ]
 }
 </script>
 <style>
@@ -277,6 +326,76 @@
   .calendar .legend span { display: flex; align-items: center; gap: 4px; }
   .calendar .legend .swatch { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
 
+  /* About / How It Works */
+  .about-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+  .about-toggle {
+    width: 100%;
+    padding: 16px 20px;
+    background: none;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .about-toggle:hover { background: var(--bg); }
+  .about-toggle .chevron {
+    transition: transform 0.2s;
+    font-size: 0.7rem;
+  }
+  .about-toggle[aria-expanded="true"] .chevron { transform: rotate(90deg); }
+  .about-content {
+    padding: 0 20px 20px;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: var(--text);
+  }
+  .about-content h3 {
+    font-size: 0.82rem;
+    font-weight: 700;
+    margin: 14px 0 4px;
+    color: var(--text);
+  }
+  .about-content h3:first-child { margin-top: 0; }
+  .about-content p { margin: 4px 0; color: var(--muted); }
+  .about-content a { color: var(--green); text-decoration: underline; }
+
+  /* Share button */
+  .share-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.3rem;
+    padding: 8px;
+    border-radius: 8px;
+    transition: opacity 0.2s;
+    line-height: 1;
+    opacity: 0.7;
+  }
+  .share-btn:hover { opacity: 1; }
+  .share-btn:disabled { opacity: 0.3; cursor: default; }
+  .share-feedback {
+    font-size: 0.7rem;
+    color: var(--green);
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.3s;
+    position: absolute;
+    right: 0;
+    top: -16px;
+  }
+  .share-feedback.show { opacity: 1; }
+
   .note {
     text-align: center;
     font-size: 0.72rem;
@@ -374,6 +493,10 @@
       <option value="38.5833,68.3167">Boshkengash</option>
     </select>
     <button class="gps-icon" id="gps-btn" onclick="useGPS()" aria-label="Use GPS" title="Use GPS">📍</button>
+    <div style="position:relative;">
+      <button class="share-btn" id="share-btn" onclick="sharePollen()" disabled aria-label="Share" title="Share">🔗</button>
+      <span class="share-feedback" id="share-feedback" data-i18n="share.copied">Copied!</span>
+    </div>
   </div>
 
   <div class="status" id="status" role="status" aria-live="polite"></div>
@@ -450,12 +573,34 @@
     </div>
   </div>
 
+  <!-- About / How It Works -->
+  <h2 class="section-title" data-i18n="about.title">About & How It Works</h2>
+  <div class="about-card">
+    <button class="about-toggle" id="about-toggle" aria-expanded="false" aria-controls="about-content" onclick="toggleAbout()">
+      <span class="chevron">&#9654;</span> <span data-i18n="about.toggle">How is pollen risk calculated?</span>
+    </button>
+    <div class="about-content" id="about-content" hidden>
+      <h3 data-i18n="about.whatIsTitle">What is AllergyTJ?</h3>
+      <p data-i18n="about.whatIs">AllergyTJ is a pollen risk estimation tool for Tajikistan, covering 32 cities across all regions of the country.</p>
+
+      <h3 data-i18n="about.sourcesTitle">Data Sources</h3>
+      <p data-i18n="about.sources">Risk scores combine three inputs: a seasonal pollen calendar based on Tajikistan's known allergenic flora (poplar, willow, birch, plane tree, mulberry, grasses, mugwort, chenopod, ragweed), live weather data from Open-Meteo (temperature, humidity, wind, precipitation), and air quality data from Open-Meteo CAMS (US AQI, PM2.5, PM10).</p>
+
+      <h3 data-i18n="about.weatherTitle">How Weather Affects Risk</h3>
+      <p data-i18n="about.weather">Hot, dry, windy conditions increase pollen dispersal and raise the risk score. Rain, snow, cold, and high humidity suppress airborne pollen and lower the score. The weather modifier adjusts the seasonal baseline to produce a final score from 0 (None) to 4 (Very High).</p>
+
+      <h3 data-i18n="about.limitationsTitle">Limitations</h3>
+      <p data-i18n="about.limitations">As of 2026, no public pollen monitoring stations have been identified in Tajikistan. Risk levels are estimates based on seasonal patterns and weather conditions, not measured pollen counts. Air quality data is from atmospheric modeling, not ground sensors. The same seasonal calendar is used for all cities regardless of elevation.</p>
+
+      <h3 data-i18n="about.builtByTitle">Built By</h3>
+      <p><a href="https://ca.linkedin.com/in/erajismatulloev" target="_blank" rel="noopener" data-i18n="about.builtBy">Eraj Ismatulloev</a></p>
+
+      <p style="margin-top:14px;font-size:0.75rem;" data-i18n="about.disclaimer">This tool provides estimates only and is not medical advice. Consult a healthcare professional for allergy management.</p>
+    </div>
+  </div>
+
   <p class="note" data-i18n="footer.note1">
-    Pollen risk is estimated by combining a seasonal pollen calendar for Tajikistan's known allergenic flora
-    with live weather data (Open-Meteo or wttr.in backup). No pollen monitoring stations exist in Tajikistan (I didn't find one) — risk levels
-    reflect seasonal patterns adjusted for today's weather (rain, temperature, humidity, wind).
-    If weather data is unavailable, seasonal estimates are shown without weather adjustment.
-    Air quality (AQI, PM2.5, PM10) is modeled data from Open-Meteo CAMS. Not medical advice.
+    Pollen risk estimates based on seasonal flora data and live weather. Not medical advice.
   </p>
   <p class="note" style="margin-top:12px;">
     © 2026 <a href="https://ca.linkedin.com/in/erajismatulloev" target="_blank" rel="noopener" data-i18n="footer.authorName">Eraj Ismatulloev</a>. <span data-i18n="footer.allRights">All rights reserved.</span>
@@ -832,6 +977,7 @@ async function fetchData() {
 
   status.className = "status";
   status.textContent = t("status.fetching", { city: cityName });
+  document.getElementById("share-btn").disabled = true;
   document.getElementById("results").style.display = "none";
   var skel = document.getElementById("results-skeleton");
   skel.style.display = "";
@@ -967,6 +1113,7 @@ async function fetchData() {
     }
     skel.style.display = "none";
     document.getElementById("results").style.display = "block";
+    document.getElementById("share-btn").disabled = false;
     status.textContent = "";
 
   } catch (e) {
@@ -1192,6 +1339,10 @@ async function setLanguage(lang) {
   if (ogDesc) ogDesc.setAttribute("content", t("meta.desc"));
   var ogLocale = document.querySelector('meta[property="og:locale"]');
   if (ogLocale) ogLocale.setAttribute("content", lang === "tj" ? "tg" : lang);
+  var twTitle = document.getElementById("twitter-title");
+  if (twTitle) twTitle.setAttribute("content", t("og.title"));
+  var twDesc = document.getElementById("twitter-desc");
+  if (twDesc) twDesc.setAttribute("content", t("meta.desc"));
   var jsonld = document.getElementById("jsonld");
   if (jsonld) {
     try { var ld = JSON.parse(jsonld.textContent); ld.description = t("meta.desc"); jsonld.textContent = JSON.stringify(ld); } catch(e) {}
@@ -1253,6 +1404,86 @@ async function setLanguage(lang) {
   }
 }
 
+// ── About toggle ──
+function toggleAbout() {
+  var btn = document.getElementById("about-toggle");
+  var content = document.getElementById("about-content");
+  var expanded = btn.getAttribute("aria-expanded") === "true";
+  btn.setAttribute("aria-expanded", !expanded);
+  content.hidden = expanded;
+}
+
+// ── Share ──
+async function sharePollen() {
+  if (!lastRenderState) return;
+  var s = lastRenderState;
+  var now = new Date();
+  var cityName = t("city." + s.cityIndex);
+
+  var treeBase = getSeasonalBase(TREE_SEASON, now);
+  var grassBase = getSeasonalBase(GRASS_SEASON, now);
+  var weedBase = getSeasonalBase(WEED_SEASON, now);
+  var wxMod = 0;
+
+  if ((s.weatherTier === 1 || s.weatherTier === 2) && s.wx) {
+    var daily = s.wx.daily;
+    var curWx = s.wx.current;
+    var todayTemp = daily.temperature_2m_max[0];
+    var todayHumidity = daily.relative_humidity_2m_mean ? daily.relative_humidity_2m_mean[0] : curWx.relative_humidity_2m;
+    var todayWind = daily.wind_speed_10m_max[0];
+    var todayPrecip = daily.precipitation_sum[0];
+    var todayWxCode = daily.weather_code[0];
+    var wxCodePenalty = 0;
+    if (todayWxCode >= 71 && todayWxCode <= 77) wxCodePenalty = -0.5;
+    if (todayWxCode >= 61 && todayWxCode <= 67) wxCodePenalty = -0.3;
+    if (todayWxCode >= 80 && todayWxCode <= 82) wxCodePenalty = -0.4;
+    wxMod = weatherModifier(todayTemp, todayHumidity, todayWind, todayPrecip) + wxCodePenalty;
+  }
+
+  var treeRisk = computeRisk(treeBase, wxMod);
+  var grassRisk = computeRisk(grassBase, wxMod);
+  var weedRisk = computeRisk(weedBase, wxMod);
+  var overall = Math.max(treeRisk, grassRisk, weedRisk);
+  var overallInfo = getRiskInfo(overall);
+  var treeInfo = getRiskInfo(treeRisk);
+  var grassInfo = getRiskInfo(grassRisk);
+  var weedInfo = getRiskInfo(weedRisk);
+
+  var text = "🌿 " + overallInfo.label + " " + t("pollen.riskSuffix") + " — " + cityName +
+    "\n🌳 " + t("pollen.tree") + ": " + treeInfo.label +
+    " | 🌾 " + t("pollen.grass") + ": " + grassInfo.label +
+    " | 🌿 " + t("pollen.weed") + ": " + weedInfo.label +
+    "\n" + t("share.checkYours") + " → allergytj.vercel.app";
+
+  if (navigator.share) {
+    try {
+      await navigator.share({ text: text });
+      return;
+    } catch (e) {
+      if (e.name === "AbortError") return;
+    }
+  }
+
+  var copied = false;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    try { await navigator.clipboard.writeText(text); copied = true; } catch (e) {}
+  }
+  if (!copied) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+  }
+
+  var fb = document.getElementById("share-feedback");
+  fb.classList.add("show");
+  setTimeout(function() { fb.classList.remove("show"); }, 2000);
+}
+
 // ── Init ──
 (async function() {
   // Load active language + English fallback
@@ -1280,6 +1511,10 @@ async function setLanguage(lang) {
   if (ogDesc) ogDesc.setAttribute("content", t("meta.desc"));
   var ogLocale = document.querySelector('meta[property="og:locale"]');
   if (ogLocale) ogLocale.setAttribute("content", LANG === "tj" ? "tg" : LANG);
+  var twTitle2 = document.getElementById("twitter-title");
+  if (twTitle2) twTitle2.setAttribute("content", t("og.title"));
+  var twDesc2 = document.getElementById("twitter-desc");
+  if (twDesc2) twDesc2.setAttribute("content", t("meta.desc"));
   var jsonld = document.getElementById("jsonld");
   if (jsonld) {
     try { var ld = JSON.parse(jsonld.textContent); ld.description = t("meta.desc"); jsonld.textContent = JSON.stringify(ld); } catch(e) {}
