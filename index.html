@@ -414,6 +414,8 @@
   }
   .about-content h3:first-child { margin-top: 0; }
   .about-content p { margin: 4px 0; color: var(--muted); }
+  .about-content ul { margin: 6px 0 6px 18px; padding: 0; color: var(--muted); }
+  .about-content li { margin: 2px 0; }
   .about-content a { color: var(--green); text-decoration: underline; }
 
   /* Share button */
@@ -641,13 +643,34 @@
       <p data-i18n="about.weather">Hot, dry, windy conditions increase pollen dispersal and raise the risk score. Rain, snow, cold, and high humidity suppress airborne pollen and lower the score. The weather modifier adjusts the seasonal baseline to produce a final score from 0 (None) to 4 (Very High).</p>
 
       <h3 data-i18n="about.uvTitle">Understanding UV Index</h3>
-      <p data-i18n="about.uv">The UV (Ultraviolet) Index measures the intensity of ultraviolet radiation from the sun on a scale from 0 to 11+. Low (0–2): minimal risk. Moderate (3–5): seek shade during midday. High (6–7): sunscreen, sunglasses, and protective clothing recommended. Very High (8–10): avoid midday sun exposure. Extreme (11+): take all precautions. Prolonged UV exposure increases the risk of sunburn, skin damage, and eye conditions such as photokeratitis and cataracts.</p>
+      <p data-i18n="about.uvIntro">The UV (Ultraviolet) Index measures the intensity of ultraviolet radiation from the sun on a scale from 0 to 11+.</p>
+      <ul>
+        <li data-i18n="about.uv.low">Low (0–2): minimal risk</li>
+        <li data-i18n="about.uv.moderate">Moderate (3–5): seek shade during midday</li>
+        <li data-i18n="about.uv.high">High (6–7): sunscreen, sunglasses, and protective clothing recommended</li>
+        <li data-i18n="about.uv.veryHigh">Very High (8–10): avoid midday sun exposure</li>
+        <li data-i18n="about.uv.extreme">Extreme (11+): take all precautions</li>
+      </ul>
+      <p data-i18n="about.uvNote">Prolonged UV exposure increases the risk of sunburn, skin damage, and eye conditions such as photokeratitis and cataracts.</p>
 
       <h3 data-i18n="about.aqiTitle">Understanding US AQI</h3>
-      <p data-i18n="about.aqi">The US Air Quality Index is a standardized scale from 0 to 500. Good (0–50): air quality is satisfactory. Moderate (51–100): acceptable, but sensitive individuals may be affected. Unhealthy for Sensitive Groups (101–150): at-risk groups should limit exposure. Unhealthy (151–200): everyone may experience effects. Very Unhealthy (201–300): health alert. Hazardous (301–500): emergency conditions.</p>
+      <p data-i18n="about.aqiIntro">The US Air Quality Index is a standardized scale from 0 to 500.</p>
+      <ul>
+        <li data-i18n="about.aqi.good">Good (0–50): air quality is satisfactory</li>
+        <li data-i18n="about.aqi.moderate">Moderate (51–100): acceptable, but sensitive individuals may be affected</li>
+        <li data-i18n="about.aqi.unhealthySG">Unhealthy for Sensitive Groups (101–150): at-risk groups should limit exposure</li>
+        <li data-i18n="about.aqi.unhealthy">Unhealthy (151–200): everyone may experience effects</li>
+        <li data-i18n="about.aqi.veryUnhealthy">Very Unhealthy (201–300): health alert</li>
+        <li data-i18n="about.aqi.hazardous">Hazardous (301–500): emergency conditions</li>
+      </ul>
 
       <h3 data-i18n="about.pmTitle">Understanding PM2.5 & PM10</h3>
-      <p data-i18n="about.pm">PM2.5 is fine particulate matter ≤2.5 micrometers — small enough to enter the lungs and bloodstream. PM10 covers particles ≤10 micrometers, including dust, pollen, and mold. Lower values mean cleaner air. WHO 24-hour guidelines: PM2.5 ≤15 µg/m³, PM10 ≤45 µg/m³. Elevated levels aggravate allergy symptoms and respiratory conditions.</p>
+      <ul>
+        <li data-i18n="about.pm.pm25">PM2.5: fine particulate matter ≤2.5 micrometers, small enough to enter the lungs and bloodstream</li>
+        <li data-i18n="about.pm.pm10">PM10: particles ≤10 micrometers, including dust, pollen, and mold</li>
+        <li data-i18n="about.pm.who">WHO 24-hour guidelines: PM2.5 ≤15 µg/m³, PM10 ≤45 µg/m³</li>
+      </ul>
+      <p data-i18n="about.pmNote">Lower values mean cleaner air. Elevated levels aggravate allergy symptoms and respiratory conditions.</p>
 
       <h3 data-i18n="about.limitationsTitle">Limitations</h3>
       <p data-i18n="about.limitations">As of 2026, no public pollen monitoring stations have been identified in Tajikistan. Risk levels are estimates based on seasonal patterns and weather conditions, not measured pollen counts. Air quality data is from atmospheric modeling, not ground sensors. The same seasonal calendar is used for all cities regardless of elevation.</p>
