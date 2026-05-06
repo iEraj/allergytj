@@ -289,6 +289,29 @@
   .badge-high { background: var(--orange); }
   .badge-veryhigh { background: var(--red); }
 
+  /* Hourly Breakdown */
+  .hourly-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .hourly-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 14px 10px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .hourly-card .hourly-icon { font-size: 1.4rem; margin-bottom: 4px; }
+  .hourly-card .hourly-period { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .hourly-card .hourly-hours { font-size: 0.65rem; color: var(--muted); margin-bottom: 6px; }
+  .hourly-card .hourly-risk { font-size: 1.1rem; font-weight: 800; margin-bottom: 4px; }
+  .hourly-card .hourly-bar { height: 5px; border-radius: 3px; margin: 0 auto 6px; width: 70%; }
+  .hourly-card .hourly-detail { font-size: 0.62rem; color: var(--muted); }
+  .hourly-card.hourly-past { opacity: 0.45; }
+  .hourly-card .hourly-past-label { font-size: 0.6rem; color: var(--muted); font-style: italic; margin-top: 4px; }
+
   /* Weather strip */
   .weather-strip {
     background: var(--card);
@@ -484,6 +507,7 @@
     .gps-icon { padding: 10px 14px; font-size: 1.4rem; }
     .picker select { flex: 1; min-width: 0; }
     .pollen-cards, .skel-cards { grid-template-columns: 1fr; }
+    .hourly-cards { grid-template-columns: 1fr; }
     .forecast-row, .skel-forecast { grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
     .risk-banner { padding: 20px 16px; }
     .risk-banner .desc { font-size: 0.8rem; }
@@ -563,6 +587,8 @@
       <div class="skeleton skel-card"></div>
       <div class="skeleton skel-card"></div>
     </div>
+    <div class="skel-label skeleton"></div>
+    <div class="skel-cards"><div class="skeleton skel-card" style="height:90px"></div><div class="skeleton skel-card" style="height:90px"></div><div class="skeleton skel-card" style="height:90px"></div></div>
     <div class="skeleton skel-strip"></div>
     <div class="skel-label skeleton"></div>
     <div class="skeleton skel-aqi"></div>
@@ -585,6 +611,10 @@
 
     <!-- Tree / Grass / Weed cards -->
     <div class="pollen-cards" id="pollen-cards"></div>
+
+    <!-- Hourly Pollen Risk Breakdown -->
+    <h2 class="section-title" id="hourly-title" data-i18n="section.hourly">Today's Risk by Time of Day</h2>
+    <div class="hourly-cards" id="hourly-cards"></div>
 
     <!-- Current weather conditions -->
     <div class="weather-strip" id="weather-strip"></div>
@@ -642,6 +672,28 @@
       <h3 data-i18n="about.weatherTitle">How Weather Affects Risk</h3>
       <p data-i18n="about.weather">Hot, dry, windy conditions increase pollen dispersal and raise the risk score. Rain, snow, cold, and high humidity suppress airborne pollen and lower the score. The weather modifier adjusts the seasonal baseline to produce a final score from 0 (None) to 4 (Very High).</p>
 
+      <h3 data-i18n="about.hourlyTitle">Risk by Time of Day</h3>
+      <p data-i18n="about.hourlyIntro">Weather conditions shift throughout the day, so pollen risk does too. The app splits the day into three periods:</p>
+      <ul>
+        <li data-i18n="about.hourly.morning">Morning: 6 AM to 12 PM</li>
+        <li data-i18n="about.hourly.afternoon">Afternoon: 12 PM to 6 PM</li>
+        <li data-i18n="about.hourly.evening">Evening: 6 PM to 12 AM</li>
+      </ul>
+      <p data-i18n="about.hourlyNote">Each period gets its own risk score based on hourly temperature, humidity, wind, and precipitation. Periods that have already passed are dimmed.</p>
+
+      <h3 data-i18n="about.elevTitle">Elevation Adjustment</h3>
+      <p data-i18n="about.elevDesc">Plants bloom later at higher elevations. The app adjusts the seasonal calendar for each city based on its altitude, using a rate of approximately 2 days per 100 meters above the baseline (Dushanbe, 800m). For example, Murghab at 3,618m sees bloom roughly 56 days later than Dushanbe, while lowland cities like Bokhtar at 430m see it about a week earlier.</p>
+
+      <h3 data-i18n="about.regionTitle">Regional Profiles</h3>
+      <p data-i18n="about.regionIntro">Pollen levels vary by region due to differences in vegetation and land use. The app groups cities into five zones:</p>
+      <ul>
+        <li data-i18n="about.region.drs">Dushanbe/DRS: baseline, urban tree-heavy (poplar, plane tree)</li>
+        <li data-i18n="about.region.khatlon">Khatlon: agricultural lowlands, higher grass pollen (cotton, wheat, rice fields)</li>
+        <li data-i18n="about.region.sughd">Sughd: Ferghana Valley, mixed orchards and rice, moderate across all types</li>
+        <li data-i18n="about.region.gbao">GBAO/Pamir: sparse alpine vegetation, significantly lower pollen overall</li>
+        <li data-i18n="about.region.valleys">Mountain valleys: mid-altitude, limited agriculture, moderate levels</li>
+      </ul>
+
       <h3 data-i18n="about.uvTitle">Understanding UV Index</h3>
       <p data-i18n="about.uvIntro">The UV (Ultraviolet) Index measures the intensity of ultraviolet radiation from the sun on a scale from 0 to 11+.</p>
       <ul>
@@ -673,7 +725,7 @@
       <p data-i18n="about.pmNote">Lower values mean cleaner air. Elevated levels aggravate allergy symptoms and respiratory conditions.</p>
 
       <h3 data-i18n="about.limitationsTitle">Limitations</h3>
-      <p data-i18n="about.limitations">As of 2026, no public pollen monitoring stations have been identified in Tajikistan. Risk levels are estimates based on seasonal patterns and weather conditions, not measured pollen counts. Air quality data is from atmospheric modeling, not ground sensors. The same seasonal calendar is used for all cities regardless of elevation.</p>
+      <p data-i18n="about.limitations">As of 2026, no public pollen monitoring stations have been identified in Tajikistan. Risk levels are estimates based on seasonal patterns and weather conditions, not measured pollen counts. Air quality data is from atmospheric modeling, not ground sensors. Elevation adjustments are based on a general botanical rule and may not reflect exact local conditions.</p>
 
     </div>
   </div>
@@ -717,39 +769,50 @@ var lastRenderState = null;
 
 // ── Cities ──
 var CITIES = [
-  { idx: 0, lat: 38.5598, lng: 68.7740 },
-  { idx: 1, lat: 40.2833, lng: 69.6333 },
-  { idx: 2, lat: 37.9139, lng: 69.8028 },
-  { idx: 3, lat: 37.8364, lng: 68.7650 },
-  { idx: 4, lat: 39.1667, lng: 67.9833 },
-  { idx: 5, lat: 40.5253, lng: 70.9400 },
-  { idx: 6, lat: 38.5383, lng: 68.9500 },
-  { idx: 7, lat: 38.5500, lng: 67.8333 },
-  { idx: 8, lat: 40.2167, lng: 69.3167 },
-  { idx: 9, lat: 39.5500, lng: 68.6167 },
-  { idx: 10, lat: 37.5383, lng: 71.5128 },
-  { idx: 11, lat: 36.7167, lng: 71.6167 },
-  { idx: 12, lat: 38.5253, lng: 68.5514 },
-  { idx: 13, lat: 37.0000, lng: 69.7833 },
-  { idx: 14, lat: 37.2167, lng: 68.1333 },
-  { idx: 15, lat: 37.3000, lng: 68.3333 },
-  { idx: 16, lat: 40.5167, lng: 69.0000 },
-  { idx: 17, lat: 37.1667, lng: 68.5000 },
-  { idx: 18, lat: 37.8167, lng: 68.2167 },
-  { idx: 19, lat: 38.3833, lng: 69.3167 },
-  { idx: 20, lat: 38.3167, lng: 69.0833 },
-  { idx: 21, lat: 37.7833, lng: 68.6000 },
-  { idx: 22, lat: 40.3833, lng: 69.6000 },
-  { idx: 23, lat: 40.3500, lng: 69.8000 },
-  { idx: 24, lat: 37.4000, lng: 67.8333 },
-  { idx: 25, lat: 40.5667, lng: 69.6333 },
-  { idx: 26, lat: 38.7167, lng: 70.6333 },
-  { idx: 27, lat: 38.9833, lng: 69.8667 },
-  { idx: 28, lat: 38.6000, lng: 69.1667 },
-  { idx: 29, lat: 38.4000, lng: 69.6833 },
-  { idx: 30, lat: 40.5333, lng: 69.1500 },
-  { idx: 31, lat: 38.5833, lng: 68.3167 },
+  { idx: 0,  lat: 38.5598, lng: 68.7740, elev: 800,  region: "drs" },      // Dushanbe
+  { idx: 1,  lat: 40.2833, lng: 69.6333, elev: 300,  region: "sughd" },    // Khujand
+  { idx: 2,  lat: 37.9139, lng: 69.8028, elev: 580,  region: "khatlon" },  // Kulob
+  { idx: 3,  lat: 37.8364, lng: 68.7650, elev: 430,  region: "khatlon" },  // Bokhtar
+  { idx: 4,  lat: 39.1667, lng: 67.9833, elev: 992,  region: "sughd" },    // Istaravshan
+  { idx: 5,  lat: 40.5253, lng: 70.9400, elev: 410,  region: "sughd" },    // Konibodom
+  { idx: 6,  lat: 38.5383, lng: 68.9500, elev: 870,  region: "drs" },      // Vahdat
+  { idx: 7,  lat: 38.5500, lng: 67.8333, elev: 708,  region: "drs" },      // Tursunzoda
+  { idx: 8,  lat: 40.2167, lng: 69.3167, elev: 863,  region: "sughd" },    // Isfara
+  { idx: 9,  lat: 39.5500, lng: 68.6167, elev: 996,  region: "sughd" },    // Panjakent
+  { idx: 10, lat: 37.5383, lng: 71.5128, elev: 2200, region: "gbao" },     // Khorugh
+  { idx: 11, lat: 36.7167, lng: 71.6167, elev: 2535, region: "gbao" },     // Ishkoshim
+  { idx: 12, lat: 38.5253, lng: 68.5514, elev: 802,  region: "drs" },      // Hisor
+  { idx: 13, lat: 37.0000, lng: 69.7833, elev: 649,  region: "khatlon" },  // Danghara
+  { idx: 14, lat: 37.2167, lng: 68.1333, elev: 475,  region: "khatlon" },  // Vose
+  { idx: 15, lat: 37.3000, lng: 68.3333, elev: 450,  region: "khatlon" },  // Parkhar
+  { idx: 16, lat: 40.5167, lng: 69.0000, elev: 300,  region: "sughd" },    // Buston
+  { idx: 17, lat: 37.1667, lng: 68.5000, elev: 514,  region: "khatlon" },  // Chubek
+  { idx: 18, lat: 37.8167, lng: 68.2167, elev: 390,  region: "khatlon" },  // Kolkhozobod
+  { idx: 19, lat: 38.3833, lng: 69.3167, elev: 885,  region: "khatlon" },  // Norak
+  { idx: 20, lat: 38.3167, lng: 69.0833, elev: 655,  region: "khatlon" },  // Yovon
+  { idx: 21, lat: 37.7833, lng: 68.6000, elev: 426,  region: "khatlon" },  // Vakhsh
+  { idx: 22, lat: 40.3833, lng: 69.6000, elev: 400,  region: "sughd" },    // Ghafurov
+  { idx: 23, lat: 40.3500, lng: 69.8000, elev: 350,  region: "sughd" },    // Spitamen
+  { idx: 24, lat: 37.4000, lng: 67.8333, elev: 367,  region: "khatlon" },  // Shahritus
+  { idx: 25, lat: 40.5667, lng: 69.6333, elev: 1196, region: "sughd" },    // Taboshar
+  { idx: 26, lat: 38.7167, lng: 70.6333, elev: 3618, region: "gbao" },     // Murghab
+  { idx: 27, lat: 38.9833, lng: 69.8667, elev: 1355, region: "valleys" },   // Rasht
+  { idx: 28, lat: 38.6000, lng: 69.1667, elev: 1348, region: "valleys" },   // Obigarm
+  { idx: 29, lat: 38.4000, lng: 69.6833, elev: 1230, region: "valleys" },   // Roghun
+  { idx: 30, lat: 40.5333, lng: 69.1500, elev: 900,  region: "sughd" },    // Adrasmon
+  { idx: 31, lat: 38.5833, lng: 68.3167, elev: 755,  region: "drs" },      // Boshkengash
 ];
+
+// ── Regional pollen multipliers ──
+// Based on FAO crop data, land cover surveys, and vegetation studies.
+// Dushanbe/DRS is the baseline (1.0) since the pollen calendar was calibrated there.
+var REGIONS = {
+  drs:     { tree: 1.0, grass: 1.0, weed: 1.0 },
+  khatlon: { tree: 0.8, grass: 1.3, weed: 1.1 },
+  sughd:   { tree: 1.0, grass: 1.1, weed: 0.9 },
+  gbao:    { tree: 0.3, grass: 0.3, weed: 0.4 },
+  valleys: { tree: 0.8, grass: 0.7, weed: 0.9 },
+};
 
 // ── Seasonal Pollen Intensity (0-4 per month) ──
 // Based on known Tajik flora. Each category has species + monthly intensity.
@@ -817,6 +880,107 @@ function weatherModifier(temp, humidity, wind, precip) {
 
 function computeRisk(seasonBase, wxMod) {
   return Math.max(0, Math.min(4, seasonBase + wxMod));
+}
+
+// ── Elevation-adjusted bloom timing (Hopkins' Bioclimatic Law) ──
+// Highland cities bloom later; lowland cities bloom slightly earlier.
+// Baseline: Dushanbe (800m), where the pollen calendar was calibrated.
+var BASELINE_ELEV = 800;
+var ELEV_DAYS_PER_100M = 2;
+
+function adjustDateForElevation(date, elev) {
+  var offsetDays = Math.round((elev - BASELINE_ELEV) / 100 * ELEV_DAYS_PER_100M);
+  var adj = new Date(date.getTime());
+  adj.setDate(adj.getDate() - offsetDays);
+  return adj;
+}
+
+// ── Hourly pollen risk breakdown (morning / afternoon / evening) ──
+function computeHourlyBreakdown(hourlyData, now, cityElev, reg) {
+  if (!hourlyData || !hourlyData.time) return null;
+  var todayStr = now.getFullYear() + "-" +
+    String(now.getMonth() + 1).padStart(2, "0") + "-" +
+    String(now.getDate()).padStart(2, "0");
+  var currentHour = now.getHours();
+
+  var periods = [
+    { key: "morning", start: 6, end: 12 },
+    { key: "afternoon", start: 12, end: 18 },
+    { key: "evening", start: 18, end: 24 },
+  ];
+
+  var results = [];
+  for (var p = 0; p < periods.length; p++) {
+    var per = periods[p];
+    var temps = [], humids = [], winds = [], precips = [];
+
+    for (var i = 0; i < hourlyData.time.length; i++) {
+      var ts = hourlyData.time[i];
+      if (ts.slice(0, 10) !== todayStr) continue;
+      var hr = parseInt(ts.slice(11, 13), 10);
+      if (hr >= per.start && hr < per.end) {
+        temps.push(hourlyData.temperature_2m[i]);
+        humids.push(hourlyData.relative_humidity_2m[i]);
+        winds.push(hourlyData.wind_speed_10m[i]);
+        precips.push(hourlyData.precipitation[i]);
+      }
+    }
+    if (temps.length === 0) continue;
+
+    var avg = function(arr) { return arr.reduce(function(a, b) { return a + b; }, 0) / arr.length; };
+    var sum = function(arr) { return arr.reduce(function(a, b) { return a + b; }, 0); };
+    var avgTemp = avg(temps);
+    var avgHumid = avg(humids);
+    var maxWind = Math.max.apply(null, winds);
+    var totalPrecip = sum(precips);
+
+    var wxMod = weatherModifier(avgTemp, avgHumid, maxWind, totalPrecip);
+    var adjNow = adjustDateForElevation(now, cityElev || BASELINE_ELEV);
+    var r = reg || REGIONS.drs;
+    var treeR = computeRisk(getSeasonalBase(TREE_SEASON, adjNow) * r.tree, wxMod);
+    var grassR = computeRisk(getSeasonalBase(GRASS_SEASON, adjNow) * r.grass, wxMod);
+    var weedR = computeRisk(getSeasonalBase(WEED_SEASON, adjNow) * r.weed, wxMod);
+
+    results.push({
+      key: per.key,
+      risk: Math.max(treeR, grassR, weedR),
+      temp: Math.round(avgTemp),
+      wind: Math.round(maxWind),
+      precip: totalPrecip.toFixed(1),
+      past: currentHour >= per.end,
+    });
+  }
+  return results.length > 0 ? results : null;
+}
+
+function renderHourlyBreakdown(blocks) {
+  var container = document.getElementById("hourly-cards");
+  var title = document.getElementById("hourly-title");
+  if (!blocks || blocks.length === 0) {
+    container.innerHTML = "";
+    title.style.display = "none";
+    container.style.display = "none";
+    return;
+  }
+  title.style.display = "";
+  container.style.display = "";
+
+  var icons = { morning: "🌅", afternoon: "☀️", evening: "🌙" };
+
+  container.innerHTML = blocks.map(function(b) {
+    var info = getRiskInfo(b.risk);
+    var cls = b.past ? " hourly-past" : "";
+    return '<div class="hourly-card' + cls + '">' +
+      '<div class="hourly-icon">' + icons[b.key] + '</div>' +
+      '<div class="hourly-period">' + t("hourly." + b.key) + '</div>' +
+      '<div class="hourly-hours">' + t("hourly.hours." + b.key) + '</div>' +
+      '<div class="hourly-risk" style="color:' + info.color + '">' + info.label + '</div>' +
+      '<div class="hourly-bar" style="background:' + info.color + ';opacity:0.7"></div>' +
+      '<div class="hourly-detail">' + b.temp + '°C · ' + t("fc.wind", { kmh: b.wind }) +
+        (parseFloat(b.precip) > 0 ? ' · ' + b.precip + 'mm' : '') + '</div>' +
+      (b.past ? '<div class="hourly-past-label">' + t("hourly.past") + '</div>' : '') +
+      '</div>';
+  }).join("");
 }
 
 // ── Build Calendar ──
@@ -1015,7 +1179,22 @@ async function fetchWeatherFromWttr(lat, lng) {
     daily.weather_code.push(mapWttrWeatherCode(hours[middayIdx].weatherCode));
   }
 
-  return { current: current, daily: daily };
+  var hourly = { time: [], temperature_2m: [], relative_humidity_2m: [], wind_speed_10m: [], precipitation: [], weather_code: [] };
+  var todayFc = forecasts[0];
+  if (todayFc && todayFc.hourly) {
+    for (var j = 0; j < todayFc.hourly.length; j++) {
+      var slot = todayFc.hourly[j];
+      var slotHour = parseInt(slot.time) / 100;
+      hourly.time.push(todayFc.date + "T" + String(slotHour).padStart(2, "0") + ":00");
+      hourly.temperature_2m.push(parseFloat(slot.tempC));
+      hourly.relative_humidity_2m.push(parseInt(slot.humidity));
+      hourly.wind_speed_10m.push(parseFloat(slot.windspeedKmph));
+      hourly.precipitation.push(parseFloat(slot.precipMM));
+      hourly.weather_code.push(mapWttrWeatherCode(slot.weatherCode));
+    }
+  }
+
+  return { current: current, daily: daily, hourly: hourly };
 }
 
 // ── Tier notice rendering ──
@@ -1050,6 +1229,8 @@ async function fetchData() {
   var fcTitle = document.getElementById("forecast-title");
 
   var cityIndex = sel.selectedIndex;
+  var cityElev = CITIES[cityIndex] ? CITIES[cityIndex].elev : BASELINE_ELEV;
+  var reg = REGIONS[CITIES[cityIndex] ? CITIES[cityIndex].region : "drs"] || REGIONS.drs;
   localStorage.setItem("allergytj-city", sel.value);
 
   status.className = "status";
@@ -1075,6 +1256,7 @@ async function fetchData() {
     var wxUrl = "https://api.open-meteo.com/v1/forecast?" + new URLSearchParams({
       latitude: lat, longitude: lng,
       current: "temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation,weather_code,uv_index",
+      hourly: "temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation,weather_code",
       daily: "temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max,relative_humidity_2m_mean,weather_code",
       forecast_days: "4",
       timezone: "auto",
@@ -1132,9 +1314,10 @@ async function fetchData() {
       if (todayWxCode >= 80 && todayWxCode <= 82) wxCodePenalty = -0.4; // showers
 
       var wxMod = weatherModifier(todayTemp, todayHumidity, todayWind, todayPrecip) + wxCodePenalty;
-      var treeBase = getSeasonalBase(TREE_SEASON, now);
-      var grassBase = getSeasonalBase(GRASS_SEASON, now);
-      var weedBase = getSeasonalBase(WEED_SEASON, now);
+      var adjNow = adjustDateForElevation(now, cityElev);
+      var treeBase = getSeasonalBase(TREE_SEASON, adjNow) * reg.tree;
+      var grassBase = getSeasonalBase(GRASS_SEASON, adjNow) * reg.grass;
+      var weedBase = getSeasonalBase(WEED_SEASON, adjNow) * reg.weed;
 
       var treeRisk = computeRisk(treeBase, wxMod);
       var grassRisk = computeRisk(grassBase, wxMod);
@@ -1143,9 +1326,13 @@ async function fetchData() {
 
       renderBanner(overallRisk, cityName, wxMod);
       renderPollenCards(treeRisk, grassRisk, weedRisk, now);
+
+      var hourlyBlocks = wx.hourly ? computeHourlyBreakdown(wx.hourly, now, cityElev, reg) : null;
+      renderHourlyBreakdown(hourlyBlocks);
+
       renderWeather(curWx.temperature_2m, curWx.relative_humidity_2m, curWx.wind_speed_10m,
                     todayPrecip, curWx.weather_code, todayWxCode, curWx.uv_index);
-      renderForecast(daily, now);
+      renderForecast(daily, now, cityElev, reg);
 
       document.getElementById("weather-strip").style.display = "";
       fcTitle.textContent = weatherTier === 2 ? t("section.forecast2") : t("section.forecast5");
@@ -1153,9 +1340,10 @@ async function fetchData() {
     } else {
       // Tier 3: seasonal-only, no weather adjustment
       var wxMod = 0;
-      var treeBase = getSeasonalBase(TREE_SEASON, now);
-      var grassBase = getSeasonalBase(GRASS_SEASON, now);
-      var weedBase = getSeasonalBase(WEED_SEASON, now);
+      var adjNow = adjustDateForElevation(now, cityElev);
+      var treeBase = getSeasonalBase(TREE_SEASON, adjNow) * reg.tree;
+      var grassBase = getSeasonalBase(GRASS_SEASON, adjNow) * reg.grass;
+      var weedBase = getSeasonalBase(WEED_SEASON, adjNow) * reg.weed;
 
       var treeRisk = computeRisk(treeBase, wxMod);
       var grassRisk = computeRisk(grassBase, wxMod);
@@ -1164,6 +1352,7 @@ async function fetchData() {
 
       renderBanner(overallRisk, cityName, wxMod);
       renderPollenCards(treeRisk, grassRisk, weedRisk, now);
+      renderHourlyBreakdown(null);
 
       document.getElementById("weather-strip").style.display = "none";
       document.getElementById("forecast-cards").innerHTML = "";
@@ -1178,7 +1367,7 @@ async function fetchData() {
     }
 
     // Store render state for language switch re-render
-    lastRenderState = { weatherTier: weatherTier, wx: wx, aq: aq, cityIndex: cityIndex };
+    lastRenderState = { weatherTier: weatherTier, wx: wx, aq: aq, cityIndex: cityIndex, cityElev: cityElev, reg: reg };
 
     renderTierNotice(weatherTier);
     var skel = document.getElementById("results-skeleton");
@@ -1289,7 +1478,7 @@ function renderAqi(aq) {
     '</div>';
 }
 
-function renderForecast(daily, now) {
+function renderForecast(daily, now, cityElev, reg) {
   var container = document.getElementById("forecast-cards");
   var html = "";
 
@@ -1316,9 +1505,11 @@ function renderForecast(daily, now) {
     if (fcWxCode >= 80 && fcWxCode <= 82) fcCodePenalty = -0.4;
 
     var wxMod = weatherModifier(dayTemp, dayHumidity, dayWind, dayPrecip) + fcCodePenalty;
-    var treeR = computeRisk(getSeasonalBase(TREE_SEASON, d), wxMod);
-    var grassR = computeRisk(getSeasonalBase(GRASS_SEASON, d), wxMod);
-    var weedR = computeRisk(getSeasonalBase(WEED_SEASON, d), wxMod);
+    var adjD = adjustDateForElevation(d, cityElev || BASELINE_ELEV);
+    var r = reg || REGIONS.drs;
+    var treeR = computeRisk(getSeasonalBase(TREE_SEASON, adjD) * r.tree, wxMod);
+    var grassR = computeRisk(getSeasonalBase(GRASS_SEASON, adjD) * r.grass, wxMod);
+    var weedR = computeRisk(getSeasonalBase(WEED_SEASON, adjD) * r.weed, wxMod);
     var peak = Math.max(treeR, grassR, weedR);
     var info = getRiskInfo(peak);
 
@@ -1439,6 +1630,9 @@ async function setLanguage(lang) {
     var s = lastRenderState;
     var now = new Date();
     var cityName = t("city." + s.cityIndex);
+    var elev = s.cityElev || BASELINE_ELEV;
+    var rg = s.reg || REGIONS.drs;
+    var adjNow = adjustDateForElevation(now, elev);
 
     if (s.weatherTier === 1 || s.weatherTier === 2) {
       var curWx = s.wx.current;
@@ -1453,26 +1647,29 @@ async function setLanguage(lang) {
       if (todayWxCode >= 61 && todayWxCode <= 67) wxCodePenalty = -0.3;
       if (todayWxCode >= 80 && todayWxCode <= 82) wxCodePenalty = -0.4;
       var wxMod = weatherModifier(todayTemp, todayHumidity, todayWind, todayPrecip) + wxCodePenalty;
-      var treeRisk = computeRisk(getSeasonalBase(TREE_SEASON, now), wxMod);
-      var grassRisk = computeRisk(getSeasonalBase(GRASS_SEASON, now), wxMod);
-      var weedRisk = computeRisk(getSeasonalBase(WEED_SEASON, now), wxMod);
+      var treeRisk = computeRisk(getSeasonalBase(TREE_SEASON, adjNow) * rg.tree, wxMod);
+      var grassRisk = computeRisk(getSeasonalBase(GRASS_SEASON, adjNow) * rg.grass, wxMod);
+      var weedRisk = computeRisk(getSeasonalBase(WEED_SEASON, adjNow) * rg.weed, wxMod);
       var overallRisk = Math.max(treeRisk, grassRisk, weedRisk);
 
       renderBanner(overallRisk, cityName, wxMod);
       renderPollenCards(treeRisk, grassRisk, weedRisk, now);
+      var hourlyBlocks = s.wx.hourly ? computeHourlyBreakdown(s.wx.hourly, now, elev, rg) : null;
+      renderHourlyBreakdown(hourlyBlocks);
       renderWeather(curWx.temperature_2m, curWx.relative_humidity_2m, curWx.wind_speed_10m,
                     todayPrecip, curWx.weather_code, todayWxCode, curWx.uv_index);
-      renderForecast(daily, now);
+      renderForecast(daily, now, elev, rg);
       document.getElementById("forecast-title").textContent = s.weatherTier === 2 ? t("section.forecast2") : t("section.forecast5");
     } else {
       var wxMod = 0;
-      var treeRisk = computeRisk(getSeasonalBase(TREE_SEASON, now), wxMod);
-      var grassRisk = computeRisk(getSeasonalBase(GRASS_SEASON, now), wxMod);
-      var weedRisk = computeRisk(getSeasonalBase(WEED_SEASON, now), wxMod);
+      var treeRisk = computeRisk(getSeasonalBase(TREE_SEASON, adjNow) * rg.tree, wxMod);
+      var grassRisk = computeRisk(getSeasonalBase(GRASS_SEASON, adjNow) * rg.grass, wxMod);
+      var weedRisk = computeRisk(getSeasonalBase(WEED_SEASON, adjNow) * rg.weed, wxMod);
       var overallRisk = Math.max(treeRisk, grassRisk, weedRisk);
 
       renderBanner(overallRisk, cityName, wxMod);
       renderPollenCards(treeRisk, grassRisk, weedRisk, now);
+      renderHourlyBreakdown(null);
       document.getElementById("forecast-title").textContent = t("section.forecastNone");
     }
 
@@ -1519,10 +1716,12 @@ async function sharePollen() {
   var s = lastRenderState;
   var now = new Date();
   var cityName = t("city." + s.cityIndex);
+  var adjNow = adjustDateForElevation(now, s.cityElev || BASELINE_ELEV);
+  var rg = s.reg || REGIONS.drs;
 
-  var treeBase = getSeasonalBase(TREE_SEASON, now);
-  var grassBase = getSeasonalBase(GRASS_SEASON, now);
-  var weedBase = getSeasonalBase(WEED_SEASON, now);
+  var treeBase = getSeasonalBase(TREE_SEASON, adjNow) * rg.tree;
+  var grassBase = getSeasonalBase(GRASS_SEASON, adjNow) * rg.grass;
+  var weedBase = getSeasonalBase(WEED_SEASON, adjNow) * rg.weed;
   var wxMod = 0;
 
   if ((s.weatherTier === 1 || s.weatherTier === 2) && s.wx) {
