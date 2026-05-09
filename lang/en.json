@@ -184,5 +184,12 @@
   "city.16": "Buston (Chkalovsk)", "city.17": "Chubek", "city.18": "Kolkhozobod", "city.19": "Norak",
   "city.20": "Yovon", "city.21": "Vakhsh", "city.22": "Ghafurov", "city.23": "Spitamen",
   "city.24": "Shahritus", "city.25": "Taboshar", "city.26": "Murghab", "city.27": "Rasht",
-  "city.28": "Obigarm", "city.29": "Roghun", "city.30": "Adrasmon", "city.31": "Boshkengash"
+  "city.28": "Obigarm", "city.29": "Roghun", "city.30": "Adrasmon", "city.31": "Boshkengash",
+
+  "pwa.updateAvailable": "A new version is available.",
+  "pwa.updateNow": "Update",
+  "pwa.installPrompt": "Add AllergyTJ to your home screen for quick access.",
+  "pwa.installButton": "Install",
+  "pwa.dismiss": "Dismiss",
+  "pwa.iosInstall": "To install: tap the Share button, then \"Add to Home Screen.\""
 }

@@ -33,6 +33,15 @@
 <meta name="twitter:description" id="twitter-desc" content="Seasonal allergy and pollen risk tracker for Tajikistan. Live pollen forecast, air quality, and 3-day outlook for 32 cities.">
 <meta name="twitter:image" content="https://allergytj.vercel.app/og-image.png">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1a3a2a" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a3a2a" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AllergyTJ">
+<meta name="msapplication-TileImage" content="/icons/icon-144x144.png">
+<meta name="msapplication-TileColor" content="#1a3a2a">
 <title>AllergyTJ</title>
 <script type="application/ld+json" id="jsonld">
 {
@@ -1889,6 +1898,117 @@ async function sharePollen() {
   // Auto-fetch pollen data for selected city
   fetchData();
 })();
+
+// ── PWA ──
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js').then(function(reg) {
+      reg.addEventListener('updatefound', function() {
+        var newWorker = reg.installing;
+        newWorker.addEventListener('statechange', function() {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            showUpdateBanner(newWorker);
+          }
+        });
+      });
+    }).catch(function(err) {
+      console.warn('SW registration failed:', err.message);
+    });
+
+    var refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', function() {
+      if (!refreshing) { refreshing = true; window.location.reload(); }
+    });
+  });
+}
+
+function showUpdateBanner(worker) {
+  var existing = document.getElementById('sw-update-banner');
+  if (existing) return;
+  var banner = document.createElement('div');
+  banner.id = 'sw-update-banner';
+  banner.setAttribute('role', 'alert');
+  banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:var(--card);color:var(--text);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;z-index:9999;font-size:0.9rem;box-shadow:0 -2px 8px rgba(0,0,0,0.2);border-top:1px solid var(--border);';
+  var span = document.createElement('span');
+  span.textContent = t('pwa.updateAvailable');
+  var btn = document.createElement('button');
+  btn.textContent = t('pwa.updateNow');
+  btn.style.cssText = 'background:#d4a017;color:#1a3a2a;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;';
+  btn.onclick = function() { worker.postMessage({ type: 'SKIP_WAITING' }); };
+  banner.appendChild(span);
+  banner.appendChild(btn);
+  document.body.appendChild(banner);
+}
+
+var _deferredInstallPrompt = null;
+
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  if (localStorage.getItem('allergytj-install-dismissed')) return;
+  _deferredInstallPrompt = e;
+  showInstallBanner();
+});
+
+function showInstallBanner() {
+  var existing = document.getElementById('install-banner');
+  if (existing) return;
+  var banner = document.createElement('div');
+  banner.id = 'install-banner';
+  banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:var(--card);color:var(--text);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:9998;box-shadow:0 -2px 8px rgba(0,0,0,0.15);border-top:1px solid var(--border);';
+  var span = document.createElement('span');
+  span.style.cssText = 'flex:1;font-size:0.85rem;';
+  span.textContent = t('pwa.installPrompt');
+  var installBtn = document.createElement('button');
+  installBtn.textContent = t('pwa.installButton');
+  installBtn.style.cssText = 'background:#1a3a2a;color:white;border:none;padding:8px 14px;border-radius:6px;font-weight:600;cursor:pointer;white-space:nowrap;';
+  installBtn.onclick = function() {
+    if (!_deferredInstallPrompt) return;
+    _deferredInstallPrompt.prompt();
+    _deferredInstallPrompt.userChoice.then(function() {
+      _deferredInstallPrompt = null;
+      var b = document.getElementById('install-banner');
+      if (b) b.remove();
+    });
+  };
+  var closeBtn = document.createElement('button');
+  closeBtn.innerHTML = '&times;';
+  closeBtn.setAttribute('aria-label', 'Close');
+  closeBtn.style.cssText = 'background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;padding:4px 8px;';
+  closeBtn.onclick = function() {
+    localStorage.setItem('allergytj-install-dismissed', '1');
+    var b = document.getElementById('install-banner');
+    if (b) b.remove();
+    _deferredInstallPrompt = null;
+  };
+  banner.appendChild(span);
+  banner.appendChild(installBtn);
+  banner.appendChild(closeBtn);
+  document.body.appendChild(banner);
+}
+
+// iOS Safari: manual install instructions
+if (window.navigator.standalone === false && !localStorage.getItem('allergytj-install-dismissed')) {
+  setTimeout(function() {
+    var toast = document.createElement('div');
+    toast.id = 'ios-install-tip';
+    toast.setAttribute('role', 'status');
+    toast.style.cssText = 'position:fixed;bottom:16px;left:16px;right:16px;background:var(--card);color:var(--text);padding:14px 16px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.2);z-index:9998;font-size:0.85rem;text-align:center;border:1px solid var(--border);';
+    var msg = document.createElement('span');
+    msg.textContent = t('pwa.iosInstall');
+    var dismissBtn = document.createElement('button');
+    dismissBtn.textContent = t('pwa.dismiss');
+    dismissBtn.style.cssText = 'display:block;margin:8px auto 0;background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.8rem;';
+    dismissBtn.onclick = function() {
+      toast.remove();
+      localStorage.setItem('allergytj-install-dismissed', '1');
+    };
+    toast.appendChild(msg);
+    toast.appendChild(dismissBtn);
+    document.body.appendChild(toast);
+    setTimeout(function() { var el = document.getElementById('ios-install-tip'); if (el) el.remove(); }, 15000);
+  }, 3000);
+}
 </script>
 <script>
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
