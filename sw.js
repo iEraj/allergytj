@@ -1,4 +1,4 @@
-var CACHE_VERSION = 'allergytj-v2';
+var CACHE_VERSION = 'allergytj-v3';
 
 var PRECACHE_URLS = [
   '/',

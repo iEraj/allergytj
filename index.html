@@ -884,32 +884,50 @@ function getRiskInfo(score) {
 
 // ── Weather modifier ──
 // Adjusts seasonal base score based on current weather conditions
-function weatherModifier(temp, humidity, wind, precip) {
-  var mod = 0;
-  // Temperature: warm = more pollen release
-  if (temp > 25) mod += 0.5;
-  else if (temp > 18) mod += 0.25;
-  else if (temp < 5) mod -= 0.5;
+function weatherFactor(temp, humidity, wind, precip, wxCode) {
+  var tf;
+  if (temp > 30) tf = 1.25;
+  else if (temp > 25) tf = 1.15;
+  else if (temp > 18) tf = 1.05;
+  else if (temp > 10) tf = 0.95;
+  else if (temp > 5) tf = 0.7;
+  else tf = 0.4;
 
-  // Humidity: very dry = pollen stays airborne; very humid = settles
-  if (humidity < 40) mod += 0.5;
-  else if (humidity < 60) mod += 0.1;
-  else if (humidity > 80) mod -= 0.3;
+  var hf;
+  if (humidity < 35) hf = 1.15;
+  else if (humidity < 50) hf = 1.05;
+  else if (humidity < 65) hf = 1.0;
+  else if (humidity < 80) hf = 0.85;
+  else hf = 0.7;
 
-  // Wind: more wind = more pollen dispersal
-  if (wind > 20) mod += 0.5;
-  else if (wind > 10) mod += 0.25;
+  var wf;
+  if (wind > 25) wf = 1.2;
+  else if (wind > 15) wf = 1.1;
+  else if (wind > 8) wf = 1.0;
+  else wf = 0.95;
 
-  // Rain: washes pollen out of the air
-  if (precip > 5) mod -= 1.0;
-  else if (precip > 1) mod -= 0.5;
-  else if (precip > 0) mod -= 0.2;
+  var pf;
+  if (precip > 20) pf = 0.1;
+  else if (precip > 10) pf = 0.2;
+  else if (precip > 5) pf = 0.3;
+  else if (precip > 1) pf = 0.5;
+  else if (precip > 0) pf = 0.85;
+  else pf = 1.0;
 
-  return mod;
+  var cf = 1.0;
+  if (wxCode >= 95) cf = 0.5;
+  else if (wxCode >= 80 && wxCode <= 82) cf = 0.6;
+  else if (wxCode >= 71 && wxCode <= 77) cf = 0.5;
+  else if (wxCode >= 61 && wxCode <= 67) cf = 0.7;
+  else if (wxCode >= 51 && wxCode <= 57) cf = 0.8;
+  else if (wxCode >= 45 && wxCode <= 48) cf = 0.85;
+
+  var factor = tf * hf * wf * pf * cf;
+  return Math.max(0.1, Math.min(1.6, factor));
 }
 
-function computeRisk(seasonBase, wxMod) {
-  return Math.max(0, Math.min(4, seasonBase + wxMod));
+function computeRisk(seasonBase, wxFactor) {
+  return Math.max(0, Math.min(4, seasonBase * wxFactor));
 }
 
 // ── Elevation-adjusted bloom timing (Hopkins' Bioclimatic Law) ──
@@ -942,7 +960,7 @@ function computeHourlyBreakdown(hourlyData, now, cityElev, reg) {
   var results = [];
   for (var p = 0; p < periods.length; p++) {
     var per = periods[p];
-    var temps = [], humids = [], winds = [], precips = [];
+    var temps = [], humids = [], winds = [], precips = [], wxCodes = [];
 
     for (var i = 0; i < hourlyData.time.length; i++) {
       var ts = hourlyData.time[i];
@@ -953,6 +971,7 @@ function computeHourlyBreakdown(hourlyData, now, cityElev, reg) {
         humids.push(hourlyData.relative_humidity_2m[i]);
         winds.push(hourlyData.wind_speed_10m[i]);
         precips.push(hourlyData.precipitation[i]);
+        if (hourlyData.weather_code) wxCodes.push(hourlyData.weather_code[i]);
       }
     }
     if (temps.length === 0) continue;
@@ -963,13 +982,14 @@ function computeHourlyBreakdown(hourlyData, now, cityElev, reg) {
     var avgHumid = avg(humids);
     var maxWind = Math.max.apply(null, winds);
     var totalPrecip = sum(precips);
+    var dominantWxCode = wxCodes.length > 0 ? Math.max.apply(null, wxCodes) : 0;
 
-    var wxMod = weatherModifier(avgTemp, avgHumid, maxWind, totalPrecip);
+    var wxFactor = weatherFactor(avgTemp, avgHumid, maxWind, totalPrecip, dominantWxCode);
     var adjNow = adjustDateForElevation(now, cityElev || BASELINE_ELEV);
     var r = reg || REGIONS.drs;
-    var treeR = computeRisk(getSeasonalBase(TREE_SEASON, adjNow) * r.tree, wxMod);
-    var grassR = computeRisk(getSeasonalBase(GRASS_SEASON, adjNow) * r.grass, wxMod);
-    var weedR = computeRisk(getSeasonalBase(WEED_SEASON, adjNow) * r.weed, wxMod);
+    var treeR = computeRisk(getSeasonalBase(TREE_SEASON, adjNow) * r.tree, wxFactor);
+    var grassR = computeRisk(getSeasonalBase(GRASS_SEASON, adjNow) * r.grass, wxFactor);
+    var weedR = computeRisk(getSeasonalBase(WEED_SEASON, adjNow) * r.weed, wxFactor);
 
     results.push({
       key: per.key,
@@ -1337,24 +1357,18 @@ async function fetchData() {
       var todayPrecip = daily.precipitation_sum[0];
       var todayWxCode = daily.weather_code[0];
 
-      // Weather code penalty for rain/snow
-      var wxCodePenalty = 0;
-      if (todayWxCode >= 71 && todayWxCode <= 77) wxCodePenalty = -0.5; // snow
-      if (todayWxCode >= 61 && todayWxCode <= 67) wxCodePenalty = -0.3; // rain
-      if (todayWxCode >= 80 && todayWxCode <= 82) wxCodePenalty = -0.4; // showers
-
-      var wxMod = weatherModifier(todayTemp, todayHumidity, todayWind, todayPrecip) + wxCodePenalty;
+      var wxFactor = weatherFactor(todayTemp, todayHumidity, todayWind, todayPrecip, todayWxCode);
       var adjNow = adjustDateForElevation(now, cityElev);
       var treeBase = getSeasonalBase(TREE_SEASON, adjNow) * reg.tree;
       var grassBase = getSeasonalBase(GRASS_SEASON, adjNow) * reg.grass;
       var weedBase = getSeasonalBase(WEED_SEASON, adjNow) * reg.weed;
 
-      var treeRisk = computeRisk(treeBase, wxMod);
-      var grassRisk = computeRisk(grassBase, wxMod);
-      var weedRisk = computeRisk(weedBase, wxMod);
+      var treeRisk = computeRisk(treeBase, wxFactor);
+      var grassRisk = computeRisk(grassBase, wxFactor);
+      var weedRisk = computeRisk(weedBase, wxFactor);
       var overallRisk = Math.max(treeRisk, grassRisk, weedRisk);
 
-      renderBanner(overallRisk, cityName, wxMod);
+      renderBanner(overallRisk, cityName, wxFactor);
       renderPollenCards(treeRisk, grassRisk, weedRisk, now);
 
       var hourlyBlocks = wx.hourly ? computeHourlyBreakdown(wx.hourly, now, cityElev, reg) : null;
@@ -1369,18 +1383,18 @@ async function fetchData() {
 
     } else {
       // Tier 3: seasonal-only, no weather adjustment
-      var wxMod = 0;
+      var wxFactor = 1.0;
       var adjNow = adjustDateForElevation(now, cityElev);
       var treeBase = getSeasonalBase(TREE_SEASON, adjNow) * reg.tree;
       var grassBase = getSeasonalBase(GRASS_SEASON, adjNow) * reg.grass;
       var weedBase = getSeasonalBase(WEED_SEASON, adjNow) * reg.weed;
 
-      var treeRisk = computeRisk(treeBase, wxMod);
-      var grassRisk = computeRisk(grassBase, wxMod);
-      var weedRisk = computeRisk(weedBase, wxMod);
+      var treeRisk = computeRisk(treeBase, wxFactor);
+      var grassRisk = computeRisk(grassBase, wxFactor);
+      var weedRisk = computeRisk(weedBase, wxFactor);
       var overallRisk = Math.max(treeRisk, grassRisk, weedRisk);
 
-      renderBanner(overallRisk, cityName, wxMod);
+      renderBanner(overallRisk, cityName, wxFactor);
       renderPollenCards(treeRisk, grassRisk, weedRisk, now);
       renderHourlyBreakdown(null);
 
@@ -1422,7 +1436,7 @@ async function fetchData() {
   }
 }
 
-function renderBanner(overall, cityName, wxMod) {
+function renderBanner(overall, cityName, wxFactor) {
   var info = getRiskInfo(overall);
   var banner = document.getElementById("risk-banner");
   banner.style.background = info.bg;
@@ -1431,10 +1445,10 @@ function renderBanner(overall, cityName, wxMod) {
   document.getElementById("banner-level").textContent = info.label + " " + t("pollen.riskSuffix");
 
   var wxNote = "";
-  if (wxMod <= -1.5) wxNote = t("wx.mod.strongSuppress");
-  else if (wxMod <= -0.5) wxNote = t("wx.mod.reducing");
-  else if (wxMod >= 1.0) wxNote = t("wx.mod.amplifying");
-  else if (wxMod >= 0.5) wxNote = t("wx.mod.slightElevating");
+  if (wxFactor <= 0.3) wxNote = t("wx.mod.strongSuppress");
+  else if (wxFactor <= 0.7) wxNote = t("wx.mod.reducing");
+  else if (wxFactor >= 1.3) wxNote = t("wx.mod.amplifying");
+  else if (wxFactor >= 1.1) wxNote = t("wx.mod.slightElevating");
 
   document.getElementById("banner-desc").textContent = cityName + " \u2014 " + info.advice + wxNote;
 }
@@ -1562,17 +1576,12 @@ function renderForecast(daily, now, cityElev, reg) {
     var dayHumidity = daily.relative_humidity_2m_mean ? daily.relative_humidity_2m_mean[i] : 50;
 
     var fcWxCode = daily.weather_code[i];
-    var fcCodePenalty = 0;
-    if (fcWxCode >= 71 && fcWxCode <= 77) fcCodePenalty = -0.5;
-    if (fcWxCode >= 61 && fcWxCode <= 67) fcCodePenalty = -0.3;
-    if (fcWxCode >= 80 && fcWxCode <= 82) fcCodePenalty = -0.4;
-
-    var wxMod = weatherModifier(dayTemp, dayHumidity, dayWind, dayPrecip) + fcCodePenalty;
+    var wxFactor = weatherFactor(dayTemp, dayHumidity, dayWind, dayPrecip, fcWxCode);
     var adjD = adjustDateForElevation(d, cityElev || BASELINE_ELEV);
     var r = reg || REGIONS.drs;
-    var treeR = computeRisk(getSeasonalBase(TREE_SEASON, adjD) * r.tree, wxMod);
-    var grassR = computeRisk(getSeasonalBase(GRASS_SEASON, adjD) * r.grass, wxMod);
-    var weedR = computeRisk(getSeasonalBase(WEED_SEASON, adjD) * r.weed, wxMod);
+    var treeR = computeRisk(getSeasonalBase(TREE_SEASON, adjD) * r.tree, wxFactor);
+    var grassR = computeRisk(getSeasonalBase(GRASS_SEASON, adjD) * r.grass, wxFactor);
+    var weedR = computeRisk(getSeasonalBase(WEED_SEASON, adjD) * r.weed, wxFactor);
     var peak = Math.max(treeR, grassR, weedR);
     var info = getRiskInfo(peak);
 
@@ -1705,17 +1714,13 @@ async function setLanguage(lang) {
       var todayWind = daily.wind_speed_10m_max[0];
       var todayPrecip = daily.precipitation_sum[0];
       var todayWxCode = daily.weather_code[0];
-      var wxCodePenalty = 0;
-      if (todayWxCode >= 71 && todayWxCode <= 77) wxCodePenalty = -0.5;
-      if (todayWxCode >= 61 && todayWxCode <= 67) wxCodePenalty = -0.3;
-      if (todayWxCode >= 80 && todayWxCode <= 82) wxCodePenalty = -0.4;
-      var wxMod = weatherModifier(todayTemp, todayHumidity, todayWind, todayPrecip) + wxCodePenalty;
-      var treeRisk = computeRisk(getSeasonalBase(TREE_SEASON, adjNow) * rg.tree, wxMod);
-      var grassRisk = computeRisk(getSeasonalBase(GRASS_SEASON, adjNow) * rg.grass, wxMod);
-      var weedRisk = computeRisk(getSeasonalBase(WEED_SEASON, adjNow) * rg.weed, wxMod);
+      var wxFactor = weatherFactor(todayTemp, todayHumidity, todayWind, todayPrecip, todayWxCode);
+      var treeRisk = computeRisk(getSeasonalBase(TREE_SEASON, adjNow) * rg.tree, wxFactor);
+      var grassRisk = computeRisk(getSeasonalBase(GRASS_SEASON, adjNow) * rg.grass, wxFactor);
+      var weedRisk = computeRisk(getSeasonalBase(WEED_SEASON, adjNow) * rg.weed, wxFactor);
       var overallRisk = Math.max(treeRisk, grassRisk, weedRisk);
 
-      renderBanner(overallRisk, cityName, wxMod);
+      renderBanner(overallRisk, cityName, wxFactor);
       renderPollenCards(treeRisk, grassRisk, weedRisk, now);
       var hourlyBlocks = s.wx.hourly ? computeHourlyBreakdown(s.wx.hourly, now, elev, rg) : null;
       renderHourlyBreakdown(hourlyBlocks);
@@ -1724,13 +1729,13 @@ async function setLanguage(lang) {
       renderForecast(daily, now, elev, rg);
       document.getElementById("forecast-title").textContent = s.weatherTier === 2 ? t("section.forecast2") : t("section.forecast5");
     } else {
-      var wxMod = 0;
-      var treeRisk = computeRisk(getSeasonalBase(TREE_SEASON, adjNow) * rg.tree, wxMod);
-      var grassRisk = computeRisk(getSeasonalBase(GRASS_SEASON, adjNow) * rg.grass, wxMod);
-      var weedRisk = computeRisk(getSeasonalBase(WEED_SEASON, adjNow) * rg.weed, wxMod);
+      var wxFactor = 1.0;
+      var treeRisk = computeRisk(getSeasonalBase(TREE_SEASON, adjNow) * rg.tree, wxFactor);
+      var grassRisk = computeRisk(getSeasonalBase(GRASS_SEASON, adjNow) * rg.grass, wxFactor);
+      var weedRisk = computeRisk(getSeasonalBase(WEED_SEASON, adjNow) * rg.weed, wxFactor);
       var overallRisk = Math.max(treeRisk, grassRisk, weedRisk);
 
-      renderBanner(overallRisk, cityName, wxMod);
+      renderBanner(overallRisk, cityName, wxFactor);
       renderPollenCards(treeRisk, grassRisk, weedRisk, now);
       renderHourlyBreakdown(null);
       document.getElementById("forecast-title").textContent = t("section.forecastNone");
@@ -1785,7 +1790,7 @@ async function sharePollen() {
   var treeBase = getSeasonalBase(TREE_SEASON, adjNow) * rg.tree;
   var grassBase = getSeasonalBase(GRASS_SEASON, adjNow) * rg.grass;
   var weedBase = getSeasonalBase(WEED_SEASON, adjNow) * rg.weed;
-  var wxMod = 0;
+  var wxFactor = 1.0;
 
   if ((s.weatherTier === 1 || s.weatherTier === 2) && s.wx) {
     var daily = s.wx.daily;
@@ -1795,16 +1800,12 @@ async function sharePollen() {
     var todayWind = daily.wind_speed_10m_max[0];
     var todayPrecip = daily.precipitation_sum[0];
     var todayWxCode = daily.weather_code[0];
-    var wxCodePenalty = 0;
-    if (todayWxCode >= 71 && todayWxCode <= 77) wxCodePenalty = -0.5;
-    if (todayWxCode >= 61 && todayWxCode <= 67) wxCodePenalty = -0.3;
-    if (todayWxCode >= 80 && todayWxCode <= 82) wxCodePenalty = -0.4;
-    wxMod = weatherModifier(todayTemp, todayHumidity, todayWind, todayPrecip) + wxCodePenalty;
+    wxFactor = weatherFactor(todayTemp, todayHumidity, todayWind, todayPrecip, todayWxCode);
   }
 
-  var treeRisk = computeRisk(treeBase, wxMod);
-  var grassRisk = computeRisk(grassBase, wxMod);
-  var weedRisk = computeRisk(weedBase, wxMod);
+  var treeRisk = computeRisk(treeBase, wxFactor);
+  var grassRisk = computeRisk(grassBase, wxFactor);
+  var weedRisk = computeRisk(weedBase, wxFactor);
   var overall = Math.max(treeRisk, grassRisk, weedRisk);
   var overallInfo = getRiskInfo(overall);
   var treeInfo = getRiskInfo(treeRisk);
