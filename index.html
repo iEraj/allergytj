@@ -329,18 +329,32 @@
   .weather-strip {
     background: var(--card);
     border-radius: var(--radius);
-    padding: 16px 20px;
+    padding: 20px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-    font-size: 0.85rem;
     margin: 16px 0;
   }
-  .weather-strip .wx-item { text-align: center; }
-  .weather-strip .wx-val { font-weight: 700; font-size: 1.1rem; }
-  .weather-strip .wx-label { color: var(--muted); font-size: 0.7rem; }
+  .wx-hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .wx-hero-icon { font-size: 2.4rem; line-height: 1; }
+  .wx-hero-temp { font-size: 2.6rem; font-weight: 700; line-height: 1; }
+  .wx-hero-condition { font-size: 0.95rem; color: var(--muted); text-align: left; }
+  .wx-hero-condition .wx-now { font-weight: 600; color: var(--text); font-size: 1.05rem; }
+  .wx-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    text-align: center;
+  }
+  .wx-stat-icon { font-size: 1.1rem; margin-bottom: 2px; }
+  .wx-stat-val { font-weight: 700; font-size: 0.95rem; }
+  .wx-stat-label { color: var(--muted); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.03em; }
 
   /* Forecast */
   .forecast-row {
@@ -535,6 +549,9 @@
     .pollen-cards, .skel-cards { grid-template-columns: 1fr; }
     .hourly-cards { grid-template-columns: 1fr; }
     .forecast-row, .skel-forecast { grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
+    .wx-hero-icon { font-size: 2rem; }
+    .wx-hero-temp { font-size: 2.2rem; }
+    .wx-stats { grid-template-columns: repeat(2, 1fr); gap: 12px; }
     .risk-banner { padding: 20px 16px; }
     .risk-banner .desc { font-size: 0.8rem; }
   }
@@ -1357,6 +1374,7 @@ async function fetchData() {
       var todayPrecip = daily.precipitation_sum[0];
       var todayWxCode = daily.weather_code[0];
 
+      var wxData = {temp: todayTemp, humidity: todayHumidity, wind: todayWind, precip: todayPrecip, wxCode: todayWxCode};
       var wxFactor = weatherFactor(todayTemp, todayHumidity, todayWind, todayPrecip, todayWxCode);
       var adjNow = adjustDateForElevation(now, cityElev);
       var treeBase = getSeasonalBase(TREE_SEASON, adjNow) * reg.tree;
@@ -1368,7 +1386,7 @@ async function fetchData() {
       var weedRisk = computeRisk(weedBase, wxFactor);
       var overallRisk = Math.max(treeRisk, grassRisk, weedRisk);
 
-      renderBanner(overallRisk, cityName, wxFactor);
+      renderBanner(overallRisk, cityName, wxFactor, wxData);
       renderPollenCards(treeRisk, grassRisk, weedRisk, now);
 
       var hourlyBlocks = wx.hourly ? computeHourlyBreakdown(wx.hourly, now, cityElev, reg) : null;
@@ -1394,7 +1412,7 @@ async function fetchData() {
       var weedRisk = computeRisk(weedBase, wxFactor);
       var overallRisk = Math.max(treeRisk, grassRisk, weedRisk);
 
-      renderBanner(overallRisk, cityName, wxFactor);
+      renderBanner(overallRisk, cityName, wxFactor, null);
       renderPollenCards(treeRisk, grassRisk, weedRisk, now);
       renderHourlyBreakdown(null);
 
@@ -1436,7 +1454,7 @@ async function fetchData() {
   }
 }
 
-function renderBanner(overall, cityName, wxFactor) {
+function renderBanner(overall, cityName, wxFactor, wxData) {
   var info = getRiskInfo(overall);
   var banner = document.getElementById("risk-banner");
   banner.style.background = info.bg;
@@ -1445,10 +1463,31 @@ function renderBanner(overall, cityName, wxFactor) {
   document.getElementById("banner-level").textContent = info.label + " " + t("pollen.riskSuffix");
 
   var wxNote = "";
-  if (wxFactor <= 0.3) wxNote = t("wx.mod.strongSuppress");
-  else if (wxFactor <= 0.7) wxNote = t("wx.mod.reducing");
-  else if (wxFactor >= 1.3) wxNote = t("wx.mod.amplifying");
-  else if (wxFactor >= 1.1) wxNote = t("wx.mod.slightElevating");
+  if (wxData && wxFactor < 1.0) {
+    var reasons = [];
+    if (wxData.wxCode >= 95) reasons.push(t("wx.reason.thunderstorm"));
+    else if (wxData.wxCode >= 71 && wxData.wxCode <= 77) reasons.push(t("wx.reason.snow"));
+    else if (wxData.precip > 1) reasons.push(t("wx.reason.rain"));
+    if (wxData.temp < 5) reasons.push(t("wx.reason.cold"));
+    if (wxData.humidity >= 75) reasons.push(t("wx.reason.humid"));
+    else if (wxData.humidity >= 65) reasons.push(t("wx.reason.moist"));
+    if (wxData.wind < 5) reasons.push(t("wx.reason.calm"));
+    if (reasons.length > 0) {
+      var joined = reasons.join(", ");
+      if (wxFactor <= 0.3) wxNote = " " + t("wx.mod.strongSuppress", {reasons: joined});
+      else wxNote = " " + t("wx.mod.reducing", {reasons: joined});
+    }
+  } else if (wxData && wxFactor > 1.0) {
+    var reasons = [];
+    if (wxData.temp > 25) reasons.push(t("wx.reason.hot"));
+    if (wxData.humidity < 50) reasons.push(t("wx.reason.dry"));
+    if (wxData.wind > 15) reasons.push(t("wx.reason.windy"));
+    if (reasons.length > 0) {
+      var joined = reasons.join(", ");
+      if (wxFactor >= 1.3) wxNote = " " + t("wx.mod.amplifying", {reasons: joined});
+      else wxNote = " " + t("wx.mod.slightElevating", {reasons: joined});
+    }
+  }
 
   document.getElementById("banner-desc").textContent = cityName + " \u2014 " + info.advice + wxNote;
 }
@@ -1478,20 +1517,52 @@ function getActiveSpecies(speciesKey, seasonArr, month) {
   return t("species." + speciesKey);
 }
 
+function wxEmoji(code) {
+  if (code >= 95) return "\u26C8\uFE0F";
+  if (code >= 80) return "\uD83C\uDF27\uFE0F";
+  if (code >= 71) return "\u2744\uFE0F";
+  if (code >= 61) return "\uD83C\uDF27\uFE0F";
+  if (code >= 51) return "\uD83C\uDF26\uFE0F";
+  if (code >= 45) return "\uD83C\uDF2B\uFE0F";
+  if (code === 3) return "\u2601\uFE0F";
+  if (code === 2) return "\u26C5";
+  if (code === 1) return "\uD83C\uDF24\uFE0F";
+  return "\u2600\uFE0F";
+}
+
+function uvColor(val) {
+  if (val == null) return "var(--muted)";
+  if (val >= 11) return "#7b2ff7";
+  if (val >= 8) return "#d32f2f";
+  if (val >= 6) return "#e65100";
+  if (val >= 3) return "#f9a825";
+  return "#388e3c";
+}
+
 function renderWeather(temp, humidity, wind, todayPrecip, code, dailyCode, uv) {
   var strip = document.getElementById("weather-strip");
-  var items = [
-    { val: temp + "\u00B0C", label: t("wx.label.rightNow") },
-    { val: humidity + "%", label: t("wx.label.humidity") },
-    { val: wind + " " + t("fc.wind", {kmh: ""}).replace(/^/, "").trim(), label: t("wx.label.wind") },
-    { val: todayPrecip + " mm", label: t("wx.label.rainToday") },
-    { val: uv !== null && uv !== undefined ? uv.toFixed(1) : "\u2014", label: t("wx.label.uv") },
-    { val: wxDescription(code), label: t("wx.label.now") },
-    { val: wxDescription(dailyCode), label: t("wx.label.todayOverall") },
-  ];
-  strip.innerHTML = items.map(function(it) {
-    return '<div class="wx-item"><div class="wx-val">' + it.val + '</div><div class="wx-label">' + it.label + '</div></div>';
-  }).join("");
+  var nowDesc = wxDescription(code);
+  var dayDesc = wxDescription(dailyCode);
+  var uvVal = uv !== null && uv !== undefined ? uv.toFixed(1) : "\u2014";
+  var windUnit = t("fc.wind", {kmh: ""}).replace(/^/, "").trim();
+  var emoji = wxEmoji(code);
+  var uvC = uvColor(uv);
+
+  strip.innerHTML =
+    '<div class="wx-hero">' +
+      '<div class="wx-hero-icon">' + emoji + '</div>' +
+      '<div class="wx-hero-temp">' + Math.round(temp) + '\u00B0</div>' +
+      '<div class="wx-hero-condition">' +
+        '<div class="wx-now">' + nowDesc + '</div>' +
+        '<div>' + t("wx.label.todayOverall") + ': ' + dayDesc + '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="wx-stats">' +
+      '<div><div class="wx-stat-icon">\uD83D\uDCA7</div><div class="wx-stat-val">' + humidity + '%</div><div class="wx-stat-label">' + t("wx.label.humidity") + '</div></div>' +
+      '<div><div class="wx-stat-icon">\uD83D\uDCA8</div><div class="wx-stat-val">' + wind + ' ' + windUnit + '</div><div class="wx-stat-label">' + t("wx.label.wind") + '</div></div>' +
+      '<div><div class="wx-stat-icon">\u2614</div><div class="wx-stat-val">' + todayPrecip + ' mm</div><div class="wx-stat-label">' + t("wx.label.rainToday") + '</div></div>' +
+      '<div><div class="wx-stat-icon">\u2600\uFE0F</div><div class="wx-stat-val" style="color:' + uvC + '">' + uvVal + '</div><div class="wx-stat-label">' + t("wx.label.uv") + '</div></div>' +
+    '</div>';
 }
 
 function renderAqi(aq) {
@@ -1714,13 +1785,14 @@ async function setLanguage(lang) {
       var todayWind = daily.wind_speed_10m_max[0];
       var todayPrecip = daily.precipitation_sum[0];
       var todayWxCode = daily.weather_code[0];
+      var wxData = {temp: todayTemp, humidity: todayHumidity, wind: todayWind, precip: todayPrecip, wxCode: todayWxCode};
       var wxFactor = weatherFactor(todayTemp, todayHumidity, todayWind, todayPrecip, todayWxCode);
       var treeRisk = computeRisk(getSeasonalBase(TREE_SEASON, adjNow) * rg.tree, wxFactor);
       var grassRisk = computeRisk(getSeasonalBase(GRASS_SEASON, adjNow) * rg.grass, wxFactor);
       var weedRisk = computeRisk(getSeasonalBase(WEED_SEASON, adjNow) * rg.weed, wxFactor);
       var overallRisk = Math.max(treeRisk, grassRisk, weedRisk);
 
-      renderBanner(overallRisk, cityName, wxFactor);
+      renderBanner(overallRisk, cityName, wxFactor, wxData);
       renderPollenCards(treeRisk, grassRisk, weedRisk, now);
       var hourlyBlocks = s.wx.hourly ? computeHourlyBreakdown(s.wx.hourly, now, elev, rg) : null;
       renderHourlyBreakdown(hourlyBlocks);
@@ -1735,7 +1807,7 @@ async function setLanguage(lang) {
       var weedRisk = computeRisk(getSeasonalBase(WEED_SEASON, adjNow) * rg.weed, wxFactor);
       var overallRisk = Math.max(treeRisk, grassRisk, weedRisk);
 
-      renderBanner(overallRisk, cityName, wxFactor);
+      renderBanner(overallRisk, cityName, wxFactor, null);
       renderPollenCards(treeRisk, grassRisk, weedRisk, now);
       renderHourlyBreakdown(null);
       document.getElementById("forecast-title").textContent = t("section.forecastNone");
