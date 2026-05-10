@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="google-site-verification" content="Dodf4c480Lb4XlPGXnVrHUyxFPyEH-bY06Pg-4re58w" />
 <meta name="description" id="meta-desc" content="Seasonal allergy and pollen risk tracker for Tajikistan. Live pollen forecast, air quality, and 5-day outlook for 32 cities.">
 <meta name="keywords" id="meta-keywords" content="pollen, allergy, Tajikistan, pollen forecast, air quality, Dushanbe, allergy tracker, pollen risk, AQI, seasonal allergy">
@@ -144,12 +144,16 @@
     color: var(--text);
     min-height: 100vh;
     padding: 0 0 40px;
+    padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px));
     line-height: 1.5;
   }
   header {
     background: #1a3a2a;
     color: white;
     padding: 28px 20px;
+    padding-top: calc(28px + env(safe-area-inset-top, 0px));
+    padding-left: calc(20px + env(safe-area-inset-left, 0px));
+    padding-right: calc(20px + env(safe-area-inset-right, 0px));
     text-align: center;
     position: relative;
   }
@@ -521,9 +525,9 @@
   .skel-fc { height: 120px; }
 
   @media (max-width: 600px) {
-    header { padding: 16px 16px 12px; }
+    header { padding: 16px 16px 12px; padding-top: calc(16px + env(safe-area-inset-top, 0px)); }
     header h1 { font-size: 1.3rem; }
-    .header-controls { top: 8px; right: 10px; gap: 6px; }
+    .header-controls { top: 8px; right: 10px; gap: 6px; top: calc(8px + env(safe-area-inset-top, 0px)); }
     .theme-toggle { width: 28px; height: 28px; font-size: 0.85rem; }
     .lang-select { padding: 8px 12px; font-size: 0.85rem; }
     .gps-icon { padding: 10px 14px; font-size: 1.4rem; }
@@ -1929,7 +1933,7 @@ function showUpdateBanner(worker) {
   var banner = document.createElement('div');
   banner.id = 'sw-update-banner';
   banner.setAttribute('role', 'alert');
-  banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:var(--card);color:var(--text);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;z-index:9999;font-size:0.9rem;box-shadow:0 -2px 8px rgba(0,0,0,0.2);border-top:1px solid var(--border);';
+  banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:var(--card);color:var(--text);padding:12px 16px;padding-bottom:calc(12px + env(safe-area-inset-bottom, 0px));display:flex;align-items:center;justify-content:space-between;z-index:9999;font-size:0.9rem;box-shadow:0 -2px 8px rgba(0,0,0,0.2);border-top:1px solid var(--border);';
   var span = document.createElement('span');
   span.textContent = t('pwa.updateAvailable');
   var btn = document.createElement('button');
@@ -1943,6 +1947,14 @@ function showUpdateBanner(worker) {
 
 var _deferredInstallPrompt = null;
 
+window.addEventListener('appinstalled', function() {
+  _deferredInstallPrompt = null;
+  var b = document.getElementById('install-banner');
+  if (b) b.remove();
+  var tip = document.getElementById('ios-install-tip');
+  if (tip) tip.remove();
+});
+
 window.addEventListener('beforeinstallprompt', function(e) {
   e.preventDefault();
   if (localStorage.getItem('allergytj-install-dismissed')) return;
@@ -1955,7 +1967,7 @@ function showInstallBanner() {
   if (existing) return;
   var banner = document.createElement('div');
   banner.id = 'install-banner';
-  banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:var(--card);color:var(--text);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:9998;box-shadow:0 -2px 8px rgba(0,0,0,0.15);border-top:1px solid var(--border);';
+  banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:var(--card);color:var(--text);padding:14px 16px;padding-bottom:calc(14px + env(safe-area-inset-bottom, 0px));display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:9998;box-shadow:0 -2px 8px rgba(0,0,0,0.15);border-top:1px solid var(--border);';
   var span = document.createElement('span');
   span.style.cssText = 'flex:1;font-size:0.85rem;';
   span.textContent = t('pwa.installPrompt');
@@ -1993,7 +2005,7 @@ if (window.navigator.standalone === false && !localStorage.getItem('allergytj-in
     var toast = document.createElement('div');
     toast.id = 'ios-install-tip';
     toast.setAttribute('role', 'status');
-    toast.style.cssText = 'position:fixed;bottom:16px;left:16px;right:16px;background:var(--card);color:var(--text);padding:14px 16px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.2);z-index:9998;font-size:0.85rem;text-align:center;border:1px solid var(--border);';
+    toast.style.cssText = 'position:fixed;bottom:16px;bottom:calc(16px + env(safe-area-inset-bottom, 0px));left:16px;right:16px;background:var(--card);color:var(--text);padding:14px 16px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.2);z-index:9998;font-size:0.85rem;text-align:center;border:1px solid var(--border);';
     var msg = document.createElement('span');
     msg.textContent = t('pwa.iosInstall');
     var dismissBtn = document.createElement('button');
