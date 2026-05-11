@@ -165,21 +165,6 @@
     align-items: center;
     gap: 8px;
   }
-  .theme-toggle {
-    background: rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.4);
-    color: white;
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-  }
-  .theme-toggle:hover { background: rgba(255,255,255,0.25); }
   .lang-switch {
   }
   .lang-select {
@@ -518,6 +503,53 @@
   .note a { color: var(--muted); text-decoration: underline; }
   .note a:hover { color: var(--text); }
 
+  /* Floating action buttons */
+  .fab-group {
+    position: fixed;
+    bottom: 24px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 900;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .fab {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    transition: opacity 0.25s, transform 0.25s;
+  }
+  .fab-theme {
+    background: #1a3a2a;
+    color: white;
+  }
+  .fab-theme:hover { background: #244a36; }
+  [data-theme="dark"] .fab-theme { background: #2a2a3e; }
+  [data-theme="dark"] .fab-theme:hover { background: #3a3a50; }
+  .fab-top {
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--border);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(8px);
+    font-weight: 700;
+  }
+  .fab-top:hover { background: var(--bg); }
+  .fab-top.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
   /* Loading Skeleton */
   @keyframes shimmer {
     0% { background-position: 200% 0; }
@@ -542,7 +574,6 @@
     header { padding: 16px 16px 12px; padding-top: calc(16px + env(safe-area-inset-top, 0px)); }
     header h1 { font-size: 1.3rem; }
     .header-controls { top: 8px; right: 10px; gap: 6px; top: calc(8px + env(safe-area-inset-top, 0px)); }
-    .theme-toggle { width: 28px; height: 28px; font-size: 0.85rem; }
     .lang-select { padding: 8px 12px; font-size: 0.85rem; }
     .gps-icon { padding: 10px 14px; font-size: 1.4rem; }
     .picker select { flex: 1; min-width: 0; }
@@ -563,7 +594,6 @@
   <h1 data-i18n="header.title">AllergyTJ</h1>
   <p data-i18n="header.subtitle">Seasonal allergy tracker for Tajikistan — based on seasonal data &amp; live weather</p>
   <div class="header-controls">
-    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙</button>
     <div class="lang-switch">
       <select class="lang-select" id="lang-select" onchange="setLanguage(this.value)" aria-label="Language">
         <option value="en">EN</option>
@@ -783,6 +813,11 @@
   </p>
 </div>
 </main>
+
+<div class="fab-group" id="fab-group">
+  <button class="fab fab-top" id="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top">↑</button>
+  <button class="fab fab-theme" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙</button>
+</div>
 
 <script>
 // ── i18n: Language detection and translation loading ──
@@ -1839,6 +1874,18 @@ function toggleTheme() {
   } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
     applyTheme("dark");
   }
+})();
+
+// ── Scroll-to-top visibility ──
+(function() {
+  var fab = document.getElementById("scroll-top-btn");
+  var last = 0;
+  window.addEventListener("scroll", function() {
+    var now = Date.now();
+    if (now - last < 100) return;
+    last = now;
+    fab.classList.toggle("visible", window.scrollY > 400);
+  }, {passive: true});
 })();
 
 // ── About toggle ──
