@@ -759,6 +759,16 @@
       <h3 data-i18n="about.sourcesTitle">Data Sources</h3>
       <p data-i18n="about.sources">Risk scores combine three inputs: a seasonal pollen calendar based on Tajikistan's known allergenic flora (poplar, willow, birch, plane tree, mulberry, grasses, mugwort, chenopod, ragweed), live weather data from Open-Meteo (temperature, humidity, wind, precipitation), and air quality data from Open-Meteo CAMS (US AQI with per-pollutant breakdown: PM2.5, PM10, ozone, NO₂, SO₂, CO).</p>
 
+      <h3 data-i18n="about.guideTitle">How to Read This Page</h3>
+      <ul>
+        <li data-i18n="about.guide.banner">Risk banner + pollen cards — "Should I go outside right now?" Current period risk based on live weather.</li>
+        <li data-i18n="about.guide.hourly">Time of day breakdown — "When is it better or worse today?" Morning, afternoon, and evening compared.</li>
+        <li data-i18n="about.guide.weather">Weather strip — "What are conditions like right now?" Temperature, humidity, wind, and UV.</li>
+        <li data-i18n="about.guide.aqi">Air quality — "Is the air safe to breathe?" Composite AQI and per-pollutant breakdown.</li>
+        <li data-i18n="about.guide.forecast">3-day forecast — "What about the coming days?" Daily risk estimates for planning ahead.</li>
+        <li data-i18n="about.guide.calendar">Seasonal calendar — "What's in bloom this month?" Year-round allergen reference.</li>
+      </ul>
+
       <h3 data-i18n="about.weatherTitle">How Weather Affects Risk</h3>
       <p data-i18n="about.weather">Hot, dry, windy conditions increase pollen dispersal and raise the risk score. Rain, snow, cold, and high humidity suppress airborne pollen and lower the score. The weather modifier adjusts the seasonal baseline to produce a final score from 0 (None) to 4 (Very High).</p>
 
@@ -1011,6 +1021,50 @@ function adjustDateForElevation(date, elev) {
   var adj = new Date(date.getTime());
   adj.setDate(adj.getDate() - offsetDays);
   return adj;
+}
+
+// ── Current period weather (for banner + pollen cards) ──
+function getCurrentPeriodWeather(hourlyData, now) {
+  if (!hourlyData || !hourlyData.time) return null;
+  var todayStr = now.getFullYear() + "-" +
+    String(now.getMonth() + 1).padStart(2, "0") + "-" +
+    String(now.getDate()).padStart(2, "0");
+  var currentHour = now.getHours();
+  var periods = [
+    { start: 6, end: 12 },
+    { start: 12, end: 18 },
+    { start: 18, end: 24 },
+  ];
+  var active = null;
+  for (var p = 0; p < periods.length; p++) {
+    if (currentHour >= periods[p].start && currentHour < periods[p].end) {
+      active = periods[p]; break;
+    }
+  }
+  if (!active) return null;
+  var temps = [], humids = [], winds = [], precips = [], wxCodes = [];
+  for (var i = 0; i < hourlyData.time.length; i++) {
+    var ts = hourlyData.time[i];
+    if (ts.slice(0, 10) !== todayStr) continue;
+    var hr = parseInt(ts.slice(11, 13), 10);
+    if (hr >= active.start && hr < active.end) {
+      temps.push(hourlyData.temperature_2m[i]);
+      humids.push(hourlyData.relative_humidity_2m[i]);
+      winds.push(hourlyData.wind_speed_10m[i]);
+      precips.push(hourlyData.precipitation[i]);
+      if (hourlyData.weather_code) wxCodes.push(hourlyData.weather_code[i]);
+    }
+  }
+  if (temps.length === 0) return null;
+  var avg = function(arr) { return arr.reduce(function(a, b) { return a + b; }, 0) / arr.length; };
+  var sum = function(arr) { return arr.reduce(function(a, b) { return a + b; }, 0); };
+  return {
+    temp: avg(temps),
+    humidity: avg(humids),
+    wind: Math.max.apply(null, winds),
+    precip: sum(precips),
+    wxCode: wxCodes.length > 0 ? Math.max.apply(null, wxCodes) : 0
+  };
 }
 
 // ── Hourly pollen risk breakdown (morning / afternoon / evening) ──
@@ -1420,15 +1474,23 @@ async function fetchData() {
       var curWx = wx.current;
       var daily = wx.daily;
 
-      // Use TODAY's daily totals for pollen risk
-      var todayTemp = daily.temperature_2m_max[0];
-      var todayHumidity = daily.relative_humidity_2m_mean ? daily.relative_humidity_2m_mean[0] : curWx.relative_humidity_2m;
-      var todayWind = daily.wind_speed_10m_max[0];
+      // Daily values (always needed for weather strip and forecast)
       var todayPrecip = daily.precipitation_sum[0];
       var todayWxCode = daily.weather_code[0];
 
-      var wxData = {temp: todayTemp, humidity: todayHumidity, wind: todayWind, precip: todayPrecip, wxCode: todayWxCode};
-      var wxFactor = weatherFactor(todayTemp, todayHumidity, todayWind, todayPrecip, todayWxCode);
+      // Use current period's hourly weather for banner + pollen cards, fall back to daily totals
+      var periodWx = wx.hourly ? getCurrentPeriodWeather(wx.hourly, now) : null;
+      var wxData, wxFactor;
+      if (periodWx) {
+        wxData = periodWx;
+        wxFactor = weatherFactor(periodWx.temp, periodWx.humidity, periodWx.wind, periodWx.precip, periodWx.wxCode);
+      } else {
+        var todayTemp = daily.temperature_2m_max[0];
+        var todayHumidity = daily.relative_humidity_2m_mean ? daily.relative_humidity_2m_mean[0] : curWx.relative_humidity_2m;
+        var todayWind = daily.wind_speed_10m_max[0];
+        wxData = {temp: todayTemp, humidity: todayHumidity, wind: todayWind, precip: todayPrecip, wxCode: todayWxCode};
+        wxFactor = weatherFactor(todayTemp, todayHumidity, todayWind, todayPrecip, todayWxCode);
+      }
       var adjNow = adjustDateForElevation(now, cityElev);
       var treeBase = getSeasonalBase(TREE_SEASON, adjNow) * reg.tree;
       var grassBase = getSeasonalBase(GRASS_SEASON, adjNow) * reg.grass;
@@ -1834,13 +1896,20 @@ async function setLanguage(lang) {
     if (s.weatherTier === 1 || s.weatherTier === 2) {
       var curWx = s.wx.current;
       var daily = s.wx.daily;
-      var todayTemp = daily.temperature_2m_max[0];
-      var todayHumidity = daily.relative_humidity_2m_mean ? daily.relative_humidity_2m_mean[0] : curWx.relative_humidity_2m;
-      var todayWind = daily.wind_speed_10m_max[0];
-      var todayPrecip = daily.precipitation_sum[0];
-      var todayWxCode = daily.weather_code[0];
-      var wxData = {temp: todayTemp, humidity: todayHumidity, wind: todayWind, precip: todayPrecip, wxCode: todayWxCode};
-      var wxFactor = weatherFactor(todayTemp, todayHumidity, todayWind, todayPrecip, todayWxCode);
+      var periodWx = s.wx.hourly ? getCurrentPeriodWeather(s.wx.hourly, now) : null;
+      var wxData, wxFactor;
+      if (periodWx) {
+        wxData = periodWx;
+        wxFactor = weatherFactor(periodWx.temp, periodWx.humidity, periodWx.wind, periodWx.precip, periodWx.wxCode);
+      } else {
+        var todayTemp = daily.temperature_2m_max[0];
+        var todayHumidity = daily.relative_humidity_2m_mean ? daily.relative_humidity_2m_mean[0] : curWx.relative_humidity_2m;
+        var todayWind = daily.wind_speed_10m_max[0];
+        var todayPrecip = daily.precipitation_sum[0];
+        var todayWxCode = daily.weather_code[0];
+        wxData = {temp: todayTemp, humidity: todayHumidity, wind: todayWind, precip: todayPrecip, wxCode: todayWxCode};
+        wxFactor = weatherFactor(todayTemp, todayHumidity, todayWind, todayPrecip, todayWxCode);
+      }
       var treeRisk = computeRisk(getSeasonalBase(TREE_SEASON, adjNow) * rg.tree, wxFactor);
       var grassRisk = computeRisk(getSeasonalBase(GRASS_SEASON, adjNow) * rg.grass, wxFactor);
       var weedRisk = computeRisk(getSeasonalBase(WEED_SEASON, adjNow) * rg.weed, wxFactor);
@@ -1850,6 +1919,8 @@ async function setLanguage(lang) {
       renderPollenCards(treeRisk, grassRisk, weedRisk, now);
       var hourlyBlocks = s.wx.hourly ? computeHourlyBreakdown(s.wx.hourly, now, elev, rg) : null;
       renderHourlyBreakdown(hourlyBlocks);
+      var todayPrecip = daily.precipitation_sum[0];
+      var todayWxCode = daily.weather_code[0];
       renderWeather(curWx.temperature_2m, curWx.relative_humidity_2m, curWx.wind_speed_10m,
                     todayPrecip, curWx.weather_code, todayWxCode, curWx.uv_index);
       renderForecast(daily, now, elev, rg);
