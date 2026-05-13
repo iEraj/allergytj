@@ -11,23 +11,23 @@ No pollen monitoring stations exist in Tajikistan. AllergyTJ fills the gap by es
 ## Features
 
 - **31 cities** across all regions of Tajikistan
+- **4-tab app** — Dashboard, Forecast, Regions, Insights with hash-based routing
+- **Dashboard** — circular SVG risk gauge, bento weather grid, top allergen triggers with severity bars, daily health tip, nearby regions strip
 - **Pollen risk estimation** — combines seasonal pollen calendar with real-time weather (temperature, humidity, wind, precipitation)
 - **3-day forecast** — daily pollen risk outlook based on weather forecast
-- **Air quality** — live US AQI, PM2.5, PM10 data
-- **UV index** — real-time UV data from Open-Meteo
-- **Seasonal calendar** — month-by-month pollen guide for local allergens (poplar, mugwort, chenopod, etc.)
+- **Hourly breakdown** — morning/afternoon/evening risk scores using per-period weather
+- **Air quality** — live US AQI with full 6-pollutant breakdown (O₃, PM2.5, PM10, NO₂, SO₂, CO)
+- **UV index** — real-time UV data from Open-Meteo, color-coded by severity
+- **Insights tab** — "What's Active Now" allergen cards, 12-month timeline calendar, 10 knowledge cards
 - **GPS detection** — auto-finds nearest city (HTTPS required)
-- **Zero config** — no API keys, no build step, no framework
+- **Zero config** — no API keys, no build step, no framework, no external fonts
 - **Trilingual** — English, Russian, and Tajik with browser auto-detection
+- **PWA** — installable on mobile/desktop, offline support, service worker caching
 - **3-tier weather fallback** — automatically switches to backup weather source (wttr.in) or seasonal-only mode if the primary API is down
-- **Loading skeleton** — shimmer placeholders shown while data loads, zero CLS
-- **SEO-ready** — Open Graph image, JSON-LD with author attribution, canonical, robots.txt, sitemap.xml
-- **Accessible** — WCAG AA color contrast, semantic HTML landmarks, ARIA labels, proper table headers
-- **Analytics** — Vercel Web Analytics for privacy-friendly visitor and page view tracking
 - **Dark mode** — toggle with OS preference detection, persisted across sessions
+- **SEO-ready** — Open Graph image, JSON-LD, canonical, robots.txt, sitemap.xml, hreflang tags
+- **Accessible** — WCAG AA color contrast, semantic HTML landmarks, ARIA labels
 - **Share button** — share current pollen conditions via native share or clipboard copy
-- **About section** — collapsible methodology explainer with data sources, limitations, and author credit
-- **GEO-optimized** — hreflang tags, Twitter cards, FAQPage schema for AI search engine surfacing
 
 ## How It Works
 
@@ -59,10 +59,13 @@ Open `index.html` directly in a browser. City selection works immediately; GPS r
 ```
 AllergyTJ/
 ├── index.html          # Entire frontend (HTML + CSS + JS) — the app
+├── sw.js               # Service worker (PWA caching, offline support)
+├── manifest.json       # PWA manifest (app identity, icons, display mode)
 ├── lang/
-│   ├── en.json         # English translations
+│   ├── en.json         # English translations (~269 keys)
 │   ├── ru.json         # Russian translations
 │   └── tj.json         # Tajik translations
+├── icons/              # PWA icons (10 PNGs + 1 master SVG)
 ├── api_proxy.py        # Local dev server (Flask, serves index.html)
 ├── vercel.json         # Vercel deployment config + security headers
 ├── robots.txt          # Search engine crawl directives
@@ -71,7 +74,8 @@ AllergyTJ/
 ├── requirements.txt    # Python dependencies (flask)
 ├── CLAUDE.md           # Development guidelines and architecture
 ├── docs/
-│   └── ROADMAP.md      # Product roadmap and planned features
+│   ├── ROADMAP.md      # Product roadmap and planned features
+│   └── PRD.md          # Product requirements document
 ├── .gitignore
 └── README.md
 ```
