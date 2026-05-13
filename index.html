@@ -323,6 +323,8 @@
     color: var(--primary);
     display: flex;
     align-items: center;
+    text-decoration: none;
+    cursor: pointer;
     gap: var(--space-sm);
     letter-spacing: var(--letter-spacing-headline-lg);
   }
@@ -1268,10 +1270,10 @@
 
 <!-- Top Navigation -->
 <nav class="top-nav">
-  <div class="nav-brand">
+  <a href="#dashboard" class="nav-brand" onclick="switchTab('dashboard')">
     <span class="icon filled">eco</span>
     AllergyTJ
-  </div>
+  </a>
   <div class="nav-links">
     <a href="#dashboard" class="active" data-tab="dashboard" data-i18n="nav.dashboard">Dashboard</a>
     <a href="#forecast" data-tab="forecast" data-i18n="nav.forecast">Forecast</a>
