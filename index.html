@@ -495,6 +495,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
   }
   .dash-gauge-wrap svg { position: absolute; inset: 0; }
   .dash-gauge-ring { fill: none; stroke: var(--surface-container); stroke-width: 16; }
@@ -512,9 +513,11 @@
     margin-bottom: 2px;
   }
   .dash-gauge-risk {
-    font-size: var(--font-size-headline-lg);
-    line-height: var(--line-height-headline-lg);
+    font-size: var(--font-size-headline-md);
+    line-height: var(--line-height-headline-md);
     font-weight: var(--font-weight-bold);
+    max-width: 160px;
+    word-wrap: break-word;
   }
   .dash-gauge-score {
     font-size: var(--font-size-body-md);
@@ -2856,11 +2859,17 @@ function useGPS() {
     },
     function(err) {
       status.className = "status error";
-      status.textContent = t("status.geoFailed");
+      if (err.code === 1) {
+        status.textContent = t("status.geoPermission");
+      } else if (err.code === 3) {
+        status.textContent = t("status.geoTimeout");
+      } else {
+        status.textContent = t("status.geoFailed");
+      }
       gpsBtn.classList.remove("locating");
       gpsBtn.innerHTML = mIcon('my_location');
     },
-    { timeout: 10000 }
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }
   );
 }
 

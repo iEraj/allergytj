@@ -111,6 +111,8 @@
   "status.gettingLocation": "Getting your location...",
   "status.geoNotSupported": "Geolocation not supported by your browser.",
   "status.geoFailed": "Could not get location. Please select a city manually.",
+  "status.geoPermission": "Location access denied. Please enable location in your browser settings.",
+  "status.geoTimeout": "Location request timed out. Please try again or select a city manually.",
   "status.error": "Error displaying results. Check seasonal calendar below for estimates.",
 
   "tier.2": "\u26A0 Using backup weather source (wttr.in). Forecast limited to 2 days.",
