@@ -1,5 +1,4 @@
-var CACHE_VERSION = 'allergytj-v7';
-var FONT_CACHE = 'allergytj-fonts-v1';
+var CACHE_VERSION = 'allergytj-v8';
 
 var PRECACHE_URLS = [
   '/',
@@ -31,7 +30,7 @@ self.addEventListener('activate', function(event) {
   event.waitUntil(
     caches.keys().then(function(names) {
       return Promise.all(
-        names.filter(function(n) { return n !== CACHE_VERSION && n !== FONT_CACHE; })
+        names.filter(function(n) { return n !== CACHE_VERSION; })
              .map(function(n) { return caches.delete(n); })
       );
     }).then(function() {
@@ -87,24 +86,6 @@ self.addEventListener('fetch', function(event) {
           return response;
         }).catch(function() {});
         return cached || fetchPromise;
-      })
-    );
-    return;
-  }
-
-  // Google Fonts: cache-first (fonts rarely change, critical for offline)
-  if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') {
-    event.respondWith(
-      caches.open(FONT_CACHE).then(function(cache) {
-        return cache.match(event.request).then(function(cached) {
-          if (cached) return cached;
-          return fetch(event.request).then(function(response) {
-            if (response && response.status === 200) {
-              cache.put(event.request, response.clone());
-            }
-            return response;
-          });
-        });
       })
     );
     return;

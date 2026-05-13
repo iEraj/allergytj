@@ -17,10 +17,6 @@
 <link rel="preconnect" href="https://air-quality-api.open-meteo.com" crossorigin>
 <link rel="dns-prefetch" href="https://api.open-meteo.com">
 <link rel="dns-prefetch" href="https://air-quality-api.open-meteo.com">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://allergytj.vercel.app/">
 <meta property="og:title" id="og-title" content="AllergyTJ — Pollen & Allergy Tracker for Tajikistan">
@@ -165,7 +161,7 @@
     --radius: 0.75rem;
 
     /* Typography */
-    --font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans', sans-serif;
     --font-size-headline-xl: 40px;
     --font-size-headline-lg: 32px;
     --font-size-headline-md: 24px;
@@ -283,26 +279,19 @@
   .text-body-md { font-size: var(--font-size-body-md); line-height: var(--line-height-body-md); font-weight: var(--font-weight-regular); }
   .text-label-md { font-size: var(--font-size-label-md); line-height: var(--line-height-label-md); font-weight: var(--font-weight-semibold); letter-spacing: var(--letter-spacing-label-md); }
   .text-caption { font-size: var(--font-size-caption); line-height: var(--line-height-caption); font-weight: var(--font-weight-medium); }
-  .material-symbols-outlined {
-    font-family: 'Material Symbols Outlined';
-    font-weight: normal;
-    font-style: normal;
-    font-size: 24px;
-    line-height: 1;
-    letter-spacing: normal;
-    text-transform: none;
+  .icon {
+    width: 1em;
+    height: 1em;
     display: inline-block;
-    white-space: nowrap;
-    word-wrap: normal;
-    direction: ltr;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-    font-feature-settings: 'liga';
-    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    vertical-align: -0.125em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
   }
-  .material-symbols-outlined.filled {
-    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-  }
+  .icon.filled { fill: currentColor; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: var(--font-family);
@@ -337,7 +326,7 @@
     gap: var(--space-sm);
     letter-spacing: var(--letter-spacing-headline-lg);
   }
-  .nav-brand .material-symbols-outlined { font-size: 28px; }
+  .nav-brand .icon { font-size: 28px; }
   .nav-links {
     display: flex;
     gap: var(--space-lg);
@@ -429,7 +418,7 @@
     transition: all 0.2s;
     gap: 2px;
   }
-  .bottom-nav a .material-symbols-outlined { font-size: 22px; }
+  .bottom-nav a .icon { font-size: 22px; }
   .bottom-nav a.active {
     background: var(--primary-container);
     color: var(--on-primary-container);
@@ -460,7 +449,7 @@
     letter-spacing: var(--letter-spacing-label-md);
     margin-bottom: var(--space-xs);
   }
-  .dash-location-label .material-symbols-outlined { font-size: 18px; }
+  .dash-location-label .icon { font-size: 18px; }
   .dash-city-name {
     font-size: var(--font-size-headline-xl);
     line-height: var(--line-height-headline-xl);
@@ -496,7 +485,7 @@
     transition: opacity 0.2s;
   }
   .dash-hero-actions .btn-primary:hover { opacity: 0.9; }
-  .dash-hero-actions .btn-primary .material-symbols-outlined { font-size: 18px; }
+  .dash-hero-actions .btn-primary .icon { font-size: 18px; }
 
   /* Risk Gauge */
   .dash-gauge-wrap {
@@ -564,7 +553,7 @@
     align-items: flex-start;
   }
   .dash-bento-header .text-label-md { color: var(--on-surface-variant); }
-  .dash-bento-header .material-symbols-outlined { color: var(--secondary); font-size: 22px; }
+  .dash-bento-header .icon { color: var(--secondary); font-size: 22px; }
   .dash-bento-value {
     font-size: var(--font-size-headline-lg);
     line-height: var(--line-height-headline-lg);
@@ -625,7 +614,7 @@
     align-items: center;
     justify-content: center;
   }
-  .dash-trigger-icon .material-symbols-outlined { color: var(--on-primary-container); font-size: 20px; }
+  .dash-trigger-icon .icon { color: var(--on-primary-container); font-size: 20px; }
   .dash-trigger-name {
     font-size: var(--font-size-label-md);
     font-weight: var(--font-weight-semibold);
@@ -686,7 +675,7 @@
     right: 16px;
     opacity: 0.15;
   }
-  .dash-tip-icon .material-symbols-outlined { font-size: 72px; color: var(--on-primary-container); }
+  .dash-tip-icon .icon { font-size: 72px; color: var(--on-primary-container); }
 
   /* Nearby Regions */
   .dash-nearby-header {
@@ -708,7 +697,7 @@
     align-items: center;
     gap: 2px;
   }
-  .dash-nearby-header a .material-symbols-outlined { font-size: 16px; }
+  .dash-nearby-header a .icon { font-size: 16px; }
   .dash-nearby-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -782,7 +771,7 @@
     align-items: center;
     justify-content: center;
   }
-  .gps-icon .material-symbols-outlined { font-size: 1.3rem; }
+  .gps-icon .icon { font-size: 1.3rem; }
   .gps-icon:hover { opacity: 1; }
   .gps-icon.locating { opacity: 0.5; pointer-events: none; }
 
@@ -871,7 +860,7 @@
   }
   .hourly-card:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
   .hourly-card .hourly-icon { margin-bottom: 4px; }
-  .hourly-card .hourly-icon .material-symbols-outlined { font-size: 1.4rem; }
+  .hourly-card .hourly-icon .icon { font-size: 1.4rem; }
   .hourly-card .hourly-period { font-size: var(--font-size-caption); font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.5px; }
   .hourly-card .hourly-hours { font-size: 0.72rem; color: var(--muted); margin-bottom: 6px; }
   .hourly-card .hourly-risk { font-size: var(--font-size-body-lg); font-weight: var(--font-weight-bold); margin-bottom: 4px; }
@@ -898,7 +887,7 @@
     border-bottom: 1px solid var(--border);
   }
   .wx-hero-icon { line-height: 1; }
-  .wx-hero-icon .material-symbols-outlined { font-size: 2.4rem; }
+  .wx-hero-icon .icon { font-size: 2.4rem; }
   .wx-hero-temp { font-size: var(--font-size-headline-xl); font-weight: var(--font-weight-bold); line-height: 1; }
   .wx-hero-condition { font-size: 0.95rem; color: var(--muted); text-align: left; }
   .wx-hero-condition .wx-now { font-weight: 600; color: var(--text); font-size: 1.05rem; }
@@ -909,7 +898,7 @@
     text-align: center;
   }
   .wx-stat-icon { margin-bottom: 2px; }
-  .wx-stat-icon .material-symbols-outlined { font-size: 1.1rem; }
+  .wx-stat-icon .icon { font-size: 1.1rem; }
   .wx-stat-val { font-weight: 700; font-size: 0.95rem; }
   .wx-stat-label { color: var(--muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em; }
 
@@ -997,7 +986,7 @@
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
   }
-  .active-now-icon .material-symbols-outlined { font-size: 24px; color: #fff; }
+  .active-now-icon .icon { font-size: 24px; color: #fff; }
   .active-now-body { min-width: 0; }
   .active-now-name { font-weight: 600; font-size: 0.82rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .active-now-species { font-size: 0.72rem; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1011,7 +1000,7 @@
     text-align: center; padding: var(--space-xl) var(--space-md);
     color: var(--muted); font-size: 0.88rem;
   }
-  .active-now-empty .material-symbols-outlined { font-size: 48px; display: block; margin: 0 auto 8px; opacity: 0.3; }
+  .active-now-empty .icon { font-size: 48px; display: block; margin: 0 auto 8px; opacity: 0.3; }
 
   /* ── Timeline Calendar ── */
   .timeline-calendar {
@@ -1115,7 +1104,7 @@
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
   }
-  .knowledge-card-icon .material-symbols-outlined { font-size: 22px; color: var(--on-primary-container); }
+  .knowledge-card-icon .icon { font-size: 22px; color: var(--on-primary-container); }
   .knowledge-card-title { font-weight: 700; font-size: 0.88rem; color: var(--text); }
   .knowledge-card-body {
     font-size: 0.78rem; line-height: 1.65; color: var(--muted); flex: 1;
@@ -1145,7 +1134,7 @@
     align-items: center;
     justify-content: center;
   }
-  .share-btn .material-symbols-outlined { font-size: 1.3rem; }
+  .share-btn .icon { font-size: 1.3rem; }
   .share-btn:hover { opacity: 1; }
   .share-btn:disabled { opacity: 0.3; cursor: default; }
   .share-feedback {
@@ -1197,7 +1186,7 @@
     transform: translateY(6px);
     transition: opacity 0.25s, transform 0.25s, color 0.2s;
   }
-  .fab-top .material-symbols-outlined { font-size: 1.1rem; }
+  .fab-top .icon { font-size: 1.1rem; }
   .fab-top:hover { color: var(--text); box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
   .fab-top.visible {
     opacity: 1;
@@ -1251,12 +1240,12 @@
     }
     .lang-btn { padding: 4px 7px; font-size: 0.65rem; }
     .gps-icon { padding: 10px 14px; }
-    .gps-icon .material-symbols-outlined { font-size: 1.4rem; }
+    .gps-icon .icon { font-size: 1.4rem; }
     .picker select { flex: 1; min-width: 0; }
     .pollen-cards, .skel-cards { grid-template-columns: 1fr; }
     .hourly-cards { grid-template-columns: 1fr; }
     .forecast-row, .skel-forecast { grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
-    .wx-hero-icon .material-symbols-outlined { font-size: 2rem; }
+    .wx-hero-icon .icon { font-size: 2rem; }
     .wx-hero-temp { font-size: var(--font-size-headline-lg); }
     .wx-stats { grid-template-columns: repeat(2, 1fr); gap: 12px; }
     .risk-banner { padding: 20px 16px; }
@@ -1276,7 +1265,7 @@
 <!-- Top Navigation -->
 <nav class="top-nav">
   <div class="nav-brand">
-    <span class="material-symbols-outlined filled">eco</span>
+    <span class="icon filled">eco</span>
     AllergyTJ
   </div>
   <div class="nav-links">
@@ -1292,7 +1281,7 @@
       <button class="lang-btn" data-lang="tj" onclick="setLanguage('tj')">ТҶ</button>
     </div>
     <button class="nav-icon-btn" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-      <span class="material-symbols-outlined">dark_mode</span>
+      <span class="icon">dark_mode</span>
     </button>
   </div>
 </nav>
@@ -1307,7 +1296,7 @@
   <div class="dash-hero">
     <div>
       <div class="dash-location-label">
-        <span class="material-symbols-outlined filled">location_on</span>
+        <span class="icon filled">location_on</span>
         <span data-i18n="dash.currentLocation">Current Location</span>
       </div>
       <h1 class="dash-city-name" id="dash-city-name">Dushanbe, Tajikistan</h1>
@@ -1364,9 +1353,9 @@
       <option value="38.4000,69.6833">Roghun, DRS</option>
       <option value="40.5333,69.1500">Adrasmon, Sughd</option>
     </select>
-    <button class="gps-icon" id="gps-btn" onclick="useGPS()" aria-label="Use GPS" title="Use GPS"><span class="material-symbols-outlined">my_location</span></button>
+    <button class="gps-icon" id="gps-btn" onclick="useGPS()" aria-label="Use GPS" title="Use GPS"><span class="icon">my_location</span></button>
     <div style="position:relative;">
-      <button class="share-btn" id="share-btn" onclick="sharePollen()" disabled aria-label="Share" title="Share"><span class="material-symbols-outlined">share</span></button>
+      <button class="share-btn" id="share-btn" onclick="sharePollen()" disabled aria-label="Share" title="Share"><span class="icon">share</span></button>
       <span class="share-feedback" id="share-feedback" data-i18n="share.copied">Copied!</span>
     </div>
   </div>
@@ -1379,7 +1368,7 @@
     <div class="dash-bento-widget">
       <div class="dash-bento-header">
         <span class="text-label-md" data-i18n="wx.label.temp">Temperature</span>
-        <span class="material-symbols-outlined">thermostat</span>
+        <span class="icon">thermostat</span>
       </div>
       <div><div class="dash-bento-value" id="dash-temp">—</div>
       <div class="dash-bento-desc" id="dash-temp-desc"></div></div>
@@ -1387,7 +1376,7 @@
     <div class="dash-bento-widget">
       <div class="dash-bento-header">
         <span class="text-label-md" data-i18n="wx.label.humidity">Humidity</span>
-        <span class="material-symbols-outlined">humidity_percentage</span>
+        <span class="icon">humidity_percentage</span>
       </div>
       <div><div class="dash-bento-value" id="dash-humidity">—</div>
       <div class="dash-bento-desc" id="dash-humidity-desc"></div></div>
@@ -1395,7 +1384,7 @@
     <div class="dash-bento-widget">
       <div class="dash-bento-header">
         <span class="text-label-md" data-i18n="wx.label.uv">UV Index</span>
-        <span class="material-symbols-outlined">wb_sunny</span>
+        <span class="icon">wb_sunny</span>
       </div>
       <div><div class="dash-bento-value" id="dash-uv">—</div>
       <div class="dash-bento-desc" id="dash-uv-desc"></div></div>
@@ -1403,7 +1392,7 @@
     <div class="dash-bento-widget">
       <div class="dash-bento-header">
         <span class="text-label-md" data-i18n="wx.label.wind">Wind Speed</span>
-        <span class="material-symbols-outlined">air</span>
+        <span class="icon">air</span>
       </div>
       <div><div class="dash-bento-value" id="dash-wind">—</div>
       <div class="dash-bento-desc" id="dash-wind-desc"></div></div>
@@ -1421,7 +1410,7 @@
         <div class="dash-tip-badge" data-i18n="dash.dailyTip">Daily Tip</div>
         <h3 id="dash-tip-text"></h3>
       </div>
-      <div class="dash-tip-icon"><span class="material-symbols-outlined">health_and_safety</span></div>
+      <div class="dash-tip-icon"><span class="icon">health_and_safety</span></div>
     </div>
   </div>
 
@@ -1429,7 +1418,7 @@
   <div>
     <div class="dash-nearby-header">
       <h2 data-i18n="dash.nearbyRegions">Nearby Regions</h2>
-      <a href="#regions" onclick="switchTab('regions')"><span data-i18n="dash.viewAll">View All</span> <span class="material-symbols-outlined">chevron_right</span></a>
+      <a href="#regions" onclick="switchTab('regions')"><span data-i18n="dash.viewAll">View All</span> <span class="icon">chevron_right</span></a>
     </div>
     <div class="dash-nearby-grid" id="dash-nearby"></div>
   </div>
@@ -1442,7 +1431,7 @@
 <div class="container">
 
   <div style="display:flex; align-items:center; gap:8px; margin:20px 0 8px; color:var(--on-surface-variant);">
-    <span class="material-symbols-outlined" style="font-size:18px;">location_on</span>
+    <span class="icon" style="font-size:18px;">location_on</span>
     <span id="forecast-city-name" style="font-size:var(--font-size-label-md); font-weight:var(--font-weight-semibold); letter-spacing:var(--letter-spacing-label-md);"></span>
   </div>
 
@@ -1496,7 +1485,7 @@
 <div class="container">
   <h2 class="section-title" data-i18n="nav.regions">Regions</h2>
   <div style="padding: 40px 0; text-align: center; color: var(--on-surface-variant);">
-    <span class="material-symbols-outlined" style="font-size: 48px; display: block; margin: 0 auto 16px; opacity: 0.4;">map</span>
+    <span class="icon" style="font-size: 48px; display: block; margin: 0 auto 16px; opacity: 0.4;">map</span>
     <p style="font-size: var(--font-size-body-lg);" data-i18n="regions.comingSoon">Regional pollen map coming soon.</p>
   </div>
 </div>
@@ -1520,7 +1509,7 @@
 
     <div class="knowledge-card">
       <div class="knowledge-card-header">
-        <div class="knowledge-card-icon"><span class="material-symbols-outlined">eco</span></div>
+        <div class="knowledge-card-icon"><span class="icon">eco</span></div>
         <div class="knowledge-card-title" data-i18n="about.whatIsTitle">What is AllergyTJ?</div>
       </div>
       <div class="knowledge-card-body" data-i18n="about.whatIs">AllergyTJ is a pollen risk estimation tool for Tajikistan, covering 31 cities across all regions of the country.</div>
@@ -1528,7 +1517,7 @@
 
     <div class="knowledge-card">
       <div class="knowledge-card-header">
-        <div class="knowledge-card-icon"><span class="material-symbols-outlined">thermostat</span></div>
+        <div class="knowledge-card-icon"><span class="icon">thermostat</span></div>
         <div class="knowledge-card-title" data-i18n="about.weatherTitle">How Weather Affects Risk</div>
       </div>
       <div class="knowledge-card-body" data-i18n="about.weather">Hot, dry, windy conditions increase pollen dispersal and raise the risk score. Rain, snow, cold, and high humidity suppress airborne pollen and lower the score. The weather modifier adjusts the seasonal baseline to produce a final score from 0 (None) to 4 (Very High).</div>
@@ -1536,7 +1525,7 @@
 
     <div class="knowledge-card">
       <div class="knowledge-card-header">
-        <div class="knowledge-card-icon"><span class="material-symbols-outlined">landscape</span></div>
+        <div class="knowledge-card-icon"><span class="icon">landscape</span></div>
         <div class="knowledge-card-title" data-i18n="about.elevTitle">Elevation Adjustment</div>
       </div>
       <div class="knowledge-card-body" data-i18n="about.elevDesc">Plants bloom later at higher elevations. The app adjusts the seasonal calendar for each city based on its altitude, using a rate of approximately 2 days per 100 meters above the baseline (Dushanbe, 800m). For example, Murghab at 3,618m sees bloom roughly 56 days later than Dushanbe, while lowland cities like Bokhtar at 430m see it about a week earlier.</div>
@@ -1544,7 +1533,7 @@
 
     <div class="knowledge-card">
       <div class="knowledge-card-header">
-        <div class="knowledge-card-icon"><span class="material-symbols-outlined">map</span></div>
+        <div class="knowledge-card-icon"><span class="icon">map</span></div>
         <div class="knowledge-card-title" data-i18n="about.regionTitle">Regional Profiles</div>
       </div>
       <div class="knowledge-card-body">
@@ -1561,7 +1550,7 @@
 
     <div class="knowledge-card">
       <div class="knowledge-card-header">
-        <div class="knowledge-card-icon"><span class="material-symbols-outlined">schedule</span></div>
+        <div class="knowledge-card-icon"><span class="icon">schedule</span></div>
         <div class="knowledge-card-title" data-i18n="about.hourlyTitle">Risk by Time of Day</div>
       </div>
       <div class="knowledge-card-body">
@@ -1576,7 +1565,7 @@
 
     <div class="knowledge-card">
       <div class="knowledge-card-header">
-        <div class="knowledge-card-icon"><span class="material-symbols-outlined">wb_sunny</span></div>
+        <div class="knowledge-card-icon"><span class="icon">wb_sunny</span></div>
         <div class="knowledge-card-title" data-i18n="about.uvTitle">Understanding UV Index</div>
       </div>
       <div class="knowledge-card-body">
@@ -1593,7 +1582,7 @@
 
     <div class="knowledge-card">
       <div class="knowledge-card-header">
-        <div class="knowledge-card-icon"><span class="material-symbols-outlined">air</span></div>
+        <div class="knowledge-card-icon"><span class="icon">air</span></div>
         <div class="knowledge-card-title" data-i18n="about.aqiTitle">Understanding US AQI</div>
       </div>
       <div class="knowledge-card-body">
@@ -1611,7 +1600,7 @@
 
     <div class="knowledge-card card-wide">
       <div class="knowledge-card-header">
-        <div class="knowledge-card-icon"><span class="material-symbols-outlined">science</span></div>
+        <div class="knowledge-card-icon"><span class="icon">science</span></div>
         <div class="knowledge-card-title" data-i18n="about.pollutantsTitle">Air Pollutants Guide</div>
       </div>
       <div class="knowledge-card-body">
@@ -1628,7 +1617,7 @@
 
     <div class="knowledge-card">
       <div class="knowledge-card-header">
-        <div class="knowledge-card-icon"><span class="material-symbols-outlined">database</span></div>
+        <div class="knowledge-card-icon"><span class="icon">database</span></div>
         <div class="knowledge-card-title" data-i18n="about.sourcesTitle">Data Sources</div>
       </div>
       <div class="knowledge-card-body" data-i18n="about.sources">Risk scores combine three inputs: a seasonal pollen calendar based on Tajikistan's known allergenic flora, live weather data from Open-Meteo, and air quality data from Open-Meteo CAMS.</div>
@@ -1636,7 +1625,7 @@
 
     <div class="knowledge-card">
       <div class="knowledge-card-header">
-        <div class="knowledge-card-icon"><span class="material-symbols-outlined">info</span></div>
+        <div class="knowledge-card-icon"><span class="icon">info</span></div>
         <div class="knowledge-card-title" data-i18n="about.limitationsTitle">Limitations</div>
       </div>
       <div class="knowledge-card-body" data-i18n="about.limitations">As of early 2026, no public pollen monitoring stations have been identified in Tajikistan. Risk levels are estimates based on seasonal patterns and weather conditions, not measured pollen counts. Air quality data relies on atmospheric modeling (CAMS), not ground-based sensors.</div>
@@ -1659,29 +1648,81 @@
 <!-- Bottom Tab Bar (mobile) -->
 <nav class="bottom-nav">
   <a href="#dashboard" class="active" data-tab="dashboard" onclick="switchTab('dashboard')">
-    <span class="material-symbols-outlined">dashboard</span>
+    <span class="icon">dashboard</span>
     <span data-i18n="nav.dashboard">Dashboard</span>
   </a>
   <a href="#forecast" data-tab="forecast" onclick="switchTab('forecast')">
-    <span class="material-symbols-outlined">calendar_month</span>
+    <span class="icon">calendar_month</span>
     <span data-i18n="nav.forecast">Forecast</span>
   </a>
   <a href="#regions" data-tab="regions" onclick="switchTab('regions')">
-    <span class="material-symbols-outlined">map</span>
+    <span class="icon">map</span>
     <span data-i18n="nav.regions">Regions</span>
   </a>
   <a href="#insights" data-tab="insights" onclick="switchTab('insights')">
-    <span class="material-symbols-outlined">lightbulb</span>
+    <span class="icon">lightbulb</span>
     <span data-i18n="nav.insights">Insights</span>
   </a>
 </nav>
 
-<button class="fab-top" id="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top"><span class="material-symbols-outlined">keyboard_arrow_up</span></button>
+<button class="fab-top" id="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top"><span class="icon">keyboard_arrow_up</span></button>
 
 <script>
+var ICON_SVG = {
+eco:'<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>',
+dark_mode:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+light_mode:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
+location_on:'<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
+my_location:'<circle cx="12" cy="12" r="10"/><line x1="22" x2="18" y1="12" y2="12"/><line x1="6" x2="2" y1="12" y2="12"/><line x1="12" x2="12" y1="6" y2="2"/><line x1="12" x2="12" y1="22" y2="18"/>',
+share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/>',
+thermostat:'<path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/>',
+water_drop:'<path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/>',
+humidity_percentage:'<path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/>',
+wb_sunny:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
+air:'<path d="M12.8 19.6A2 2 0 1 0 14 16H2"/><path d="M17.5 8a2.5 2.5 0 1 1 2 4H2"/><path d="M9.8 4.4A2 2 0 1 1 11 8H2"/>',
+health_and_safety:'<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="M9 12h6"/><path d="M12 9v6"/>',
+chevron_right:'<path d="m9 18 6-6-6-6"/>',
+map:'<path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/>',
+landscape:'<path d="m8 3 4 8 5-5 5 15H2L8 3z"/>',
+schedule:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+science:'<path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/>',
+database:'<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/>',
+info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+dashboard:'<rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>',
+calendar_month:'<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
+lightbulb:'<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>',
+keyboard_arrow_up:'<path d="m18 15-6-6-6 6"/>',
+park:'<path d="m17 14 3 3.3a1 1 0 0 1-.7 1.7H4.7a1 1 0 0 1-.7-1.7L7 14h-.3a1 1 0 0 1-.7-1.7L9 9h-.2A1 1 0 0 1 8 7.3L12 3l4 4.3a1 1 0 0 1-.8 1.7H15l3 3.3a1 1 0 0 1-.7 1.7H17Z"/><path d="M12 22v-3"/>',
+grass:'<path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/>',
+psychiatry:'<path d="M12 5a3 3 0 1 1 3 3m-3-3a3 3 0 1 0-3 3m3-3v1M9 8a3 3 0 1 0 3 3M9 8h1m5 0a3 3 0 1 1-3 3m3-3h-1m-2 3v-1"/><circle cx="12" cy="8" r="2"/><path d="M12 10v12"/><path d="M12 22c4.2 0 7-1.667 7-5-4.2 0-7 1.667-7 5Z"/><path d="M12 22c-4.2 0-7-1.667-7-5 4.2 0 7 1.667 7 5Z"/>',
+wb_twilight:'<path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/>',
+thunderstorm:'<path d="M6 16.326A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 .5 8.973"/><path d="m13 12-3 5h4l-3 5"/>',
+cloud:'<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>',
+partly_cloudy_day:'<path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/>',
+foggy:'<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 17H7"/><path d="M17 21H9"/>',
+check_circle:'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+hourglass_empty:'<path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/>',
+rainy:'<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/>',
+rainy_light:'<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M8 19v1"/><path d="M8 14v1"/><path d="M16 19v1"/><path d="M16 14v1"/><path d="M12 21v1"/><path d="M12 16v1"/>',
+rainy_heavy:'<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="m9.2 22 3-7"/><path d="m9 13-3 7"/><path d="m17 13-3 7"/>',
+weather_snowy:'<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M8 15h.01"/><path d="M8 19h.01"/><path d="M12 17h.01"/><path d="M12 21h.01"/><path d="M16 15h.01"/><path d="M16 19h.01"/>'
+};
+
 function mIcon(name, cls) {
-  return '<span class="material-symbols-outlined' + (cls ? ' ' + cls : '') + '">' + name + '</span>';
+  var svg = ICON_SVG[name] || '';
+  return '<svg class="icon' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24">' + svg + '</svg>';
 }
+
+// Replace static icon spans with inline SVGs
+document.querySelectorAll('span.icon').forEach(function(el) {
+  var name = el.textContent.trim();
+  if (ICON_SVG[name]) {
+    var svg = mIcon(name, el.classList.contains('filled') ? 'filled' : '');
+    var tmp = document.createElement('span');
+    tmp.innerHTML = svg;
+    el.replaceWith(tmp.firstChild);
+  }
+});
 
 // ── Tab Routing ──
 function switchTab(tabName) {
