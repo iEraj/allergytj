@@ -30,7 +30,7 @@
 <meta property="og:image:type" content="image/png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" id="twitter-title" content="AllergyTJ — Pollen & Allergy Tracker for Tajikistan">
-<meta name="twitter:description" id="twitter-desc" content="Seasonal allergy and pollen risk tracker for Tajikistan. Live pollen forecast, air quality, and 3-day outlook for 31 cities.">
+<meta name="twitter:description" id="twitter-desc" content="Seasonal allergy and pollen risk tracker for Tajikistan. Live pollen forecast, air quality, and 5-day outlook for 31 cities.">
 <meta name="twitter:image" content="https://allergytj.vercel.app/og-image.png">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 10 C20 30 10 60 30 80 Q40 70 50 50 Q60 70 70 80 C90 60 80 30 50 10Z' fill='%231a3a2a'/><path d='M50 25 Q50 55 50 80' stroke='%23a8e7c5' stroke-width='3' fill='none' stroke-linecap='round'/></svg>">
 <link rel="manifest" href="/manifest.json">
@@ -1213,7 +1213,7 @@
   .skel-strip { height: 64px; margin: 16px 0; }
   .skel-label { height: 20px; width: 140px; margin: 24px 0 10px 4px; }
   .skel-aqi { height: 90px; }
-  .skel-forecast { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+  .skel-forecast { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-top: 10px; }
   .skel-fc { height: 120px; }
 
   @media (max-width: 768px) {
@@ -1447,6 +1447,8 @@
       <div class="skeleton skel-fc"></div>
       <div class="skeleton skel-fc"></div>
       <div class="skeleton skel-fc"></div>
+      <div class="skeleton skel-fc"></div>
+      <div class="skeleton skel-fc"></div>
     </div>
   </div>
 
@@ -1473,8 +1475,8 @@
     <h2 class="section-title" data-i18n="section.airQuality">Air Quality</h2>
     <div class="aqi-card" id="aqi-card"></div>
 
-    <!-- 3-day forecast -->
-    <h2 class="section-title" id="forecast-title">3-Day Pollen Risk Forecast</h2>
+    <!-- 5-day forecast -->
+    <h2 class="section-title" id="forecast-title">5-Day Pollen Risk Forecast</h2>
     <div class="forecast-row" id="forecast-cards"></div>
   </div>
 </div>
@@ -2452,7 +2454,7 @@ async function fetchData() {
       current: "temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation,weather_code,uv_index",
       hourly: "temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation,weather_code",
       daily: "temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max,relative_humidity_2m_mean,weather_code",
-      forecast_days: "4",
+      forecast_days: "6",
       timezone: "auto",
     });
     var wxRes = await fetchWithTimeout(wxUrl, 6000);
@@ -2777,7 +2779,7 @@ function renderForecast(daily, now, cityElev, reg) {
   var WEEKDAYS_TJ = ["Яш","Дш","Сш","Чш","Пш","Ҷм","Шб"];
   var weekdays = LANG === "ru" ? WEEKDAYS_RU : LANG === "tj" ? WEEKDAYS_TJ : WEEKDAYS_EN;
 
-  for (var i = 1; i <= 3 && i < daily.time.length; i++) {
+  for (var i = 1; i <= 5 && i < daily.time.length; i++) {
     var d = new Date(daily.time[i] + "T12:00:00");
     var label = weekdays[d.getDay()] + ", " + t("month." + d.getMonth()) + " " + d.getDate();
 
