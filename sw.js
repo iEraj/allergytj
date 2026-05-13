@@ -1,4 +1,4 @@
-var CACHE_VERSION = 'allergytj-v5';
+var CACHE_VERSION = 'allergytj-v7';
 var FONT_CACHE = 'allergytj-fonts-v1';
 
 var PRECACHE_URLS = [
