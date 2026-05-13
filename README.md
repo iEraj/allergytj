@@ -14,7 +14,7 @@ No pollen monitoring stations exist in Tajikistan. AllergyTJ fills the gap by es
 - **4-tab app** — Dashboard, Forecast, Regions, Insights with hash-based routing
 - **Dashboard** — circular SVG risk gauge, bento weather grid, top allergen triggers with severity bars, daily health tip, nearby regions strip
 - **Pollen risk estimation** — combines seasonal pollen calendar with real-time weather (temperature, humidity, wind, precipitation)
-- **3-day forecast** — daily pollen risk outlook based on weather forecast
+- **5-day forecast** — daily pollen risk outlook based on weather forecast
 - **Hourly breakdown** — morning/afternoon/evening risk scores using per-period weather
 - **Air quality** — live US AQI with full 6-pollutant breakdown (O₃, PM2.5, PM10, NO₂, SO₂, CO)
 - **UV index** — real-time UV data from Open-Meteo, color-coded by severity
