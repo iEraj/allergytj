@@ -241,5 +241,16 @@
 
   "insights.activeNow": "What's Active Now",
   "insights.noActive": "No allergens are currently in season. Enjoy the fresh air!",
-  "insights.learnMore": "Learn More"
+  "insights.learnMore": "Learn More",
+
+  "chip.tree": "TREES",
+  "chip.grass": "GRASS",
+  "chip.weed": "WEEDS",
+  "fc.trendTitle": "5-Day Risk Trend",
+  "fc.tip.headline": "Forecast Insight",
+  "fc.tip.rainClear": "Rain on {day} will help clear pollen — best day for outdoor activity.",
+  "fc.tip.riskDrop": "{day} sees a significant drop in pollen risk. Plan outdoor activities then.",
+  "fc.tip.rising": "Pollen levels are rising through the week. Plan outdoor activities for the first few days.",
+  "fc.tip.allClear": "No significant pollen activity expected this week. Enjoy the outdoors!",
+  "fc.tip.default": "Monitor daily forecasts as conditions can change quickly."
 }

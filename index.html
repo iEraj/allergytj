@@ -908,28 +908,88 @@
   .wx-stat-val { font-weight: 700; font-size: 0.95rem; }
   .wx-stat-label { color: var(--muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em; }
 
-  /* Forecast */
-  .forecast-row {
+  /* Forecast bento grid */
+  .forecast-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-md);
   }
-  .forecast-card {
+  .fc-card {
     background: var(--card);
-    border-radius: var(--radius);
-    padding: 16px 12px;
-    text-align: center;
+    border-radius: var(--radius-xl);
+    padding: var(--space-md);
     box-shadow: var(--shadow-md);
+    border-top: 4px solid var(--outline-variant);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     transition: transform 0.15s, box-shadow 0.15s;
+    min-height: 140px;
   }
-  .forecast-card:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
-  .forecast-card .day { font-size: var(--font-size-caption); font-weight: var(--font-weight-bold); margin-bottom: 6px; color: var(--muted); }
-  .forecast-card .fc-risk { font-size: var(--font-size-body-md); font-weight: var(--font-weight-bold); margin-bottom: 4px; }
-  .forecast-card .fc-temp { font-size: 0.72rem; color: var(--muted); }
-  .forecast-card .fc-detail { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
-  .forecast-card .fc-bar {
-    height: 6px; border-radius: 3px; margin: 6px auto 0; width: 80%;
+  .fc-card:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+  .fc-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-xs); }
+  .fc-card-date { font-size: var(--font-size-label-md); font-weight: var(--font-weight-semibold); color: var(--on-surface); }
+  .fc-card-wx { color: var(--primary); }
+  .fc-card-wx .icon { font-size: 1.2rem; }
+  .fc-card-risk { font-size: var(--font-size-headline-md); font-weight: var(--font-weight-semibold); margin-bottom: 4px; }
+  .fc-card-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--space-sm); }
+  .fc-chip {
+    display: inline-block; padding: 2px 8px; border-radius: 9999px;
+    font-size: 10px; font-weight: var(--font-weight-bold);
+    text-transform: uppercase; letter-spacing: 0.03em; border: 1px solid;
   }
+  .fc-chip-tree { color: #2e7d32; background: rgba(46,125,50,0.1); border-color: rgba(46,125,50,0.2); }
+  .fc-chip-grass { color: #8c6d00; background: rgba(140,109,0,0.1); border-color: rgba(140,109,0,0.2); }
+  .fc-chip-weed { color: #d84315; background: rgba(216,67,21,0.1); border-color: rgba(216,67,21,0.2); }
+  .fc-card-conditions { font-size: var(--font-size-caption); color: var(--muted); margin-top: auto; }
+
+  /* Forecast tip card */
+  .fc-tip {
+    background: var(--primary-container); padding: var(--space-lg); border-radius: var(--radius-xl);
+    color: var(--on-primary-container); position: relative; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: center; min-height: 140px;
+    grid-row: span 2;
+  }
+  .fc-tip-short { grid-row: span 1; }
+  .fc-tip-inner { position: relative; z-index: 1; }
+  .fc-tip-icon { margin-bottom: var(--space-sm); }
+  .fc-tip-icon .icon { font-size: 1.8rem; }
+  .fc-tip h3 { font-size: var(--font-size-body-lg); font-weight: var(--font-weight-semibold); margin-bottom: var(--space-xs); }
+  .fc-tip p { font-size: var(--font-size-body-md); opacity: 0.9; line-height: var(--line-height-body-md); }
+  .fc-tip-bg { position: absolute; right: -8px; bottom: -8px; opacity: 0.12; transform: rotate(12deg); }
+  .fc-tip-bg .icon { font-size: 100px; }
+
+  /* Weekly trend chart */
+  .fc-trend {
+    background: var(--surface-container-low); border-radius: var(--radius-xl);
+    padding: var(--space-lg); border: 1px solid var(--border); margin-top: var(--space-lg);
+  }
+  .fc-trend h3 { font-size: var(--font-size-body-lg); font-weight: var(--font-weight-semibold); margin-bottom: var(--space-md); }
+  .fc-trend-bars { display: flex; align-items: flex-end; gap: 6px; height: 120px; }
+  .fc-trend-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+  .fc-trend-bar {
+    width: 100%; border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    position: relative; cursor: pointer; transition: opacity 0.15s; min-height: 4px;
+  }
+  .fc-trend-bar:hover { opacity: 0.8; }
+  .fc-trend-tooltip {
+    position: absolute; top: -30px; left: 50%; transform: translateX(-50%);
+    background: var(--inverse-surface); color: var(--inverse-on-surface);
+    font-size: 10px; padding: 3px 8px; border-radius: var(--radius-sm);
+    white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.15s;
+  }
+  .fc-trend-bar:hover .fc-trend-tooltip,
+  .fc-trend-bar.active .fc-trend-tooltip { opacity: 1; }
+  .fc-trend-labels { display: flex; margin-top: var(--space-xs); }
+  .fc-trend-labels span { flex: 1; text-align: center; font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .fc-trend-spline { display: none; width: 100%; height: 100px; }
+  .fc-trend-spline path.fc-spline-line { fill: none; stroke: var(--primary); stroke-width: 2.5; }
+  .fc-trend-spline path.fc-spline-fill { fill: var(--primary); opacity: 0.08; stroke: none; }
+
+  /* Dark mode forecast overrides */
+  [data-theme="dark"] .fc-chip-tree { color: #a5d6a7; background: rgba(46,125,50,0.15); border-color: rgba(46,125,50,0.3); }
+  [data-theme="dark"] .fc-chip-grass { color: #ffe082; background: rgba(140,109,0,0.15); border-color: rgba(140,109,0,0.3); }
+  [data-theme="dark"] .fc-chip-weed { color: #ffab91; background: rgba(216,67,21,0.15); border-color: rgba(216,67,21,0.3); }
 
   /* Air Quality */
   .aqi-card {
@@ -1219,8 +1279,10 @@
   .skel-strip { height: 64px; margin: 16px 0; }
   .skel-label { height: 20px; width: 140px; margin: 24px 0 10px 4px; }
   .skel-aqi { height: 90px; }
-  .skel-forecast { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-top: 10px; }
-  .skel-fc { height: 120px; }
+  .skel-forecast-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-md); margin-top: 10px; }
+  .skel-fc-card { height: 140px; border-radius: var(--radius-xl); }
+  .skel-fc-tip { height: 140px; border-radius: var(--radius-xl); grid-row: span 2; }
+  .skel-fc-trend { height: 160px; border-radius: var(--radius-xl); margin-top: var(--space-lg); }
 
   @media (max-width: 768px) {
     .nav-links { display: none; }
@@ -1238,6 +1300,10 @@
     .dash-triggers-tip { grid-template-columns: 1fr; }
     .dash-nearby-grid { grid-template-columns: 1fr; }
     .dash-location-label { justify-content: center; }
+    .forecast-grid { grid-template-columns: repeat(2, 1fr); }
+    .fc-tip { grid-row: span 1; grid-column: span 2; }
+    .skel-forecast-grid { grid-template-columns: repeat(2, 1fr); }
+    .skel-fc-tip { grid-row: span 1; grid-column: span 2; }
   }
   @media (max-width: 600px) {
     :root {
@@ -1250,7 +1316,13 @@
     .picker select { flex: 1; min-width: 0; }
     .pollen-cards, .skel-cards { grid-template-columns: 1fr; }
     .hourly-cards { grid-template-columns: 1fr; }
-    .forecast-row, .skel-forecast { grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
+    .forecast-grid, .skel-forecast-grid { grid-template-columns: 1fr; }
+    .fc-tip { grid-column: span 1; }
+    .skel-fc-tip { grid-column: span 1; }
+    .fc-trend-bars { display: none; }
+    .fc-trend-labels.fc-labels-bar { display: none; }
+    .fc-trend-spline { display: block; }
+    .fc-trend-labels.fc-labels-spline { display: flex; }
     .wx-hero-icon .icon { font-size: 2rem; }
     .wx-hero-temp { font-size: var(--font-size-headline-lg); }
     .wx-stats { grid-template-columns: repeat(2, 1fr); gap: 12px; }
@@ -1449,13 +1521,15 @@
     <div class="skel-label skeleton"></div>
     <div class="skeleton skel-aqi"></div>
     <div class="skel-label skeleton"></div>
-    <div class="skel-forecast">
-      <div class="skeleton skel-fc"></div>
-      <div class="skeleton skel-fc"></div>
-      <div class="skeleton skel-fc"></div>
-      <div class="skeleton skel-fc"></div>
-      <div class="skeleton skel-fc"></div>
+    <div class="skel-forecast-grid">
+      <div class="skeleton skel-fc-card"></div>
+      <div class="skeleton skel-fc-card"></div>
+      <div class="skeleton skel-fc-card"></div>
+      <div class="skeleton skel-fc-tip"></div>
+      <div class="skeleton skel-fc-card"></div>
+      <div class="skeleton skel-fc-card"></div>
     </div>
+    <div class="skeleton skel-fc-trend"></div>
   </div>
 
   <!-- Live Results (hidden until data loads, replaces skeleton) -->
@@ -1483,7 +1557,8 @@
 
     <!-- 5-day forecast -->
     <h2 class="section-title" id="forecast-title">5-Day Pollen Risk Forecast</h2>
-    <div class="forecast-row" id="forecast-cards"></div>
+    <div class="forecast-grid" id="forecast-cards"></div>
+    <div id="forecast-trend"></div>
   </div>
 </div>
 </section>
@@ -1713,7 +1788,9 @@ hourglass_empty:'<path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2
 rainy:'<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/>',
 rainy_light:'<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M8 19v1"/><path d="M8 14v1"/><path d="M16 19v1"/><path d="M16 14v1"/><path d="M12 21v1"/><path d="M12 16v1"/>',
 rainy_heavy:'<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="m9.2 22 3-7"/><path d="m9 13-3 7"/><path d="m17 13-3 7"/>',
-weather_snowy:'<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M8 15h.01"/><path d="M8 19h.01"/><path d="M12 17h.01"/><path d="M12 21h.01"/><path d="M16 15h.01"/><path d="M16 19h.01"/>'
+weather_snowy:'<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M8 15h.01"/><path d="M8 19h.01"/><path d="M12 17h.01"/><path d="M12 21h.01"/><path d="M16 15h.01"/><path d="M16 19h.01"/>',
+trending_up:'<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
+trending_down:'<polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/>'
 };
 
 function mIcon(name, cls) {
@@ -2442,7 +2519,9 @@ async function fetchData() {
   var skel = document.getElementById("results-skeleton");
   skel.style.display = "";
   skel.querySelector(".skel-strip").style.display = "";
-  skel.querySelector(".skel-forecast").style.display = "";
+  skel.querySelector(".skel-forecast-grid").style.display = "";
+  var skelTrend = skel.querySelector(".skel-fc-trend");
+  if (skelTrend) skelTrend.style.display = "";
   var skelLabels = skel.querySelectorAll(".skel-label");
   if (skelLabels[1]) skelLabels[1].style.display = "";
   document.getElementById("tier-notice").style.display = "none";
@@ -2567,6 +2646,7 @@ async function fetchData() {
 
       document.getElementById("weather-strip").style.display = "none";
       document.getElementById("forecast-cards").innerHTML = "";
+      document.getElementById("forecast-trend").innerHTML = "";
       fcTitle.textContent = t("section.forecastNone");
     }
 
@@ -2584,7 +2664,9 @@ async function fetchData() {
     var skel = document.getElementById("results-skeleton");
     if (weatherTier === 3) {
       skel.querySelector(".skel-strip").style.display = "none";
-      skel.querySelector(".skel-forecast").style.display = "none";
+      skel.querySelector(".skel-forecast-grid").style.display = "none";
+      var skelTrend = skel.querySelector(".skel-fc-trend");
+      if (skelTrend) skelTrend.style.display = "none";
       var skelLabels = skel.querySelectorAll(".skel-label");
       if (skelLabels[1]) skelLabels[1].style.display = "none";
     }
@@ -2775,49 +2857,164 @@ function renderAqi(aq) {
     '<div class="aqi-breakdown">' + rows + '</div>';
 }
 
+function getActiveChips(date, cityElev, reg) {
+  var adjD = adjustDateForElevation(date, cityElev || BASELINE_ELEV);
+  var r = reg || REGIONS.drs;
+  var chips = [];
+  if (getSeasonalBase(TREE_SEASON, adjD) * r.tree >= 0.5) chips.push({ key: "tree", label: t("chip.tree") });
+  if (getSeasonalBase(GRASS_SEASON, adjD) * r.grass >= 0.5) chips.push({ key: "grass", label: t("chip.grass") });
+  if (getSeasonalBase(WEED_SEASON, adjD) * r.weed >= 0.5) chips.push({ key: "weed", label: t("chip.weed") });
+  return chips;
+}
+
+function getForecastTip(days) {
+  var hl = t("fc.tip.headline");
+  for (var i = 0; i < days.length; i++) {
+    if (days[i].dayPrecip > 5) {
+      return { headline: hl, body: t("fc.tip.rainClear", { day: days[i].shortLabel }), icon: "rainy" };
+    }
+  }
+  for (var j = 1; j < days.length; j++) {
+    if (days[j - 1].peak > 2 && days[j].peak < 1.5) {
+      return { headline: hl, body: t("fc.tip.riskDrop", { day: days[j].shortLabel }), icon: "trending_down" };
+    }
+  }
+  if (days.length >= 3) {
+    var rising = true;
+    for (var k = 1; k < days.length; k++) {
+      if (days[k].peak <= days[k - 1].peak) { rising = false; break; }
+    }
+    if (rising) return { headline: hl, body: t("fc.tip.rising"), icon: "trending_up" };
+  }
+  var allLow = true;
+  for (var m = 0; m < days.length; m++) {
+    if (days[m].peak > 0.5) { allLow = false; break; }
+  }
+  if (allLow) return { headline: hl, body: t("fc.tip.allClear"), icon: "eco" };
+  return { headline: hl, body: t("fc.tip.default"), icon: "eco" };
+}
+
+function buildTrendSpline(days) {
+  if (days.length < 2) return "";
+  var pad = 20, w = (days.length - 1) * 60 + pad * 2, h = 100;
+  var pts = [];
+  for (var i = 0; i < days.length; i++) {
+    pts.push({ x: pad + i * 60, y: h - 10 - (days[i].peak / 4) * (h - 20) });
+  }
+  var path = "M" + pts[0].x + " " + pts[0].y;
+  for (var i = 1; i < pts.length; i++) {
+    var cpx = (pts[i - 1].x + pts[i].x) / 2;
+    path += " Q " + cpx + " " + pts[i - 1].y + " " + pts[i].x + " " + pts[i].y;
+  }
+  var fillPath = path + " L " + pts[pts.length - 1].x + " " + h + " L " + pts[0].x + " " + h + " Z";
+  var circles = "";
+  for (var i = 0; i < pts.length; i++) {
+    circles += '<circle cx="' + pts[i].x + '" cy="' + pts[i].y + '" r="5" fill="' + days[i].info.color + '" stroke="var(--card)" stroke-width="2"/>';
+  }
+  return '<svg class="fc-trend-spline" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="xMidYMid meet">' +
+    '<path class="fc-spline-fill" d="' + fillPath + '"/>' +
+    '<path class="fc-spline-line" d="' + path + '"/>' +
+    circles + '</svg>';
+}
+
 function renderForecast(daily, now, cityElev, reg) {
   var container = document.getElementById("forecast-cards");
-  var html = "";
+  var trendContainer = document.getElementById("forecast-trend");
 
-  // Skip today (index 0), show next 5 days
   var WEEKDAYS_EN = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
   var WEEKDAYS_RU = ["Вс","Пн","Вт","Ср","Чт","Пт","Сб"];
   var WEEKDAYS_TJ = ["Яш","Дш","Сш","Чш","Пш","Ҷм","Шб"];
   var weekdays = LANG === "ru" ? WEEKDAYS_RU : LANG === "tj" ? WEEKDAYS_TJ : WEEKDAYS_EN;
 
+  var days = [];
+  var r = reg || REGIONS.drs;
   for (var i = 1; i <= 5 && i < daily.time.length; i++) {
     var d = new Date(daily.time[i] + "T12:00:00");
     var label = weekdays[d.getDay()] + ", " + t("month." + d.getMonth()) + " " + d.getDate();
-
+    var shortLabel = weekdays[d.getDay()];
     var dayTemp = daily.temperature_2m_max[i];
     var dayLow = daily.temperature_2m_min[i];
     var dayPrecip = daily.precipitation_sum[i];
     var dayWind = daily.wind_speed_10m_max[i];
     var dayHumidity = daily.relative_humidity_2m_mean ? daily.relative_humidity_2m_mean[i] : 50;
-
     var fcWxCode = daily.weather_code[i];
-    var wxFactor = weatherFactor(dayTemp, dayHumidity, dayWind, dayPrecip, fcWxCode);
+    var wf = weatherFactor(dayTemp, dayHumidity, dayWind, dayPrecip, fcWxCode);
     var adjD = adjustDateForElevation(d, cityElev || BASELINE_ELEV);
-    var r = reg || REGIONS.drs;
-    var treeR = computeRisk(getSeasonalBase(TREE_SEASON, adjD) * r.tree, wxFactor);
-    var grassR = computeRisk(getSeasonalBase(GRASS_SEASON, adjD) * r.grass, wxFactor);
-    var weedR = computeRisk(getSeasonalBase(WEED_SEASON, adjD) * r.weed, wxFactor);
+    var treeR = computeRisk(getSeasonalBase(TREE_SEASON, adjD) * r.tree, wf);
+    var grassR = computeRisk(getSeasonalBase(GRASS_SEASON, adjD) * r.grass, wf);
+    var weedR = computeRisk(getSeasonalBase(WEED_SEASON, adjD) * r.weed, wf);
     var peak = Math.max(treeR, grassR, weedR);
     var info = getRiskInfo(peak);
-
-    html += '<div class="forecast-card">' +
-      '<div class="day">' + label + '</div>' +
-      '<div class="fc-risk" style="color:' + info.color + '">' + info.label + '</div>' +
-      '<div class="fc-bar" style="background:' + info.color + ';opacity:0.7;"></div>' +
-      '<div class="fc-temp">' + Math.round(dayLow) + '\u00B0 / ' + Math.round(dayTemp) + '\u00B0C</div>' +
-      '<div class="fc-detail">' +
-        (dayPrecip > 0 ? t("fc.rain", {mm: dayPrecip}) : t("fc.noRain")) +
-        ' \u00B7 ' + t("fc.wind", {kmh: Math.round(dayWind)}) +
-      '</div>' +
-    '</div>';
+    var chips = getActiveChips(d, cityElev, reg);
+    days.push({ d: d, label: label, shortLabel: shortLabel, dayTemp: dayTemp, dayLow: dayLow,
+      dayPrecip: dayPrecip, dayWind: dayWind, fcWxCode: fcWxCode, peak: peak, info: info, chips: chips });
   }
 
+  var tip = getForecastTip(days);
+  var tipShort = days.length < 4 ? " fc-tip-short" : "";
+  var html = "";
+  for (var j = 0; j < days.length; j++) {
+    var dy = days[j];
+    var chipsHtml = dy.chips.map(function(c) {
+      return '<span class="fc-chip fc-chip-' + c.key + '">' + c.label + '</span>';
+    }).join("");
+    html += '<div class="fc-card" style="border-top-color:' + dy.info.color + '">' +
+      '<div>' +
+        '<div class="fc-card-header">' +
+          '<span class="fc-card-date">' + dy.label + '</span>' +
+          '<span class="fc-card-wx">' + wxIcon(dy.fcWxCode) + '</span>' +
+        '</div>' +
+        '<div class="fc-card-risk" style="color:' + dy.info.color + '">' + dy.info.label + '</div>' +
+        (chipsHtml ? '<div class="fc-card-chips">' + chipsHtml + '</div>' : '') +
+      '</div>' +
+      '<div class="fc-card-conditions">' + Math.round(dy.dayLow) + '\u00B0 / ' + Math.round(dy.dayTemp) + '\u00B0C \u00B7 ' + wxDescription(dy.fcWxCode) + '</div>' +
+    '</div>';
+    if (j === 2) {
+      html += '<div class="fc-tip' + tipShort + '">' +
+        '<div class="fc-tip-inner">' +
+          '<div class="fc-tip-icon">' + mIcon(tip.icon) + '</div>' +
+          '<h3>' + tip.headline + '</h3>' +
+          '<p>' + tip.body + '</p>' +
+        '</div>' +
+        '<div class="fc-tip-bg">' + mIcon("psychiatry") + '</div>' +
+      '</div>';
+    }
+  }
+  if (days.length > 0 && days.length <= 2) {
+    html += '<div class="fc-tip fc-tip-short">' +
+      '<div class="fc-tip-inner">' +
+        '<div class="fc-tip-icon">' + mIcon(tip.icon) + '</div>' +
+        '<h3>' + tip.headline + '</h3>' +
+        '<p>' + tip.body + '</p>' +
+      '</div>' +
+      '<div class="fc-tip-bg">' + mIcon("psychiatry") + '</div>' +
+    '</div>';
+  }
   container.innerHTML = html;
+
+  if (trendContainer && days.length > 0) {
+    var barsHtml = "", labelsHtml = "";
+    for (var b = 0; b < days.length; b++) {
+      var barH = Math.max(4, (days[b].peak / 4) * 100);
+      barsHtml += '<div class="fc-trend-col">' +
+        '<div class="fc-trend-bar" style="height:' + barH + '%;background:' + days[b].info.color + '"' +
+        ' ontouchstart="this.classList.toggle(\'active\')">' +
+          '<span class="fc-trend-tooltip">' + days[b].label + ': ' + days[b].info.label + ' (' + days[b].peak.toFixed(1) + ')</span>' +
+        '</div></div>';
+      labelsHtml += '<span>' + days[b].label + '</span>';
+    }
+    var splineHtml = buildTrendSpline(days);
+    var splineLabels = days.map(function(dy) { return '<span>' + dy.shortLabel + '</span>'; }).join("");
+    trendContainer.innerHTML = '<div class="fc-trend">' +
+      '<h3>' + t("fc.trendTitle") + '</h3>' +
+      '<div class="fc-trend-bars">' + barsHtml + '</div>' +
+      '<div class="fc-trend-labels fc-labels-bar">' + labelsHtml + '</div>' +
+      splineHtml +
+      '<div class="fc-trend-labels fc-labels-spline" style="display:none">' + splineLabels + '</div>' +
+    '</div>';
+  } else if (trendContainer) {
+    trendContainer.innerHTML = "";
+  }
 }
 
 // ── GPS ──
@@ -3025,6 +3222,13 @@ function toggleTheme() {
     fab.classList.toggle("visible", window.scrollY > 400);
   }, {passive: true});
 })();
+
+document.addEventListener("touchstart", function(e) {
+  if (!e.target.closest(".fc-trend-bar")) {
+    var active = document.querySelectorAll(".fc-trend-bar.active");
+    for (var i = 0; i < active.length; i++) active[i].classList.remove("active");
+  }
+}, {passive: true});
 
 // ── Insights: Active Now ──
 function renderActiveNow(cityIndex) {
