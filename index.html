@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="google-site-verification" content="Dodf4c480Lb4XlPGXnVrHUyxFPyEH-bY06Pg-4re58w" />
-<meta name="description" id="meta-desc" content="Seasonal allergy and pollen risk tracker for Tajikistan. Live pollen forecast, air quality, and 5-day outlook for 30 cities.">
-<meta name="keywords" id="meta-keywords" content="pollen, allergy, Tajikistan, pollen forecast, air quality, Dushanbe, allergy tracker, pollen risk, AQI, seasonal allergy">
+<meta name="description" id="meta-desc" content="Pollen risk tracker for Tajikistan — live forecast, air quality, hourly breakdown, and 5-day outlook for 30 cities. Cross-reactivity guide, regional profiles, trilingual (EN/RU/TJ). Free PWA, works offline.">
+<meta name="keywords" id="meta-keywords" content="pollen, allergy, Tajikistan, pollen forecast, air quality, AQI, seasonal allergy, hay fever, pollen risk, allergy tracker, cross-reactivity, oral allergy syndrome, UV index, hourly pollen forecast, regional pollen, PWA, offline allergy tracker, Dushanbe, Khujand, Bokhtar, Kulob, Khorog, poplar pollen, mugwort, Central Asia">
 <meta name="author" content="Eraj Ismatulloev">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 <link rel="canonical" href="https://allergytj.vercel.app/">
@@ -20,7 +20,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://allergytj.vercel.app/">
 <meta property="og:title" id="og-title" content="AllergyTJ — Pollen & Allergy Tracker for Tajikistan">
-<meta property="og:description" id="og-desc" content="Seasonal allergy and pollen risk tracker for Tajikistan. Live pollen forecast, air quality, and 5-day outlook for 30 cities.">
+<meta property="og:description" id="og-desc" content="Pollen risk tracker for Tajikistan — live forecast, air quality, hourly breakdown, and 5-day outlook for 30 cities. Cross-reactivity guide, regional profiles, trilingual (EN/RU/TJ). Free PWA, works offline.">
 <meta property="og:locale" content="en">
 <meta property="og:locale:alternate" content="ru">
 <meta property="og:locale:alternate" content="tg">
@@ -30,7 +30,7 @@
 <meta property="og:image:type" content="image/png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" id="twitter-title" content="AllergyTJ — Pollen & Allergy Tracker for Tajikistan">
-<meta name="twitter:description" id="twitter-desc" content="Seasonal allergy and pollen risk tracker for Tajikistan. Live pollen forecast, air quality, and 5-day outlook for 30 cities.">
+<meta name="twitter:description" id="twitter-desc" content="Pollen risk tracker for Tajikistan — live forecast, air quality, hourly breakdown, and 5-day outlook for 30 cities. Cross-reactivity guide, regional profiles, trilingual (EN/RU/TJ). Free PWA, works offline.">
 <meta name="twitter:image" content="https://allergytj.vercel.app/og-image.png">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 10 C20 30 10 60 30 80 Q40 70 50 50 Q60 70 70 80 C90 60 80 30 50 10Z' fill='%231a3a2a'/><path d='M50 25 Q50 55 50 80' stroke='%23a8e7c5' stroke-width='3' fill='none' stroke-linecap='round'/></svg>">
 <link rel="manifest" href="/manifest.json">
@@ -49,9 +49,14 @@
   "@type": "WebApplication",
   "name": "AllergyTJ",
   "url": "https://allergytj.vercel.app",
-  "description": "Seasonal allergy and pollen risk tracker for Tajikistan. Live pollen forecast, air quality, and 5-day outlook for 30 cities.",
+  "description": "Pollen risk tracker for Tajikistan — live forecast, air quality, hourly breakdown, and 5-day outlook for 30 cities. Cross-reactivity guide, regional profiles, trilingual. Free PWA, works offline.",
   "applicationCategory": "HealthApplication",
+  "applicationSubCategory": "Allergy Tracker",
   "operatingSystem": "Any",
+  "browserRequirements": "Requires JavaScript. Works in all modern browsers.",
+  "softwareVersion": "2.0",
+  "dateModified": "2026-05-14",
+  "featureList": "Live pollen risk estimation, 5-day forecast, Air quality (US AQI with 6 pollutants), Hourly risk breakdown, Cross-reactivity guide (Oral Allergy Syndrome), Regional pollen profiles (5 vegetation zones), Elevation-adjusted bloom timing, 30 cities across Tajikistan, Trilingual (English/Russian/Tajik), Dark mode, PWA with offline support, UV index tracking",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "inLanguage": ["en", "ru", "tg"],
   "areaServed": { "@type": "Country", "name": "Tajikistan" },
@@ -93,6 +98,38 @@
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "AllergyTJ combines a seasonal pollen calendar for Tajikistan's allergenic flora with live weather data. Temperature, humidity, wind speed, and precipitation adjust the seasonal baseline: hot, dry, windy conditions increase risk, while rain and cold suppress it. The result is a score from 0 to 4 (None to Very High)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can pollen allergies cause food reactions?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — a condition called Oral Allergy Syndrome (OAS) means proteins in certain foods resemble pollen allergens. Birch pollen allergy can cross-react with apples, cherries, and apricots. Mugwort (Artemisia) allergy may trigger reactions to celery, cumin, and coriander. Grass pollen cross-reacts with wheat and melons. AllergyTJ includes a Cross-Reactivity Guide covering foods commonly eaten in Tajikistan."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does air quality affect allergies in Tajikistan?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Poor air quality worsens allergy symptoms. PM2.5 and PM10 particles can carry pollen fragments deep into the lungs, and ozone inflames airways. AllergyTJ shows real-time US AQI with a breakdown of 6 pollutants (ozone, PM2.5, PM10, NO₂, SO₂, CO) using data from the Copernicus Atmosphere Monitoring Service (CAMS)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does pollen risk vary by region in Tajikistan?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, significantly. Tajikistan has five distinct vegetation zones: Dushanbe/DRS (urban, poplar-heavy), Khatlon (agricultural lowlands, higher grass pollen), Sughd (Ferghana Valley, mixed orchards), GBAO/Pamir (sparse alpine vegetation, much lower pollen), and mountain valleys. AllergyTJ adjusts risk scores using regional multipliers and elevation-based bloom timing via Hopkins' Bioclimatic Law."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use AllergyTJ offline?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "AllergyTJ is a Progressive Web App (PWA) that can be installed on your phone or desktop. Once installed, the app loads from cache even without internet. Offline mode shows seasonal pollen estimates without live weather adjustment. Full functionality resumes when connectivity returns."
       }
     }
   ]
