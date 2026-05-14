@@ -305,7 +305,7 @@
   [data-theme="dark"] .section-title { border-left-color: var(--primary); }
   [data-theme="dark"] .bottom-nav { background: var(--surface-container-low); box-shadow: 0px -2px 12px rgba(0,0,0,0.3); }
   [data-theme="dark"] .dash-gauge-ring { stroke: var(--surface-container-high); }
-  [data-theme="dark"] .dash-bento-widget { background: var(--surface-container); }
+  [data-theme="dark"] .dash-wx { background: var(--surface-container); }
   [data-theme="dark"] .dash-trigger-row { background: var(--surface-container); }
   [data-theme="dark"] .dash-tip { background: var(--primary-container); }
   [data-theme="dark"] .dash-nearby-card { background: var(--surface-container); }
@@ -573,45 +573,43 @@
     z-index: -1;
   }
 
-  /* Bento Weather Grid */
-  .dash-bento {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-md);
+  /* Dashboard Weather Hero */
+  .dash-wx {
+    background: var(--surface-container-lowest);
+    border-radius: var(--radius-xl);
+    padding: var(--space-lg);
+    box-shadow: var(--shadow-md);
     margin-bottom: var(--space-2xl);
   }
-  .dash-bento-widget {
-    background: var(--surface-container-lowest);
-    padding: var(--space-lg);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-md);
+  .dash-wx-hero {
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 120px;
+    align-items: center;
+    gap: var(--space-md);
+    padding-bottom: var(--space-md);
+    margin-bottom: var(--space-md);
+    border-bottom: 1px solid var(--outline-variant);
   }
-  .dash-bento-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-  }
-  .dash-bento-header .text-label-md { color: var(--on-surface-variant); }
-  .dash-bento-header .icon { color: var(--secondary); font-size: 22px; }
-  .dash-bento-value {
-    font-size: var(--font-size-headline-lg);
-    line-height: var(--line-height-headline-lg);
+  .dash-wx-icon .icon { font-size: 2.8rem; color: var(--secondary); }
+  .dash-wx-temp {
+    font-size: var(--font-size-headline-xl);
     font-weight: var(--font-weight-bold);
+    line-height: 1;
     color: var(--on-surface);
-    margin-top: var(--space-sm);
   }
-  .dash-bento-value .unit {
-    font-size: var(--font-size-body-md);
-    font-weight: var(--font-weight-regular);
+  .dash-wx-temp .unit { font-size: var(--font-size-body-lg); font-weight: var(--font-weight-regular); }
+  .dash-wx-condition { text-align: left; }
+  .dash-wx-now { font-weight: var(--font-weight-semibold); font-size: var(--font-size-body-lg); color: var(--on-surface); }
+  .dash-wx-desc { font-size: var(--font-size-body-md); color: var(--on-surface-variant); margin-top: 2px; }
+  .dash-wx-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-sm);
+    text-align: center;
   }
-  .dash-bento-desc {
-    font-size: var(--font-size-body-md);
-    color: var(--on-surface-variant);
-  }
+  .dash-wx-stat-icon { margin-bottom: 2px; }
+  .dash-wx-stat-icon .icon { font-size: 1.1rem; color: var(--secondary); }
+  .dash-wx-stat-val { font-weight: var(--font-weight-bold); font-size: var(--font-size-body-md); color: var(--on-surface); }
+  .dash-wx-stat-label { color: var(--on-surface-variant); font-size: var(--font-size-caption); text-transform: uppercase; letter-spacing: 0.03em; }
 
   /* Top Triggers + Health Tip grid */
   .dash-triggers-tip {
@@ -1333,7 +1331,7 @@
     .dash-recommendation { margin: 0 auto var(--space-md); }
     .dash-hero-actions { justify-content: center; }
     .dash-gauge-wrap { margin: 0 auto; }
-    .dash-bento { grid-template-columns: repeat(2, 1fr); }
+    .dash-wx-stats { grid-template-columns: repeat(2, 1fr); }
     .dash-triggers-tip { grid-template-columns: 1fr; }
     .dash-nearby-grid { grid-template-columns: 1fr; }
     .dash-location-label { justify-content: center; }
@@ -1363,6 +1361,9 @@
     .wx-hero-icon .icon { font-size: 2rem; }
     .wx-hero-temp { font-size: var(--font-size-headline-lg); }
     .wx-stats { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .dash-wx-icon .icon { font-size: 2.2rem; }
+    .dash-wx-temp { font-size: var(--font-size-headline-lg); }
+    .dash-wx-stats { grid-template-columns: repeat(2, 1fr); gap: 12px; }
     .risk-banner { padding: 20px 16px; }
     .risk-banner .desc { font-size: 0.8rem; }
     .fab-top { bottom: 80px; }
@@ -1477,40 +1478,17 @@
   <div class="status" id="status" role="status" aria-live="polite"></div>
   <div class="status" id="tier-notice" style="display:none;"></div>
 
-  <!-- Bento Weather Grid -->
-  <div class="dash-bento" id="dash-bento">
-    <div class="dash-bento-widget">
-      <div class="dash-bento-header">
-        <span class="text-label-md" data-i18n="wx.label.temp">Temperature</span>
-        <span class="icon">thermostat</span>
+  <!-- Dashboard Weather Hero -->
+  <div class="dash-wx" id="dash-wx">
+    <div class="dash-wx-hero">
+      <div class="dash-wx-icon" id="dash-wx-icon"><span class="icon">wb_sunny</span></div>
+      <div class="dash-wx-temp" id="dash-wx-temp">—°</div>
+      <div class="dash-wx-condition">
+        <div class="dash-wx-now" id="dash-wx-now">—</div>
+        <div class="dash-wx-desc" id="dash-wx-desc"></div>
       </div>
-      <div><div class="dash-bento-value" id="dash-temp">—</div>
-      <div class="dash-bento-desc" id="dash-temp-desc"></div></div>
     </div>
-    <div class="dash-bento-widget">
-      <div class="dash-bento-header">
-        <span class="text-label-md" data-i18n="wx.label.humidity">Humidity</span>
-        <span class="icon">humidity_percentage</span>
-      </div>
-      <div><div class="dash-bento-value" id="dash-humidity">—</div>
-      <div class="dash-bento-desc" id="dash-humidity-desc"></div></div>
-    </div>
-    <div class="dash-bento-widget">
-      <div class="dash-bento-header">
-        <span class="text-label-md" data-i18n="wx.label.uv">UV Index</span>
-        <span class="icon">wb_sunny</span>
-      </div>
-      <div><div class="dash-bento-value" id="dash-uv">—</div>
-      <div class="dash-bento-desc" id="dash-uv-desc"></div></div>
-    </div>
-    <div class="dash-bento-widget">
-      <div class="dash-bento-header">
-        <span class="text-label-md" data-i18n="wx.label.wind">Wind Speed</span>
-        <span class="icon">air</span>
-      </div>
-      <div><div class="dash-bento-value" id="dash-wind">—</div>
-      <div class="dash-bento-desc" id="dash-wind-desc"></div></div>
-    </div>
+    <div class="dash-wx-stats" id="dash-wx-stats"></div>
   </div>
 
   <!-- Top Triggers + Health Tip -->
@@ -1948,20 +1926,21 @@ function renderDashboard(overallRisk, treeRisk, grassRisk, weedRisk, wxData, cit
   document.getElementById("dash-gauge-score").textContent = overallRisk.toFixed(1) + " / 4";
   document.getElementById("dash-gauge-glow").style.background = info.bg;
 
-  // Bento Weather Grid
+  // Dashboard Weather Hero
   if (wxData) {
-    document.getElementById("dash-temp").innerHTML = Math.round(wxData.temp) + '°<span class="unit">C</span>';
-    document.getElementById("dash-temp-desc").textContent = wxDescription(wxData.wxCode || 0);
-    document.getElementById("dash-humidity").textContent = Math.round(wxData.humidity) + '%';
+    document.getElementById("dash-wx-icon").innerHTML = wxIcon(wxData.wxCode || 0);
+    document.getElementById("dash-wx-temp").innerHTML = Math.round(wxData.temp) + '°<span class="unit">C</span>';
+    document.getElementById("dash-wx-now").textContent = wxDescription(wxData.wxCode || 0);
     var humDesc = wxData.humidity < 35 ? t("wx.dry") : wxData.humidity > 70 ? t("wx.humid") : t("wx.comfortable");
-    document.getElementById("dash-humidity-desc").textContent = humDesc !== "wx.dry" && humDesc !== "wx.humid" && humDesc !== "wx.comfortable" ? "" : humDesc;
+    document.getElementById("dash-wx-desc").textContent = humDesc;
     var uvVal = wxData.uv != null ? wxData.uv.toFixed(1) : "—";
-    document.getElementById("dash-uv").textContent = uvVal;
-    document.getElementById("dash-uv").style.color = uvColor(wxData.uv);
-    var uvDesc = wxData.uv == null ? "" : wxData.uv >= 8 ? t("wx.uvVeryHigh") : wxData.uv >= 6 ? t("wx.uvHigh") : wxData.uv >= 3 ? t("wx.uvModerate") : t("wx.uvLow");
-    document.getElementById("dash-uv-desc").textContent = uvDesc !== "wx.uvVeryHigh" && uvDesc !== "wx.uvHigh" && uvDesc !== "wx.uvModerate" && uvDesc !== "wx.uvLow" ? "" : uvDesc;
-    document.getElementById("dash-wind").innerHTML = Math.round(wxData.wind) + ' <span class="unit">km/h</span>';
-    document.getElementById("dash-wind-desc").textContent = "";
+    var uvC = uvColor(wxData.uv);
+    var precipVal = wxData.precip != null ? wxData.precip.toFixed(1) : "0.0";
+    document.getElementById("dash-wx-stats").innerHTML =
+      '<div class="dash-wx-stat"><div class="dash-wx-stat-icon">' + mIcon('humidity_percentage') + '</div><div class="dash-wx-stat-val">' + Math.round(wxData.humidity) + '%</div><div class="dash-wx-stat-label">' + t("wx.label.humidity") + '</div></div>' +
+      '<div class="dash-wx-stat"><div class="dash-wx-stat-icon">' + mIcon('air') + '</div><div class="dash-wx-stat-val">' + Math.round(wxData.wind) + ' km/h</div><div class="dash-wx-stat-label">' + t("wx.label.wind") + '</div></div>' +
+      '<div class="dash-wx-stat"><div class="dash-wx-stat-icon">' + mIcon('wb_sunny') + '</div><div class="dash-wx-stat-val" style="color:' + uvC + '">' + uvVal + '</div><div class="dash-wx-stat-label">' + t("wx.label.uv") + '</div></div>' +
+      '<div class="dash-wx-stat"><div class="dash-wx-stat-icon">' + mIcon('rainy') + '</div><div class="dash-wx-stat-val">' + precipVal + ' mm</div><div class="dash-wx-stat-label">' + t("wx.label.rainToday") + '</div></div>';
   }
 
   // Top Triggers
@@ -2669,7 +2648,7 @@ async function fetchData() {
       renderBanner(overallRisk, cityName, wxFactor, wxData);
       renderPollenCards(treeRisk, grassRisk, weedRisk, now);
       renderDashboard(overallRisk, treeRisk, grassRisk, weedRisk,
-        { temp: curWx.temperature_2m, humidity: curWx.relative_humidity_2m, wind: curWx.wind_speed_10m, wxCode: curWx.weather_code, uv: curWx.uv_index },
+        { temp: curWx.temperature_2m, humidity: curWx.relative_humidity_2m, wind: curWx.wind_speed_10m, precip: todayPrecip, wxCode: curWx.weather_code, uv: curWx.uv_index },
         cityIndex, now);
       renderInsights(cityIndex);
 
@@ -3214,14 +3193,14 @@ async function setLanguage(lang) {
 
       renderBanner(overallRisk, cityName, wxFactor, wxData);
       renderPollenCards(treeRisk, grassRisk, weedRisk, now);
+      var todayPrecip = daily.precipitation_sum[0];
+      var todayWxCode = daily.weather_code[0];
       renderDashboard(overallRisk, treeRisk, grassRisk, weedRisk,
-        { temp: curWx.temperature_2m, humidity: curWx.relative_humidity_2m, wind: curWx.wind_speed_10m, wxCode: curWx.weather_code, uv: curWx.uv_index },
+        { temp: curWx.temperature_2m, humidity: curWx.relative_humidity_2m, wind: curWx.wind_speed_10m, precip: todayPrecip, wxCode: curWx.weather_code, uv: curWx.uv_index },
         s.cityIndex, now);
       renderInsights(s.cityIndex);
       var hourlyBlocks = s.wx.hourly ? computeHourlyBreakdown(s.wx.hourly, now, elev, rg) : null;
       renderHourlyBreakdown(hourlyBlocks);
-      var todayPrecip = daily.precipitation_sum[0];
-      var todayWxCode = daily.weather_code[0];
       renderWeather(curWx.temperature_2m, curWx.relative_humidity_2m, curWx.wind_speed_10m,
                     todayPrecip, curWx.weather_code, todayWxCode, curWx.uv_index);
       renderForecast(daily, now, elev, rg);
