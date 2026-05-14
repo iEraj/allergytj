@@ -187,6 +187,13 @@
   "about.guide.calendar": "Seasonal calendar — \"What's in bloom this month?\" Year-round allergen reference.",
   "about.limitationsTitle": "Limitations",
   "about.limitations": "As of early 2026, no public pollen monitoring stations have been identified in Tajikistan. Risk levels are estimates based on seasonal patterns and weather conditions, not measured pollen counts. Air quality data relies on atmospheric modeling (CAMS), not ground-based sensors, and may differ from platforms that use local monitoring stations. Elevation adjustments follow a general botanical rule and may not reflect exact local conditions.",
+  "about.crossReactTitle": "Cross-Reactivity Guide",
+  "about.crossReactIntro": "Pollen allergies can trigger reactions to certain foods — called Oral Allergy Syndrome (OAS). Proteins in these foods resemble pollen allergens, causing tingling or itching in the mouth.",
+  "about.cross.birch": "Birch: apples, cherries, apricots, peaches, pears, hazelnuts, carrots, celery",
+  "about.cross.mugwort": "Mugwort: celery, carrots, cumin, coriander, sunflower seeds, chamomile tea",
+  "about.cross.grass": "Grasses: wheat flour, tomatoes, watermelon, melon, oranges",
+  "about.cross.ragweed": "Ragweed: watermelon, cantaloupe, banana, zucchini, cucumber",
+  "about.crossReactTip": "Cooking or peeling usually eliminates the reaction, as heat breaks down the cross-reactive proteins.",
 
   "share.button": "Share",
   "share.copied": "Copied!",

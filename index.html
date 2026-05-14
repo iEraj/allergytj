@@ -1590,6 +1590,7 @@
   <h2 class="section-title" data-i18n="insights.learnMore">Learn More</h2>
   <div class="knowledge-grid">
 
+    <!-- Row 1: Intro — what is this, how does it work -->
     <div class="knowledge-card">
       <div class="knowledge-card-header">
         <div class="knowledge-card-icon"><span class="icon">eco</span></div>
@@ -1606,6 +1607,7 @@
       <div class="knowledge-card-body" data-i18n="about.weather">Hot, dry, windy conditions increase pollen dispersal and raise the risk score. Rain, snow, cold, and high humidity suppress airborne pollen and lower the score. The weather modifier adjusts the seasonal baseline to produce a final score from 0 (None) to 4 (Very High).</div>
     </div>
 
+    <!-- Row 2: Geography — altitude + vegetation zones -->
     <div class="knowledge-card">
       <div class="knowledge-card-header">
         <div class="knowledge-card-icon"><span class="icon">landscape</span></div>
@@ -1631,6 +1633,7 @@
       </div>
     </div>
 
+    <!-- Row 3: Personal health — when to act + what to watch -->
     <div class="knowledge-card">
       <div class="knowledge-card-header">
         <div class="knowledge-card-icon"><span class="icon">schedule</span></div>
@@ -1642,6 +1645,60 @@
           <li data-i18n="about.hourly.morning">Morning: 6 AM to 12 PM</li>
           <li data-i18n="about.hourly.afternoon">Afternoon: 12 PM to 6 PM</li>
           <li data-i18n="about.hourly.evening">Evening: 6 PM to 12 AM</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="knowledge-card">
+      <div class="knowledge-card-header">
+        <div class="knowledge-card-icon"><span class="icon">health_and_safety</span></div>
+        <div class="knowledge-card-title" data-i18n="about.crossReactTitle">Cross-Reactivity Guide</div>
+      </div>
+      <div class="knowledge-card-body">
+        <p data-i18n="about.crossReactIntro">Pollen allergies can trigger reactions to certain foods — called Oral Allergy Syndrome (OAS). Proteins in these foods resemble pollen allergens, causing tingling or itching in the mouth.</p>
+        <ul>
+          <li data-i18n="about.cross.birch">Birch: apples, cherries, apricots, peaches, pears, hazelnuts, carrots, celery</li>
+          <li data-i18n="about.cross.mugwort">Mugwort: celery, carrots, cumin, coriander, sunflower seeds, chamomile tea</li>
+          <li data-i18n="about.cross.grass">Grasses: wheat flour, tomatoes, watermelon, melon, oranges</li>
+          <li data-i18n="about.cross.ragweed">Ragweed: watermelon, cantaloupe, banana, zucchini, cucumber</li>
+        </ul>
+        <p data-i18n="about.crossReactTip">Cooking or peeling usually eliminates the reaction, as heat breaks down the cross-reactive proteins.</p>
+      </div>
+    </div>
+
+    <!-- Divider: transitions from understanding risk → reading the numbers -->
+    <div class="knowledge-card card-wide">
+      <div class="knowledge-card-header">
+        <div class="knowledge-card-icon"><span class="icon">science</span></div>
+        <div class="knowledge-card-title" data-i18n="about.pollutantsTitle">Air Pollutants Guide</div>
+      </div>
+      <div class="knowledge-card-body">
+        <ul>
+          <li data-i18n="about.pol.o3">Ozone (O₃): forms in sunlight, irritates airways, peaks afternoons. WHO: ≤100 µg/m³.</li>
+          <li data-i18n="about.pol.pm25">PM2.5: fine particles that penetrate lungs. Carries pollen fragments. WHO: ≤15 µg/m³.</li>
+          <li data-i18n="about.pol.pm10">PM10: coarse particles including pollen grains. WHO: ≤45 µg/m³.</li>
+          <li data-i18n="about.pol.no2">NO₂: from vehicles/power plants, inflames airways. WHO: ≤25 µg/m³.</li>
+          <li data-i18n="about.pol.so2">SO₂: from fossil fuels, constricts airways. WHO: ≤40 µg/m³.</li>
+          <li data-i18n="about.pol.co">CO: from combustion, reduces blood oxygen. WHO: ≤4 mg/m³.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Row 4: Reference scales — how to read the dashboard -->
+    <div class="knowledge-card">
+      <div class="knowledge-card-header">
+        <div class="knowledge-card-icon"><span class="icon">air</span></div>
+        <div class="knowledge-card-title" data-i18n="about.aqiTitle">Understanding US AQI</div>
+      </div>
+      <div class="knowledge-card-body">
+        <p data-i18n="about.aqiIntro">The US Air Quality Index is a standardized scale from 0 to 500 that measures how clean or polluted the air is and what health effects may be a concern.</p>
+        <ul>
+          <li data-i18n="about.aqi.good">Good (0–50): air quality is satisfactory</li>
+          <li data-i18n="about.aqi.moderate">Moderate (51–100): acceptable, but sensitive individuals may be affected</li>
+          <li data-i18n="about.aqi.unhealthySG">Unhealthy for Sensitive Groups (101–150): limit exposure</li>
+          <li data-i18n="about.aqi.unhealthy">Unhealthy (151–200): everyone may experience effects</li>
+          <li data-i18n="about.aqi.veryUnhealthy">Very Unhealthy (201–300): health alert</li>
+          <li data-i18n="about.aqi.hazardous">Hazardous (301–500): emergency conditions</li>
         </ul>
       </div>
     </div>
@@ -1663,41 +1720,7 @@
       </div>
     </div>
 
-    <div class="knowledge-card">
-      <div class="knowledge-card-header">
-        <div class="knowledge-card-icon"><span class="icon">air</span></div>
-        <div class="knowledge-card-title" data-i18n="about.aqiTitle">Understanding US AQI</div>
-      </div>
-      <div class="knowledge-card-body">
-        <p data-i18n="about.aqiIntro">The US Air Quality Index is a standardized scale from 0 to 500 that measures how clean or polluted the air is and what health effects may be a concern.</p>
-        <ul>
-          <li data-i18n="about.aqi.good">Good (0–50): air quality is satisfactory</li>
-          <li data-i18n="about.aqi.moderate">Moderate (51–100): acceptable, but sensitive individuals may be affected</li>
-          <li data-i18n="about.aqi.unhealthySG">Unhealthy for Sensitive Groups (101–150): limit exposure</li>
-          <li data-i18n="about.aqi.unhealthy">Unhealthy (151–200): everyone may experience effects</li>
-          <li data-i18n="about.aqi.veryUnhealthy">Very Unhealthy (201–300): health alert</li>
-          <li data-i18n="about.aqi.hazardous">Hazardous (301–500): emergency conditions</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="knowledge-card card-wide">
-      <div class="knowledge-card-header">
-        <div class="knowledge-card-icon"><span class="icon">science</span></div>
-        <div class="knowledge-card-title" data-i18n="about.pollutantsTitle">Air Pollutants Guide</div>
-      </div>
-      <div class="knowledge-card-body">
-        <ul>
-          <li data-i18n="about.pol.o3">Ozone (O₃): forms in sunlight, irritates airways, peaks afternoons. WHO: ≤100 µg/m³.</li>
-          <li data-i18n="about.pol.pm25">PM2.5: fine particles that penetrate lungs. Carries pollen fragments. WHO: ≤15 µg/m³.</li>
-          <li data-i18n="about.pol.pm10">PM10: coarse particles including pollen grains. WHO: ≤45 µg/m³.</li>
-          <li data-i18n="about.pol.no2">NO₂: from vehicles/power plants, inflames airways. WHO: ≤25 µg/m³.</li>
-          <li data-i18n="about.pol.so2">SO₂: from fossil fuels, constricts airways. WHO: ≤40 µg/m³.</li>
-          <li data-i18n="about.pol.co">CO: from combustion, reduces blood oxygen. WHO: ≤4 mg/m³.</li>
-        </ul>
-      </div>
-    </div>
-
+    <!-- Row 5: Transparency — trust + caveats -->
     <div class="knowledge-card">
       <div class="knowledge-card-header">
         <div class="knowledge-card-icon"><span class="icon">database</span></div>
