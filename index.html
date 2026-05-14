@@ -1114,7 +1114,7 @@
   }
   .timeline-months {
     display: grid;
-    grid-template-columns: 120px repeat(12, 1fr);
+    grid-template-columns: var(--cal-label-w, 170px) repeat(12, 1fr);
     gap: 0;
     margin-bottom: 4px;
     font-size: 0.68rem;
@@ -1125,13 +1125,13 @@
   .timeline-months .current-month { color: var(--primary); font-weight: 700; }
   .timeline-row {
     display: grid;
-    grid-template-columns: 120px 1fr;
+    grid-template-columns: var(--cal-label-w, 170px) 1fr;
     align-items: center;
     padding: 6px 0;
     border-bottom: 1px solid var(--border);
   }
   .timeline-row:last-child { border-bottom: none; }
-  .timeline-allergen { font-size: 0.78rem; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 8px; }
+  .timeline-allergen { font-size: 0.78rem; font-weight: 600; color: var(--text); padding-right: 8px; }
   .timeline-bar-track {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
@@ -1366,8 +1366,8 @@
     .risk-banner { padding: 20px 16px; }
     .risk-banner .desc { font-size: 0.8rem; }
     .fab-top { bottom: 80px; }
-    .timeline-months { grid-template-columns: 80px repeat(12, 1fr); font-size: 0.6rem; }
-    .timeline-row { grid-template-columns: 80px 1fr; }
+    .timeline-months, .timeline-row { --cal-label-w: 130px; }
+    .timeline-months { font-size: 0.6rem; }
     .timeline-allergen { font-size: 0.68rem; }
     .timeline-calendar { padding: var(--space-md); overflow-x: auto; }
     .active-now-grid { grid-template-columns: 1fr; }
@@ -3295,12 +3295,11 @@ function renderActiveNow(cityIndex) {
   var city = CITIES[cityIndex || 0];
   var now = new Date();
   var adjD = adjustDateForElevation(now, city.elev);
-  var month = adjD.getMonth();
   var r = REGIONS[city.region] || REGIONS.drs;
   var SEG_COLORS = ['#757575','#2e7d32','#8c6d00','#d84315','#c62828'];
   var SEG_BG    = ['transparent','#a5d6a7','#ffe082','#ffab91','#ef9a9a'];
   var items = SEASONAL.map(function(s, i) {
-    var val = s.months[month];
+    var val = getSeasonalBase(s.months, adjD);
     var regionMul = i < 5 ? r.tree : (i === 5 ? r.grass : r.weed);
     var adjVal = Math.min(Math.round(val * regionMul), 4);
     return { name: t("cal." + i), val: adjVal, idx: i };
