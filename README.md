@@ -10,7 +10,7 @@ No pollen monitoring stations exist in Tajikistan. AllergyTJ fills the gap by es
 
 ## Features
 
-- **31 cities** across all regions of Tajikistan
+- **30 cities** across all regions of Tajikistan
 - **4-tab app** — Dashboard, Forecast, Regions, Insights with hash-based routing
 - **Dashboard** — circular SVG risk gauge, bento weather grid, top allergen triggers with severity bars, daily health tip, nearby regions strip
 - **Pollen risk estimation** — combines seasonal pollen calendar with real-time weather (temperature, humidity, wind, precipitation)

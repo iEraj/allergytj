@@ -114,5 +114,5 @@
 
   <!-- Bottom bar -->
   <rect x="0" y="590" width="1200" height="40" fill="rgba(0,0,0,0.3)"/>
-  <text x="1118" y="616" font-family="-apple-system, sans-serif" font-size="14" fill="rgba(255,255,255,0.4)" text-anchor="end">31 cities &#183; 3 languages &#183; Free</text>
+  <text x="1118" y="616" font-family="-apple-system, sans-serif" font-size="14" fill="rgba(255,255,255,0.4)" text-anchor="end">30 cities &#183; 3 languages &#183; Free</text>
 </svg>
