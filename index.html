@@ -1295,6 +1295,239 @@
     transform: translateY(0);
   }
 
+  /* Notification Settings Overlay */
+  .notif-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-md);
+  }
+  .notif-panel {
+    background: var(--surface);
+    border-radius: var(--radius-xl);
+    max-width: 560px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+  }
+  .notif-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-lg);
+    border-bottom: 1px solid var(--outline-variant);
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+    z-index: 1;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  }
+  .notif-title {
+    font-size: var(--font-size-title-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--on-surface);
+    margin: 0;
+  }
+  .notif-close-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--on-surface-variant);
+    padding: 10px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+  }
+  .notif-close-btn .icon { font-size: 1.4rem; }
+  .notif-close-btn:hover { background: var(--surface-container-high); }
+  .notif-body { padding: var(--space-lg); }
+  .notif-section {
+    margin-bottom: var(--space-xl);
+  }
+  .notif-section-title {
+    font-size: var(--font-size-body-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--on-surface);
+    margin-bottom: var(--space-md);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+  .notif-section-title .icon { font-size: 1.2rem; color: var(--primary); }
+  .notif-toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-sm) 0;
+  }
+  .notif-toggle-label {
+    font-size: var(--font-size-body-md);
+    color: var(--on-surface);
+  }
+  .notif-toggle {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+  .notif-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+  }
+  .notif-slider {
+    position: absolute;
+    inset: 0;
+    background: var(--outline-variant);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .notif-slider::before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: 3px;
+    bottom: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.2s;
+  }
+  .notif-toggle input:checked + .notif-slider {
+    background: var(--primary);
+  }
+  .notif-toggle input:checked + .notif-slider::before {
+    transform: translateX(20px);
+  }
+  .notif-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-top: var(--space-sm);
+  }
+  .notif-chip {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--outline-variant);
+    background: transparent;
+    color: var(--on-surface-variant);
+    font-size: var(--font-size-body-sm);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .notif-chip.selected {
+    background: var(--primary-container);
+    color: var(--on-primary-container);
+    border-color: var(--primary);
+  }
+  .notif-quiet-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-top: var(--space-sm);
+  }
+  .notif-quiet-row input[type="time"] {
+    padding: 6px 10px;
+    border: 1.5px solid var(--outline-variant);
+    border-radius: var(--radius-sm);
+    background: var(--surface-container-lowest);
+    color: var(--on-surface);
+    font-size: var(--font-size-body-md);
+  }
+  .notif-quiet-row span {
+    color: var(--on-surface-variant);
+    font-size: var(--font-size-body-sm);
+  }
+  .notif-save-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: var(--radius-md);
+    background: var(--primary);
+    color: var(--on-primary);
+    font-size: var(--font-size-body-lg);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    margin-top: var(--space-md);
+    transition: opacity 0.2s;
+  }
+  .notif-save-btn:hover { opacity: 0.9; }
+  .notif-tip {
+    background: var(--secondary-container);
+    color: var(--on-secondary-container);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    font-size: var(--font-size-body-sm);
+    margin-top: var(--space-md);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+  .notif-tip .icon { flex-shrink: 0; font-size: 1rem; margin-top: 1px; }
+  .notif-confirm {
+    text-align: center;
+    padding: var(--space-xl) 0;
+  }
+  .notif-confirm .icon { font-size: 3rem; color: var(--primary); margin-bottom: var(--space-md); }
+  .notif-confirm h3 {
+    font-size: var(--font-size-title-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--on-surface);
+    margin: 0 0 var(--space-sm);
+  }
+  .notif-confirm p {
+    color: var(--on-surface-variant);
+    font-size: var(--font-size-body-md);
+    margin: 0 0 var(--space-lg);
+  }
+  .notif-confirm-actions {
+    display: flex;
+    gap: var(--space-sm);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .notif-confirm-actions button {
+    padding: 10px 20px;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-body-md);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    border: 1.5px solid var(--outline-variant);
+    background: transparent;
+    color: var(--on-surface);
+    transition: all 0.15s;
+  }
+  .notif-confirm-actions button.primary {
+    background: var(--primary);
+    color: var(--on-primary);
+    border-color: var(--primary);
+  }
+  .notif-perm-warning {
+    background: var(--error-container, #fde8e8);
+    color: var(--on-error-container, #c62828);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    font-size: var(--font-size-body-sm);
+    margin-top: var(--space-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+  .notif-perm-warning .icon { flex-shrink: 0; }
+  @media (max-width: 600px) {
+    .notif-panel { max-height: 85vh; }
+  }
+
   /* Footer (legacy, now in nav) */
 
   /* Loading Skeleton */
@@ -1398,6 +1631,9 @@
     </div>
     <button class="nav-icon-btn" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
       <span class="icon">dark_mode</span>
+    </button>
+    <button class="nav-icon-btn" id="notif-settings-btn" onclick="openNotificationSettings()" aria-label="Notification settings">
+      <span class="icon">bell</span>
     </button>
   </div>
 </nav>
@@ -1756,6 +1992,17 @@
 </div>
 </section>
 
+<!-- Notification Settings Overlay -->
+<div class="notif-overlay" id="notif-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="notif-title">
+  <div class="notif-panel">
+    <div class="notif-header">
+      <h2 class="notif-title" id="notif-title" data-i18n="notif.title">Alert Settings</h2>
+      <button class="notif-close-btn" onclick="closeNotificationSettings()" aria-label="Close"><span class="icon">x_icon</span></button>
+    </div>
+    <div class="notif-body" id="notif-body"></div>
+  </div>
+</div>
+
 </main>
 
 <footer class="container" style="padding-top:0;">
@@ -1827,7 +2074,11 @@ rainy_light:'<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/
 rainy_heavy:'<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="m9.2 22 3-7"/><path d="m9 13-3 7"/><path d="m17 13-3 7"/>',
 weather_snowy:'<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M8 15h.01"/><path d="M8 19h.01"/><path d="M12 17h.01"/><path d="M12 21h.01"/><path d="M16 15h.01"/><path d="M16 19h.01"/>',
 trending_up:'<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
-trending_down:'<polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/>'
+trending_down:'<polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/>',
+settings:'<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
+bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+bell_off:'<path d="M8.7 3A6 6 0 0 1 18 8a21.3 21.3 0 0 0 .6 5"/><path d="M17 17H3s3-2 3-9a4.67 4.67 0 0 1 .3-1.7"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/><line x1="2" x2="22" y1="2" y2="22"/>',
+x_icon:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>'
 };
 
 function mIcon(name, cls) {
@@ -2661,6 +2912,8 @@ async function fetchData() {
 
       document.getElementById("weather-strip").style.display = "";
       fcTitle.textContent = weatherTier === 2 ? t("section.forecast2") : t("section.forecast5");
+      var _notifRisk = overallRisk;
+      var _notifUv = curWx.uv_index;
 
     } else {
       // Tier 3: seasonal-only, no weather adjustment
@@ -2685,6 +2938,8 @@ async function fetchData() {
       document.getElementById("forecast-cards").innerHTML = "";
       document.getElementById("forecast-trend").innerHTML = "";
       fcTitle.textContent = t("section.forecastNone");
+      var _notifRisk = overallRisk;
+      var _notifUv = null;
     }
 
     // Air quality: always render independently
@@ -2711,6 +2966,7 @@ async function fetchData() {
     document.getElementById("results").style.display = "block";
     document.getElementById("share-btn").disabled = false;
     status.textContent = "";
+    checkAndNotify(_notifRisk, _notifUv);
 
   } catch (e) {
     document.getElementById("results-skeleton").style.display = "none";
@@ -3247,6 +3503,228 @@ function toggleTheme() {
     applyTheme("dark");
   }
 })();
+
+// ── Notification Settings ──
+var NOTIF_PREFS_KEY = 'allergytj-notification-prefs';
+
+function getNotifPrefs() {
+  try {
+    var s = localStorage.getItem(NOTIF_PREFS_KEY);
+    return s ? JSON.parse(s) : null;
+  } catch (e) { return null; }
+}
+
+function defaultNotifPrefs() {
+  return {
+    enabled: true,
+    pollenAlerts: { highRisk: true, extremeRisk: true, allergens: ['tree','grass','weed'] },
+    weatherAlerts: { uvWarning: true },
+    quietHours: { enabled: true, from: '22:00', to: '07:00' },
+    lastNotified: null
+  };
+}
+
+function openNotificationSettings() {
+  var overlay = document.getElementById('notif-overlay');
+  overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  renderNotificationSettings();
+}
+
+function closeNotificationSettings() {
+  document.getElementById('notif-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function makeToggleRow(id, label, checked) {
+  return '<div class="notif-toggle-row"><span class="notif-toggle-label">' + label + '</span>' +
+    '<label class="notif-toggle"><input type="checkbox" id="' + id + '"' + (checked ? ' checked' : '') + '>' +
+    '<span class="notif-slider"></span></label></div>';
+}
+
+function renderNotificationSettings() {
+  var prefs = getNotifPrefs() || defaultNotifPrefs();
+  var body = document.getElementById('notif-body');
+  var permState = typeof Notification !== 'undefined' ? Notification.permission : 'unsupported';
+
+  var html = '';
+
+  // Permission warning
+  if (permState === 'denied') {
+    html += '<div class="notif-perm-warning">' + mIcon('bell_off') + ' ' + t('notif.permDenied') + '</div>';
+  } else if (permState === 'unsupported') {
+    html += '<div class="notif-perm-warning">' + mIcon('info') + ' ' + t('notif.unsupported') + '</div>';
+  }
+
+  // Pollen Alerts
+  html += '<div class="notif-section">';
+  html += '<div class="notif-section-title">' + mIcon('park') + ' ' + t('notif.pollenAlerts') + '</div>';
+  html += makeToggleRow('notif-high', t('notif.highRisk'), prefs.pollenAlerts.highRisk);
+  html += makeToggleRow('notif-extreme', t('notif.extremeRisk'), prefs.pollenAlerts.extremeRisk);
+  html += '<div style="margin-top:var(--space-sm)"><span class="notif-toggle-label">' + t('notif.allergenTypes') + '</span></div>';
+  html += '<div class="notif-chips">';
+  var allergenTypes = [
+    { key: 'tree', label: t('chip.tree') },
+    { key: 'grass', label: t('chip.grass') },
+    { key: 'weed', label: t('chip.weed') }
+  ];
+  for (var i = 0; i < allergenTypes.length; i++) {
+    var a = allergenTypes[i];
+    var sel = prefs.pollenAlerts.allergens.indexOf(a.key) !== -1 ? ' selected' : '';
+    html += '<button class="notif-chip' + sel + '" data-allergen="' + a.key + '" onclick="toggleAllergenChip(this)">' + a.label + '</button>';
+  }
+  html += '</div></div>';
+
+  // Weather Alerts
+  html += '<div class="notif-section">';
+  html += '<div class="notif-section-title">' + mIcon('wb_sunny') + ' ' + t('notif.weatherAlerts') + '</div>';
+  html += makeToggleRow('notif-uv', t('notif.uvWarning'), prefs.weatherAlerts.uvWarning);
+  html += '</div>';
+
+  // Quiet Hours
+  html += '<div class="notif-section">';
+  html += '<div class="notif-section-title">' + mIcon('schedule') + ' ' + t('notif.quietHours') + '</div>';
+  html += makeToggleRow('notif-quiet', t('notif.quietEnabled'), prefs.quietHours.enabled);
+  html += '<div class="notif-quiet-row">';
+  html += '<input type="time" id="notif-quiet-from" value="' + prefs.quietHours.from + '">';
+  html += '<span>' + t('notif.quietTo') + '</span>';
+  html += '<input type="time" id="notif-quiet-to" value="' + prefs.quietHours.to + '">';
+  html += '</div></div>';
+
+  // Pro tip
+  html += '<div class="notif-tip">' + mIcon('info') + '<span>' + t('notif.proTip') + '</span></div>';
+
+  // Save button
+  html += '<button class="notif-save-btn" onclick="saveNotificationPrefs()">' + t('notif.save') + '</button>';
+
+  body.innerHTML = html;
+}
+
+function toggleAllergenChip(btn) {
+  btn.classList.toggle('selected');
+}
+
+function saveNotificationPrefs() {
+  var allergens = [];
+  var chips = document.querySelectorAll('.notif-chip');
+  for (var i = 0; i < chips.length; i++) {
+    if (chips[i].classList.contains('selected')) allergens.push(chips[i].getAttribute('data-allergen'));
+  }
+
+  var prefs = {
+    enabled: true,
+    pollenAlerts: {
+      highRisk: document.getElementById('notif-high').checked,
+      extremeRisk: document.getElementById('notif-extreme').checked,
+      allergens: allergens
+    },
+    weatherAlerts: {
+      uvWarning: document.getElementById('notif-uv').checked
+    },
+    quietHours: {
+      enabled: document.getElementById('notif-quiet').checked,
+      from: document.getElementById('notif-quiet-from').value || '22:00',
+      to: document.getElementById('notif-quiet-to').value || '07:00'
+    },
+    lastNotified: (getNotifPrefs() || {}).lastNotified || null
+  };
+
+  localStorage.setItem(NOTIF_PREFS_KEY, JSON.stringify(prefs));
+
+  if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
+    Notification.requestPermission().then(function() {
+      showNotifConfirmation(prefs);
+    });
+  } else {
+    showNotifConfirmation(prefs);
+  }
+}
+
+function showNotifConfirmation(prefs) {
+  var body = document.getElementById('notif-body');
+  var summary = [];
+  if (prefs.pollenAlerts.highRisk) summary.push(t('notif.highRisk'));
+  if (prefs.pollenAlerts.extremeRisk) summary.push(t('notif.extremeRisk'));
+  if (prefs.weatherAlerts.uvWarning) summary.push(t('notif.uvWarning'));
+
+  var permState = typeof Notification !== 'undefined' ? Notification.permission : 'unsupported';
+  var permNote = '';
+  if (permState === 'denied') {
+    permNote = '<div class="notif-perm-warning" style="margin-bottom:var(--space-md)">' + mIcon('bell_off') + ' ' + t('notif.permDenied') + '</div>';
+  }
+
+  body.innerHTML =
+    '<div class="notif-confirm">' + mIcon('check_circle') +
+    '<h3>' + t('notif.saved') + '</h3>' +
+    permNote +
+    '<p>' + (summary.length ? summary.join(' · ') : t('notif.noAlerts')) + '</p>' +
+    '<div class="notif-confirm-actions">' +
+    '<button onclick="closeNotificationSettings()">' + t('notif.backDashboard') + '</button>' +
+    '<button class="primary" onclick="closeNotificationSettings();switchTab(\'forecast\')">' + t('notif.viewForecast') + '</button>' +
+    '</div></div>';
+}
+
+function isQuietHours(prefs) {
+  if (!prefs.quietHours.enabled) return false;
+  var now = new Date();
+  var curMin = now.getHours() * 60 + now.getMinutes();
+  var parts = prefs.quietHours.from.split(':');
+  var fromMin = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+  parts = prefs.quietHours.to.split(':');
+  var toMin = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+  if (fromMin > toMin) {
+    return curMin >= fromMin || curMin < toMin;
+  }
+  return curMin >= fromMin && curMin < toMin;
+}
+
+function checkAndNotify(overallRisk, uvVal) {
+  var prefs = getNotifPrefs();
+  if (!prefs || !prefs.enabled) return;
+  if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+  if (isQuietHours(prefs)) return;
+
+  var cooldown = 4 * 60 * 60 * 1000;
+  if (prefs.lastNotified && (Date.now() - prefs.lastNotified) < cooldown) return;
+
+  var shouldNotify = false;
+  var title = '';
+  var msg = '';
+
+  if (prefs.pollenAlerts.extremeRisk && overallRisk >= 3.5) {
+    shouldNotify = true;
+    title = t('notif.alert.extremeTitle');
+    msg = t('notif.alert.extremeBody');
+  } else if (prefs.pollenAlerts.highRisk && overallRisk >= 2.5) {
+    shouldNotify = true;
+    title = t('notif.alert.highTitle');
+    msg = t('notif.alert.highBody');
+  }
+
+  if (!shouldNotify && prefs.weatherAlerts.uvWarning && uvVal != null && uvVal >= 8) {
+    shouldNotify = true;
+    title = t('notif.alert.uvTitle');
+    msg = t('notif.alert.uvBody');
+  }
+
+  if (!shouldNotify) return;
+
+  prefs.lastNotified = Date.now();
+  localStorage.setItem(NOTIF_PREFS_KEY, JSON.stringify(prefs));
+
+  var opts = { body: msg, icon: '/icons/icon-192x192.png', tag: 'allergytj-alert', renotify: true };
+  if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+    navigator.serviceWorker.ready.then(function(reg) {
+      reg.showNotification(title, opts);
+    });
+  } else {
+    new Notification(title, opts);
+  }
+}
+
+document.getElementById('notif-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeNotificationSettings();
+});
 
 // ── Scroll-to-top visibility ──
 (function() {

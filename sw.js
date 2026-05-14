@@ -1,4 +1,4 @@
-var CACHE_VERSION = 'allergytj-v8';
+var CACHE_VERSION = 'allergytj-v9';
 
 var PRECACHE_URLS = [
   '/',
@@ -103,6 +103,20 @@ self.addEventListener('fetch', function(event) {
         }
         return response;
       });
+    })
+  );
+});
+
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
+      for (var i = 0; i < clientList.length; i++) {
+        if (clientList[i].url.indexOf('/') !== -1 && 'focus' in clientList[i]) {
+          return clientList[i].focus();
+        }
+      }
+      return clients.openWindow('/');
     })
   );
 });
