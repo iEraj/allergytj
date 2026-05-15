@@ -1113,7 +1113,7 @@
   .timeline-months {
     display: grid;
     grid-template-columns: var(--cal-label-w, 170px) repeat(12, 1fr);
-    gap: 0;
+    column-gap: 3px;
     margin-bottom: 4px;
     font-size: 0.68rem;
     font-weight: 600;
@@ -1123,24 +1123,19 @@
   .timeline-months .current-month { color: var(--primary); font-weight: 700; }
   .timeline-row {
     display: grid;
-    grid-template-columns: var(--cal-label-w, 170px) 1fr;
+    grid-template-columns: var(--cal-label-w, 170px) repeat(12, 1fr);
+    column-gap: 3px;
     align-items: center;
     padding: 6px 0;
     border-bottom: 1px solid var(--border);
   }
   .timeline-row:last-child { border-bottom: none; }
   .timeline-allergen { font-size: 0.78rem; font-weight: 600; color: var(--text); padding-right: 8px; }
-  .timeline-bar-track {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 3px;
-    height: 20px;
-    position: relative;
-  }
   .timeline-segment {
     border-radius: 3px;
     transition: transform 0.15s;
     position: relative;
+    height: 20px;
   }
   .timeline-segment:hover { transform: scaleY(1.3); }
   .seg-none { background: transparent; }
@@ -1825,6 +1820,7 @@
     .timeline-months { font-size: 0.6rem; }
     .timeline-allergen { font-size: 0.68rem; }
     .timeline-calendar { padding: var(--space-md); overflow-x: auto; }
+    .timeline-months, .timeline-row, .timeline-legend { min-width: 560px; }
     .active-now-grid { grid-template-columns: 1fr; }
     .knowledge-grid { grid-template-columns: 1fr; }
   }
@@ -4066,7 +4062,7 @@ function renderTimelineCalendar() {
     }
     return '<div class="timeline-row">' +
       '<div class="timeline-allergen">' + t("cal." + i) + '</div>' +
-      '<div class="timeline-bar-track">' + segs + '</div>' +
+      segs +
     '</div>';
   }).join('');
 
