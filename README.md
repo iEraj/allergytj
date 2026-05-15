@@ -14,11 +14,13 @@ No pollen monitoring stations exist in Tajikistan. AllergyTJ fills the gap by es
 - **4-tab app** — Dashboard, Forecast, Regions, Insights with hash-based routing
 - **Dashboard** — circular SVG risk gauge, bento weather grid, top allergen triggers with severity bars, daily health tip, nearby regions strip
 - **Pollen risk estimation** — combines seasonal pollen calendar with real-time weather (temperature, humidity, wind, precipitation)
-- **5-day forecast** — daily pollen risk outlook based on weather forecast
+- **5-day forecast** — daily pollen risk outlook with allergen chips, trend chart, and contextual insight tips
+- **Regional pollen map** — interactive SVG map of Tajikistan with GADM boundaries, 30 city dots, per-region weather, city sidebar sorted by risk
+- **Push notifications** — browser-only pollen/UV alerts with quiet hours, bell icon settings overlay
 - **Hourly breakdown** — morning/afternoon/evening risk scores using per-period weather
 - **Air quality** — live US AQI with full 6-pollutant breakdown (O₃, PM2.5, PM10, NO₂, SO₂, CO)
 - **UV index** — real-time UV data from Open-Meteo, color-coded by severity
-- **Insights tab** — "What's Active Now" allergen cards, 12-month timeline calendar, 10 knowledge cards
+- **Insights tab** — "What's Active Now" allergen cards, 12-month timeline calendar, 11 knowledge cards (incl. Cross-Reactivity Guide)
 - **GPS detection** — auto-finds nearest city (HTTPS required)
 - **Zero config** — no API keys, no build step, no framework, no external fonts
 - **Trilingual** — English, Russian, and Tajik with browser auto-detection
@@ -62,7 +64,7 @@ AllergyTJ/
 ├── sw.js               # Service worker (PWA caching, offline support)
 ├── manifest.json       # PWA manifest (app identity, icons, display mode)
 ├── lang/
-│   ├── en.json         # English translations (~269 keys)
+│   ├── en.json         # English translations (~320 keys)
 │   ├── ru.json         # Russian translations
 │   └── tj.json         # Tajik translations
 ├── icons/              # PWA icons (10 PNGs + 1 master SVG)
@@ -73,9 +75,12 @@ AllergyTJ/
 ├── og-image.png        # Open Graph social preview image (1200×630)
 ├── requirements.txt    # Python dependencies (flask)
 ├── CLAUDE.md           # Development guidelines and architecture
+├── testing/
+│   └── build_map_paths.py  # Dev tool: GADM polygon simplification + city containment checks
 ├── docs/
 │   ├── ROADMAP.md      # Product roadmap and planned features
-│   └── PRD.md          # Product requirements document
+│   ├── PRD.md          # Product requirements document
+│   └── go-public-plan.md  # Repo visibility audit and checklist
 ├── .gitignore
 └── README.md
 ```
