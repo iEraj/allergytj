@@ -1528,6 +1528,227 @@
     .notif-panel { max-height: 85vh; }
   }
 
+  /* ── Regional Pollen Map ── */
+  .region-alert {
+    background: var(--error-container, #fde8e8);
+    color: var(--on-error-container, #c62828);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: var(--font-size-body-sm);
+    margin-bottom: var(--space-lg);
+  }
+  .region-alert .icon { flex-shrink: 0; }
+  .region-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+  }
+  .region-subtitle {
+    color: var(--on-surface-variant);
+    font-size: var(--font-size-body-md);
+  }
+  .region-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm) var(--space-md);
+    align-items: center;
+    font-size: var(--font-size-caption);
+  }
+  .region-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .region-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .region-layout {
+    display: flex;
+    gap: var(--space-lg);
+    align-items: flex-start;
+  }
+  .region-map-wrap {
+    flex: 1;
+    min-width: 0;
+    border-radius: var(--radius-xl);
+    background: var(--surface-container);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    position: relative;
+  }
+  .region-map {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .region-map path {
+    cursor: pointer;
+    transition: filter 0.15s, stroke 0.15s;
+    stroke: var(--outline-variant);
+    stroke-width: 1;
+  }
+  .region-map path:hover {
+    filter: brightness(1.15);
+    stroke: var(--on-surface);
+    stroke-width: 2;
+  }
+  .city-dot {
+    cursor: pointer;
+    transition: r 0.15s, stroke-width 0.15s;
+    stroke: var(--surface);
+    stroke-width: 1.5;
+  }
+  .city-dot:hover, .city-dot.active {
+    stroke-width: 3;
+  }
+  .city-label {
+    font-size: 9px;
+    fill: var(--on-surface);
+    pointer-events: none;
+    font-weight: var(--font-weight-semibold);
+  }
+  .region-focus {
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    background: color-mix(in srgb, var(--surface) 90%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: var(--radius-sm);
+    padding: 4px 10px;
+    font-size: var(--font-size-caption);
+    box-shadow: var(--shadow-sm);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    max-width: 200px;
+  }
+  .region-focus.visible { opacity: 1; }
+  .region-focus-name {
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-body-sm);
+  }
+  .region-sidebar {
+    width: 320px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+  .region-sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-xs);
+  }
+  .region-sidebar-title {
+    font-size: var(--font-size-body-lg);
+    font-weight: var(--font-weight-semibold);
+  }
+  .region-sidebar-sort {
+    font-size: var(--font-size-caption);
+    color: var(--on-surface-variant);
+  }
+  .region-show-toggle {
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-size: var(--font-size-body-sm);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+  }
+  .region-show-toggle:hover {
+    background: var(--primary-container);
+  }
+  .region-city-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    max-height: 420px;
+    overflow-y: auto;
+  }
+  .region-city-card {
+    background: var(--surface);
+    border-radius: var(--radius-xl);
+    padding: var(--space-md);
+    border-left: 4px solid var(--outline-variant);
+    cursor: pointer;
+    transition: transform 0.12s, box-shadow 0.12s;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  }
+  .region-city-card:hover {
+    transform: translateX(3px);
+    box-shadow: var(--shadow-md);
+  }
+  .region-city-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-xs);
+  }
+  .region-city-name {
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-body-md);
+  }
+  .region-city-region {
+    font-size: var(--font-size-caption);
+    color: var(--on-surface-variant);
+  }
+  .region-city-score {
+    text-align: right;
+  }
+  .region-city-score-num {
+    font-weight: var(--font-weight-bold);
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+  .region-city-score-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.04em;
+  }
+  .region-city-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: var(--space-sm);
+  }
+  .region-chip {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    background: var(--surface-container);
+    color: var(--on-surface-variant);
+  }
+  .region-attribution {
+    margin-top: var(--space-md);
+    font-size: var(--font-size-caption);
+    color: var(--on-surface-variant);
+    text-align: center;
+  }
+  [data-theme="dark"] .region-city-card {
+    background: var(--surface-container);
+  }
+  @media (max-width: 768px) {
+    .region-layout { flex-direction: column; }
+    .region-sidebar { width: 100%; }
+  }
+  @media (max-width: 600px) {
+    .region-map-wrap { border-radius: var(--radius-md); }
+    .region-city-list { max-height: none; }
+  }
+
   /* Footer (legacy, now in nav) */
 
   /* Loading Skeleton */
@@ -1816,11 +2037,41 @@
 <!-- ═══ REGIONS TAB ═══ -->
 <section id="tab-regions" class="tab-content">
 <div class="container">
-  <h2 class="section-title" data-i18n="nav.regions">Regions</h2>
-  <div style="padding: 40px 0; text-align: center; color: var(--on-surface-variant);">
-    <span class="icon" style="font-size: 48px; display: block; margin: 0 auto 16px; opacity: 0.4;">map</span>
-    <p style="font-size: var(--font-size-body-lg);" data-i18n="regions.comingSoon">Regional pollen map coming soon.</p>
+  <div class="region-alert" id="region-alert" style="display:none;">
+    <span class="icon">alert_triangle</span>
+    <span id="region-alert-text" data-i18n="regions.alert">Very high pollen detected in some regions.</span>
   </div>
+  <div class="region-header">
+    <div>
+      <h2 class="section-title" style="margin-bottom:4px" data-i18n="nav.regions">Regions</h2>
+      <div class="region-subtitle" data-i18n="regions.subtitle">Pollen risk across Tajikistan</div>
+    </div>
+    <div class="region-legend" id="region-legend"></div>
+  </div>
+  <div class="region-layout">
+    <div class="region-map-wrap">
+      <svg class="region-map" id="region-map" viewBox="-30 -15 860 540" xmlns="http://www.w3.org/2000/svg" onclick="hideRegionFocus()">
+        <g id="region-paths"></g>
+        <g id="region-dots"></g>
+        <g id="region-labels"></g>
+      </svg>
+      <div class="region-focus" id="region-focus">
+        <div class="region-focus-name" id="region-focus-name"></div>
+        <div class="region-focus-detail" id="region-focus-detail"></div>
+      </div>
+    </div>
+    <div class="region-sidebar">
+      <div class="region-sidebar-header">
+        <div>
+          <span class="region-sidebar-title" data-i18n="regions.majorCities">Major Cities</span>
+          <div class="region-sidebar-sort" data-i18n="regions.sortedByRisk">Sorted by risk level</div>
+        </div>
+        <button class="region-show-toggle" id="region-show-toggle" onclick="toggleRegionShowAll()" data-i18n="regions.showAll">Show All</button>
+      </div>
+      <div class="region-city-list" id="region-city-list"></div>
+    </div>
+  </div>
+  <div class="region-attribution" data-i18n="regions.attribution">Seasonal estimate · Open-Meteo weather data</div>
 </div>
 </section>
 
@@ -2078,7 +2329,8 @@ trending_down:'<polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points=
 settings:'<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
 bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
 bell_off:'<path d="M8.7 3A6 6 0 0 1 18 8a21.3 21.3 0 0 0 .6 5"/><path d="M17 17H3s3-2 3-9a4.67 4.67 0 0 1 .3-1.7"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/><line x1="2" x2="22" y1="2" y2="22"/>',
-x_icon:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>'
+x_icon:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+alert_triangle:'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>'
 };
 
 function mIcon(name, cls) {
@@ -2109,6 +2361,7 @@ function switchTab(tabName) {
   if (target) target.classList.add('active');
   window.scrollTo({ top: 0 });
   history.replaceState(null, '', '#' + tabName);
+  if (tabName === 'regions') renderRegionsTab();
 }
 
 (function() {
@@ -2295,35 +2548,35 @@ var lastRenderState = null;
 
 // ── Cities ──
 var CITIES = [
-  { idx: 0,  lat: 37.8167, lng: 68.2167, elev: 390,  region: "khatlon" },  // Balkh
+  { idx: 0,  lat: 37.5882, lng: 68.6589, elev: 390,  region: "khatlon" },  // Balkh
   { idx: 1,  lat: 37.8364, lng: 68.7650, elev: 430,  region: "khatlon" },  // Bokhtar
-  { idx: 2,  lat: 40.5167, lng: 69.0000, elev: 300,  region: "sughd" },    // Buston
-  { idx: 3,  lat: 37.0000, lng: 69.7833, elev: 649,  region: "khatlon" },  // Danghara
+  { idx: 2,  lat: 40.2342, lng: 69.6948, elev: 300,  region: "sughd" },    // Buston
+  { idx: 3,  lat: 38.0975, lng: 69.3341, elev: 649,  region: "khatlon" },  // Danghara
   { idx: 4,  lat: 38.5598, lng: 68.7740, elev: 800,  region: "drs" },      // Dushanbe
-  { idx: 5,  lat: 37.3000, lng: 68.3333, elev: 450,  region: "khatlon" },  // Farkhor
-  { idx: 6,  lat: 40.3833, lng: 69.6000, elev: 400,  region: "sughd" },    // Ghafurov
-  { idx: 7,  lat: 40.2917, lng: 69.0000, elev: 347,  region: "sughd" },    // Guliston
-  { idx: 8,  lat: 37.3333, lng: 68.0167, elev: 440,  region: "khatlon" },  // Hamadoni
+  { idx: 5,  lat: 37.4922, lng: 69.4036, elev: 450,  region: "khatlon" },  // Farkhor
+  { idx: 6,  lat: 40.2187, lng: 69.7247, elev: 400,  region: "sughd" },    // Ghafurov
+  { idx: 7,  lat: 40.2647, lng: 69.7894, elev: 347,  region: "sughd" },    // Guliston
+  { idx: 8,  lat: 37.6567, lng: 69.6292, elev: 440,  region: "khatlon" },  // Hamadoni
   { idx: 9,  lat: 38.5253, lng: 68.5514, elev: 802,  region: "drs" },      // Hisor
-  { idx: 10, lat: 40.2167, lng: 69.3167, elev: 863,  region: "sughd" },    // Isfara
+  { idx: 10, lat: 40.1265, lng: 70.6253, elev: 863,  region: "sughd" },    // Isfara
   { idx: 11, lat: 36.7167, lng: 71.6167, elev: 2535, region: "gbao" },     // Ishkashim
-  { idx: 12, lat: 39.1667, lng: 67.9833, elev: 992,  region: "sughd" },    // Istaravshan
+  { idx: 12, lat: 39.9142, lng: 69.0033, elev: 992,  region: "sughd" },    // Istaravshan
   { idx: 13, lat: 37.5383, lng: 71.5128, elev: 2200, region: "gbao" },     // Khorog
   { idx: 14, lat: 40.2833, lng: 69.6333, elev: 300,  region: "sughd" },    // Khujand
-  { idx: 15, lat: 40.5253, lng: 70.9400, elev: 410,  region: "sughd" },    // Konibodom
+  { idx: 15, lat: 40.2982, lng: 70.4194, elev: 410,  region: "sughd" },    // Konibodom
   { idx: 16, lat: 37.9139, lng: 69.8028, elev: 580,  region: "khatlon" },  // Kulob
-  { idx: 17, lat: 38.7167, lng: 70.6333, elev: 3618, region: "gbao" },     // Murghab
+  { idx: 17, lat: 38.1702, lng: 73.9667, elev: 3618, region: "gbao" },     // Murghab
   { idx: 18, lat: 38.3833, lng: 69.3167, elev: 885,  region: "khatlon" },  // Norak
-  { idx: 19, lat: 38.6000, lng: 69.1667, elev: 1348, region: "valleys" },   // Obigarm
-  { idx: 20, lat: 39.5500, lng: 68.6167, elev: 996,  region: "sughd" },    // Panjakent
-  { idx: 21, lat: 38.9833, lng: 69.8667, elev: 1355, region: "valleys" },   // Rasht
-  { idx: 22, lat: 38.4000, lng: 69.6833, elev: 1230, region: "valleys" },   // Roghun
+  { idx: 19, lat: 38.7173, lng: 69.7088, elev: 1348, region: "valleys" },   // Obigarm
+  { idx: 20, lat: 39.4952, lng: 67.6093, elev: 996,  region: "sughd" },    // Panjakent
+  { idx: 21, lat: 39.0287, lng: 70.3745, elev: 1355, region: "valleys" },   // Rasht
+  { idx: 22, lat: 38.7826, lng: 69.8708, elev: 1230, region: "valleys" },   // Roghun
   { idx: 23, lat: 37.4000, lng: 67.8333, elev: 367,  region: "khatlon" },  // Shahritus
-  { idx: 24, lat: 40.3500, lng: 69.8000, elev: 350,  region: "sughd" },    // Spitamen
-  { idx: 25, lat: 38.5500, lng: 67.8333, elev: 708,  region: "drs" },      // Tursunzoda
-  { idx: 26, lat: 38.5383, lng: 68.9500, elev: 870,  region: "drs" },      // Vahdat
-  { idx: 27, lat: 37.7833, lng: 68.6000, elev: 426,  region: "khatlon" },  // Vakhsh
-  { idx: 28, lat: 37.2167, lng: 68.1333, elev: 475,  region: "khatlon" },  // Vose'
+  { idx: 24, lat: 40.1522, lng: 69.3708, elev: 350,  region: "sughd" },    // Spitamen
+  { idx: 25, lat: 38.5065, lng: 68.2248, elev: 708,  region: "drs" },      // Tursunzoda
+  { idx: 26, lat: 38.5563, lng: 69.0135, elev: 870,  region: "drs" },      // Vahdat
+  { idx: 27, lat: 37.7149, lng: 68.8346, elev: 426,  region: "khatlon" },  // Vakhsh
+  { idx: 28, lat: 37.8040, lng: 69.6442, elev: 475,  region: "khatlon" },  // Vose'
   { idx: 29, lat: 38.3167, lng: 69.0833, elev: 655,  region: "khatlon" },  // Yovon
 ];
 
@@ -2967,6 +3220,8 @@ async function fetchData() {
     document.getElementById("share-btn").disabled = false;
     status.textContent = "";
     checkAndNotify(_notifRisk, _notifUv);
+    _regionWxCache = null;
+    if (document.getElementById('tab-regions').classList.contains('active')) renderRegionsTab();
 
   } catch (e) {
     document.getElementById("results-skeleton").style.display = "none";
@@ -3478,6 +3733,7 @@ async function setLanguage(lang) {
 
     if (s.aq) renderAqi(s.aq);
     renderTierNotice(s.weatherTier);
+    renderRegionsTab();
   }
 }
 
@@ -3823,6 +4079,303 @@ function renderTimelineCalendar() {
   '</div>';
 
   container.innerHTML = monthsHtml + rowsHtml + legendHtml;
+}
+
+// ── Regional Pollen Map ──
+var REGION_PATHS = {
+  sughd: "M124.7,240.6L116.6,237.5L101.2,248.2L101.7,241.9L90.6,231.5L84.0,233.0L78.4,230.5L71.7,231.6L69.5,234.0L63.4,232.3L51.9,233.6L49.0,225.6L50.3,219.2L45.0,218.1L41.4,214.3L26.1,211.5L21.5,205.8L21.2,202.1L34.3,199.4L24.5,181.2L25.3,177.4L31.1,178.2L31.8,173.2L44.7,170.2L52.4,164.2L57.4,165.7L61.5,164.4L75.9,170.6L92.5,174.0L111.2,175.1L117.9,177.6L121.9,176.2L133.2,177.2L136.0,171.4L144.3,164.8L144.9,161.8L140.2,155.9L143.9,154.4L146.1,150.3L146.4,142.9L150.1,143.7L154.2,141.8L157.8,146.4L163.3,141.7L164.0,139.1L160.1,129.5L163.5,130.8L167.9,141.3L172.5,140.4L171.7,135.9L162.8,127.7L163.5,123.6L160.8,120.0L164.0,119.3L167.2,124.0L170.5,120.4L183.0,119.1L179.3,111.5L168.9,112.1L145.2,117.8L136.8,115.2L135.5,112.7L159.1,106.6L164.3,107.8L181.5,104.2L213.1,106.2L211.3,102.5L206.5,100.5L206.3,98.0L214.7,95.4L215.4,90.6L212.2,88.3L208.0,78.5L208.9,75.0L204.4,70.1L208.4,67.1L214.8,66.9L217.2,64.4L216.3,51.9L221.5,44.5L234.6,46.2L239.8,54.0L246.4,57.6L248.1,60.6L253.1,60.7L259.1,53.7L264.3,54.0L268.8,51.1L273.6,52.8L289.3,46.3L296.8,38.9L302.7,39.8L317.0,33.5L320.7,23.9L320.2,21.2L326.0,16.8L330.8,17.9L338.0,24.2L345.6,35.3L354.2,42.9L351.1,45.0L348.9,42.4L348.9,46.9L353.3,46.7L359.6,49.8L357.1,54.8L354.4,54.8L354.7,57.7L351.0,57.5L344.9,60.9L339.9,67.4L332.6,68.8L329.6,74.0L318.5,76.6L314.5,79.9L319.7,87.6L329.9,88.6L337.8,92.0L339.2,97.6L338.0,101.8L344.8,109.9L358.9,108.1L367.9,103.9L377.8,103.4L379.5,105.3L377.3,110.8L372.1,112.3L364.3,110.1L358.8,117.3L347.8,118.8L345.6,130.0L337.0,134.3L333.6,134.1L332.5,135.9L334.1,138.8L326.8,133.2L337.7,125.5L335.5,123.3L322.9,120.7L311.2,114.4L302.8,114.0L287.6,105.2L280.9,104.0L251.5,115.3L234.0,118.1L232.1,124.1L234.5,128.3L234.7,134.8L228.1,138.7L224.0,137.6L219.6,127.7L216.8,127.7L215.9,134.3L209.5,148.6L214.2,160.6L215.7,170.7L217.3,171.3L215.5,176.7L218.0,179.1L221.7,175.3L229.8,178.2L239.3,175.3L244.0,171.8L248.8,172.8L252.6,170.9L262.5,173.9L268.1,178.4L272.3,173.0L282.0,175.4L284.9,172.1L287.3,173.1L291.7,170.0L298.2,173.5L302.4,170.5L309.6,178.1L318.7,171.2L322.9,171.2L324.8,169.0L326.5,170.5L333.6,166.7L337.0,169.7L345.1,171.0L347.9,173.9L352.4,180.6L346.9,185.5L343.2,185.6L341.4,189.1L333.6,189.5L332.3,193.4L312.9,192.5L306.2,197.4L299.1,198.9L292.6,195.1L286.2,199.9L283.5,200.2L281.7,196.3L274.5,200.0L271.7,197.8L268.4,198.3L268.2,202.0L261.5,206.3L267.0,213.5L264.5,217.5L265.5,226.3L262.3,228.6L261.9,231.4L256.9,228.4L250.9,231.1L244.7,220.0L235.4,222.9L235.2,230.5L222.0,226.5L207.4,235.1L202.4,234.8L195.2,229.4L188.5,229.9L179.6,224.5L171.8,225.6L169.5,224.1L146.9,228.4L142.5,235.6L124.7,240.6Z M340.5,146.9L332.8,143.6L332.9,141.7L353.1,142.3L355.0,145.2L347.8,147.0L344.8,152.4L340.5,146.9Z M340.4,23.3L337.0,21.5L339.1,19.7L341.1,21.3L348.1,28.5L349.1,31.9L340.4,23.3Z",
+  khatlon: "M80.5,449.5L73.3,446.2L71.4,440.3L64.9,439.6L60.3,436.9L60.9,427.1L64.5,418.0L64.7,397.5L67.2,390.4L86.1,368.4L94.6,353.5L108.8,350.1L110.2,345.3L108.7,350.9L114.2,354.2L130.8,355.2L132.7,359.5L138.2,358.3L140.2,348.6L142.7,347.8L142.5,338.9L135.1,339.2L133.9,337.8L143.3,319.1L141.6,314.8L146.0,309.9L151.5,308.9L158.1,305.1L158.7,302.9L165.3,305.5L176.1,299.6L195.2,299.5L199.4,291.3L211.1,291.9L216.9,294.9L235.6,290.2L237.4,298.4L244.2,290.0L250.7,286.1L254.9,279.6L259.0,277.3L265.5,279.1L279.5,262.2L281.8,263.6L288.2,261.7L290.0,265.6L297.9,269.5L301.4,273.9L300.5,281.7L316.4,273.8L320.1,274.4L331.6,283.1L315.9,301.3L315.0,304.5L318.3,306.4L317.4,319.6L309.1,335.8L310.0,343.2L307.2,343.4L308.7,346.3L302.6,348.7L299.7,346.0L298.5,348.0L300.2,356.9L309.2,360.1L310.9,365.3L310.2,371.3L311.7,372.7L307.6,378.3L308.0,381.8L302.9,382.4L303.6,384.5L302.4,386.6L299.3,386.2L298.2,390.7L292.6,391.2L280.8,386.2L276.9,386.3L275.4,382.0L271.8,381.3L265.7,382.2L262.4,386.0L255.6,384.1L242.3,385.7L235.1,383.8L230.7,391.1L219.4,400.5L220.0,412.6L222.7,415.4L223.1,421.5L226.5,422.2L222.0,428.6L218.2,429.4L213.6,434.1L205.9,436.4L193.4,428.1L190.3,422.7L178.4,412.7L172.4,411.1L171.7,414.4L174.2,416.5L172.8,418.2L165.0,412.9L162.4,415.9L165.1,419.4L163.8,420.9L160.4,416.4L155.2,418.3L149.6,417.2L150.2,421.0L147.0,420.8L145.9,424.7L135.5,429.4L125.6,430.6L120.8,436.4L112.2,435.8L108.3,446.0L102.2,444.2L91.2,451.9L84.5,454.2L80.5,449.5Z",
+  drs: "M142.8,317.1L143.3,319.1L133.9,337.8L135.1,339.2L142.5,338.9L142.7,347.8L140.2,348.6L138.2,358.3L132.7,359.5L130.8,355.2L117.0,355.1L108.7,350.9L110.2,342.1L118.7,332.1L122.0,319.7L113.7,309.3L105.1,305.5L101.4,297.2L97.8,295.5L92.7,296.7L96.0,290.2L88.6,282.9L90.4,271.5L87.6,265.3L94.5,261.6L89.8,253.9L97.5,252.6L102.5,246.9L116.6,237.5L124.7,240.6L132.7,239.7L144.2,234.7L146.9,228.4L169.5,224.1L171.8,225.6L179.6,224.5L188.5,229.9L195.2,229.4L202.4,234.8L207.4,235.1L222.0,226.5L235.2,230.5L235.4,222.9L244.7,220.0L250.9,231.1L256.9,228.4L261.9,231.4L262.3,228.6L265.5,226.3L264.5,217.5L267.0,213.5L261.5,206.3L268.2,202.0L268.4,198.3L271.7,197.8L274.5,200.0L281.7,196.3L283.5,200.2L286.2,199.9L290.4,195.3L299.1,198.9L306.2,197.4L312.9,192.5L332.3,193.4L333.6,189.5L341.4,189.1L343.2,185.6L346.9,185.5L352.4,180.6L356.5,183.2L358.4,192.1L372.3,193.3L375.2,187.9L380.4,191.1L387.6,190.0L391.0,180.2L400.3,179.6L406.3,175.3L410.5,178.9L414.5,173.5L422.4,173.3L429.7,168.9L436.9,172.9L435.3,178.9L437.1,185.6L459.5,186.9L460.9,193.5L456.6,196.7L456.1,199.6L459.9,204.5L471.9,204.5L476.6,198.8L484.3,195.1L490.0,204.5L497.4,204.9L503.5,215.0L502.1,221.6L493.1,224.4L493.0,231.8L490.4,236.9L493.5,249.1L498.0,257.2L489.0,254.5L478.1,264.5L468.2,263.5L454.5,274.0L450.5,272.1L446.0,274.6L440.1,274.1L435.4,279.7L431.4,281.2L430.1,285.9L424.8,285.2L422.1,290.0L413.9,286.6L409.8,291.5L408.5,287.5L404.8,285.7L403.1,280.6L399.2,278.3L385.6,277.2L386.6,266.0L380.0,258.3L374.5,258.5L363.2,264.3L358.0,260.9L357.1,257.3L355.3,258.0L339.1,266.6L340.9,273.3L334.4,277.3L331.8,283.3L320.1,274.4L316.4,273.8L300.5,281.7L301.4,273.9L297.9,269.5L290.0,265.6L288.2,261.7L281.8,263.6L279.5,262.2L265.5,279.1L259.0,277.3L254.9,279.6L250.7,286.1L244.2,290.0L237.4,298.4L235.6,290.2L216.9,294.9L211.1,291.9L199.4,291.3L195.9,298.6L193.0,298.5L192.7,300.3L183.7,298.4L180.6,300.6L176.1,299.6L165.3,305.5L158.7,302.9L158.1,305.1L151.5,308.9L146.0,309.9L141.6,314.8L142.8,317.1Z M169.7,281.3L161.5,272.3L147.4,277.7L150.7,286.3L154.9,287.7L160.7,281.6L164.8,284.9L169.7,281.3Z M149.1,283.3L147.4,277.7L161.5,272.3L170.6,281.7L164.8,284.9L160.7,281.6L154.9,287.7L150.7,286.3L149.1,283.3Z",
+  gbao: "M443.1,477.6L437.6,471.9L435.0,463.0L427.4,450.7L427.2,444.3L424.0,440.1L426.5,424.1L429.0,422.2L431.6,413.3L428.5,405.5L433.5,396.1L430.5,389.7L436.0,370.9L434.2,365.8L440.4,361.1L440.0,348.9L432.3,345.1L414.0,352.5L410.8,347.6L406.7,348.5L408.0,341.2L410.5,338.5L409.3,336.1L411.6,335.4L415.8,324.7L418.5,323.3L418.4,313.2L414.4,311.7L413.8,307.9L403.6,306.3L391.5,295.5L386.7,298.0L384.1,291.4L380.0,288.3L375.8,289.7L376.9,293.4L373.5,294.6L369.1,290.5L366.1,293.8L358.3,291.9L355.3,295.7L349.0,296.9L350.3,301.2L342.2,303.6L341.6,310.3L335.8,314.4L331.5,322.9L331.7,327.4L317.7,334.6L314.3,340.3L310.7,341.8L309.2,340.5L309.8,334.0L316.8,323.2L318.3,306.4L315.0,304.5L315.9,301.3L331.8,283.3L334.4,277.3L340.9,273.3L339.1,266.6L357.1,257.3L358.0,260.9L363.2,264.3L374.5,258.5L380.0,258.3L386.6,266.0L385.6,277.2L399.2,278.3L403.1,280.6L404.8,285.7L408.5,287.5L409.8,291.5L413.9,286.6L422.1,290.0L424.8,285.2L430.1,285.9L431.4,281.2L435.4,279.7L440.1,274.1L446.0,274.6L450.5,272.1L454.5,274.0L468.2,263.5L478.1,264.5L489.0,254.5L498.0,257.2L493.5,249.1L490.4,236.9L493.0,231.8L493.1,224.4L502.1,221.6L502.8,215.6L506.4,215.4L511.5,202.3L515.0,199.2L527.0,197.1L528.6,193.4L534.5,193.5L537.7,196.3L542.1,191.6L550.4,192.5L558.2,197.0L562.2,195.0L575.5,196.5L588.7,194.0L600.8,196.0L604.4,190.9L608.9,192.9L616.0,191.8L619.5,186.0L645.1,184.4L647.2,195.7L641.8,199.6L636.3,207.4L642.0,208.7L648.6,216.1L651.5,226.2L654.8,230.8L662.3,230.5L664.9,236.5L663.9,240.3L655.1,241.2L650.6,248.2L654.1,251.7L656.1,263.6L660.6,271.5L659.3,276.0L668.6,279.0L672.7,283.4L687.3,283.9L688.5,283.1L687.4,279.9L691.5,274.8L692.7,269.7L716.8,270.7L730.8,273.4L734.0,276.5L743.2,278.4L752.0,284.9L758.1,284.5L762.1,288.9L766.8,287.4L766.4,299.1L758.0,303.7L759.6,309.5L757.8,311.8L760.3,316.4L758.7,320.7L766.1,337.2L769.8,337.2L771.5,339.5L771.0,349.8L773.1,353.1L770.8,357.9L777.5,361.5L779.7,365.2L772.4,371.5L769.7,376.8L772.9,387.6L780.0,391.7L780.6,388.4L782.0,388.5L793.4,400.3L793.6,403.6L790.1,407.3L791.6,412.7L773.6,416.0L771.5,417.5L771.0,421.3L769.1,421.7L761.0,409.4L752.2,406.4L749.4,403.5L743.8,406.8L737.1,407.1L733.6,403.9L720.5,405.3L715.6,402.0L711.7,404.4L704.4,403.0L703.3,405.0L705.3,407.0L700.8,411.0L686.5,412.6L680.9,416.3L677.1,415.0L675.4,417.7L672.7,416.5L666.2,419.2L663.8,422.5L658.4,421.5L656.3,423.4L649.9,420.2L645.6,421.6L642.2,418.3L645.5,416.6L646.1,413.4L651.0,414.2L657.8,410.7L657.9,400.0L648.7,398.6L645.4,400.5L631.4,396.3L622.2,397.1L617.6,399.8L617.1,397.9L611.9,397.3L602.0,403.6L595.4,404.1L589.7,412.4L576.0,416.0L566.1,422.5L561.7,422.5L546.9,445.0L542.8,443.7L528.2,447.5L522.9,446.1L511.5,449.4L501.7,454.6L491.9,463.4L482.6,467.0L465.1,480.7L448.3,481.6L443.1,477.6Z"
+};
+
+var MAJOR_CITIES = [4, 14, 1, 16, 13, 10, 12, 20];
+
+function geoToSvg(lat, lng) {
+  var x = (lng - 67.18) / (75.2 - 67.18) * 800;
+  var y = (1 - (lat - 36.5) / (41.2 - 36.5)) * 500;
+  return { x: x, y: y };
+}
+
+var _regionShowAll = false;
+
+var REGION_REP_CITIES = {
+  sughd:  { lat: 40.2833, lng: 69.6333 },
+  khatlon: { lat: 37.8364, lng: 68.7650 },
+  drs:     { lat: 38.5598, lng: 68.7740 },
+  gbao:    { lat: 37.5383, lng: 71.5128 },
+  valleys: { lat: 38.6000, lng: 69.1667 }
+};
+
+var _regionWxCache = null;
+
+async function fetchRegionWeather() {
+  var factors = { sughd: 1.0, khatlon: 1.0, drs: 1.0, gbao: 1.0, valleys: 1.0 };
+  var now = new Date();
+  var keys = Object.keys(REGION_REP_CITIES);
+  var promises = keys.map(function(key) {
+    var c = REGION_REP_CITIES[key];
+    var url = "https://api.open-meteo.com/v1/forecast?" + new URLSearchParams({
+      latitude: c.lat, longitude: c.lng,
+      hourly: "temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation,weather_code",
+      daily: "temperature_2m_max,precipitation_sum,wind_speed_10m_max,relative_humidity_2m_mean,weather_code",
+      forecast_days: "1",
+      timezone: "auto"
+    });
+    return fetchWithTimeout(url, 5000)
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(data) {
+        if (!data) return;
+        var periodWx = data.hourly ? getCurrentPeriodWeather(data.hourly, now) : null;
+        if (periodWx) {
+          factors[key] = weatherFactor(periodWx.temp, periodWx.humidity, periodWx.wind, periodWx.precip, periodWx.wxCode);
+        } else if (data.daily) {
+          var d = data.daily;
+          factors[key] = weatherFactor(d.temperature_2m_max[0], d.relative_humidity_2m_mean[0],
+            d.wind_speed_10m_max[0], d.precipitation_sum[0], d.weather_code[0]);
+        }
+      })
+      .catch(function() {});
+  });
+  await Promise.all(promises);
+  _regionWxCache = factors;
+  return factors;
+}
+
+function computeAllCityRisks(now, wxFactors) {
+  var results = [];
+  for (var i = 0; i < CITIES.length; i++) {
+    var c = CITIES[i];
+    var rg = REGIONS[c.region] || REGIONS.drs;
+    var regionKey = c.region === "valleys" ? "valleys" : c.region;
+    var wxF = (wxFactors && wxFactors[regionKey]) || 1.0;
+    var adjD = adjustDateForElevation(now, c.elev || 800);
+    var treeR = computeRisk(getSeasonalBase(TREE_SEASON, adjD) * rg.tree, wxF);
+    var grassR = computeRisk(getSeasonalBase(GRASS_SEASON, adjD) * rg.grass, wxF);
+    var weedR = computeRisk(getSeasonalBase(WEED_SEASON, adjD) * rg.weed, wxF);
+    var overall = Math.max(treeR, grassR, weedR);
+    var dominant = treeR >= grassR && treeR >= weedR ? "tree" : (grassR >= weedR ? "grass" : "weed");
+    results.push({ idx: i, city: c, tree: treeR, grass: grassR, weed: weedR, overall: overall, dominant: dominant, region: c.region });
+  }
+  return results;
+}
+
+function computeRegionRisks(cityRisks) {
+  var rr = {};
+  var regionKeys = ["sughd", "khatlon", "drs", "gbao", "valleys"];
+  for (var k = 0; k < regionKeys.length; k++) {
+    var key = regionKeys[k];
+    var maxRisk = 0;
+    var dom = "tree";
+    for (var i = 0; i < cityRisks.length; i++) {
+      if (cityRisks[i].region === key && cityRisks[i].overall > maxRisk) {
+        maxRisk = cityRisks[i].overall;
+        dom = cityRisks[i].dominant;
+      }
+    }
+    rr[key] = { risk: maxRisk, info: getRiskInfo(maxRisk), dominant: dom };
+  }
+  return rr;
+}
+
+async function renderRegionsTab() {
+  try {
+    _lastRegionData = null;
+    var now = new Date();
+    var wxFactors = _regionWxCache;
+    if (!wxFactors) {
+      wxFactors = { sughd: 1.0, khatlon: 1.0, drs: 1.0, gbao: 1.0, valleys: 1.0 };
+    }
+    var cityRisks = computeAllCityRisks(now, wxFactors);
+    var regionRisks = computeRegionRisks(cityRisks);
+    _lastRegionData = { city: cityRisks, region: regionRisks };
+    renderRegionLegend();
+    renderRegionMap(regionRisks, cityRisks);
+    renderRegionSidebar(cityRisks);
+    renderRegionAlert(regionRisks);
+    if (!_regionWxCache) {
+      fetchRegionWeather().then(function(factors) {
+        var cityRisks2 = computeAllCityRisks(new Date(), factors);
+        var regionRisks2 = computeRegionRisks(cityRisks2);
+        _lastRegionData = { city: cityRisks2, region: regionRisks2 };
+        renderRegionMap(regionRisks2, cityRisks2);
+        renderRegionSidebar(cityRisks2);
+        renderRegionAlert(regionRisks2);
+      });
+    }
+  } catch (e) {
+    console.error("renderRegionsTab error:", e);
+  }
+}
+
+function renderRegionLegend() {
+  var el = document.getElementById("region-legend");
+  if (!el) return;
+  var html = "";
+  for (var i = 0; i <= 4; i++) {
+    var info = getRiskInfo(i);
+    html += '<div class="region-legend-item"><span class="region-legend-dot" style="background:' + info.color + '"></span>' + info.label + '</div>';
+  }
+  el.innerHTML = html;
+}
+
+function renderRegionMap(regionRisks, cityRisks) {
+  var pathsG = document.getElementById("region-paths");
+  var dotsG = document.getElementById("region-dots");
+  var labelsG = document.getElementById("region-labels");
+  if (!pathsG) return;
+
+  var pathHtml = "";
+  var mapKeys = ["sughd", "khatlon", "drs", "gbao"];
+  for (var k = 0; k < mapKeys.length; k++) {
+    var key = mapKeys[k];
+    var rr = regionRisks[key];
+    var fillColor = rr.info.color;
+    pathHtml += '<path d="' + REGION_PATHS[key] + '" fill="' + fillColor + '" fill-opacity="0.45" data-region="' + key + '" onmouseenter="showRegionFocus(\'' + key + '\',event)" onmouseleave="hideRegionFocus()" onclick="showRegionFocus(\'' + key + '\',event)"/>';
+  }
+  pathsG.innerHTML = pathHtml;
+
+  var dotHtml = "";
+  var labelHtml = "";
+  for (var i = 0; i < cityRisks.length; i++) {
+    var cr = cityRisks[i];
+    var pos = geoToSvg(cr.city.lat, cr.city.lng);
+    pos.x = Math.max(5, Math.min(795, pos.x));
+    pos.y = Math.max(5, Math.min(495, pos.y));
+    var info = getRiskInfo(cr.overall);
+    var r = cr.overall >= 3 ? 7 : (cr.overall >= 1 ? 5.5 : 4);
+    var isMajor = MAJOR_CITIES.indexOf(cr.idx) >= 0;
+    dotHtml += '<circle class="city-dot" cx="' + pos.x.toFixed(1) + '" cy="' + pos.y.toFixed(1) + '" r="' + r + '" fill="' + info.color + '" data-city="' + cr.idx + '" onmouseenter="showCityFocus(' + cr.idx + ',event)" onmouseleave="hideRegionFocus()" onclick="showCityFocus(' + cr.idx + ',event)"/>';
+    if (isMajor) {
+      labelHtml += '<text class="city-label" x="' + (pos.x + r + 3).toFixed(1) + '" y="' + (pos.y + 3).toFixed(1) + '">' + t("city." + cr.idx) + '</text>';
+    }
+  }
+  dotsG.innerHTML = dotHtml;
+
+  var regionCenters = {
+    sughd: { x: 200, y: 150 }, drs: { x: 270, y: 260 },
+    khatlon: { x: 200, y: 375 }, gbao: { x: 580, y: 350 }
+  };
+  var regionLabelHtml = "";
+  for (var rk = 0; rk < mapKeys.length; rk++) {
+    var rkey = mapKeys[rk];
+    var ctr = regionCenters[rkey];
+    var rrr = regionRisks[rkey];
+    regionLabelHtml += '<g class="region-name-label" onmouseenter="showRegionFocus(\'' + rkey + '\',event)" onmouseleave="hideRegionFocus()" onclick="showRegionFocus(\'' + rkey + '\',event)" style="cursor:pointer">' +
+      '<rect x="' + (ctr.x - 40) + '" y="' + (ctr.y - 10) + '" width="80" height="22" rx="11" fill="' + rrr.info.color + '" fill-opacity="0.85"/>' +
+      '<text x="' + ctr.x + '" y="' + (ctr.y + 5) + '" text-anchor="middle" fill="#fff" font-size="11" font-weight="600">' + t("region." + rkey) + '</text>' +
+      '</g>';
+  }
+  labelHtml += regionLabelHtml;
+  labelsG.innerHTML = labelHtml;
+}
+
+function renderRegionSidebar(cityRisks) {
+  var list = document.getElementById("region-city-list");
+  var toggleBtn = document.getElementById("region-show-toggle");
+  if (!list) return;
+
+  var sorted = cityRisks.slice().sort(function(a, b) { return b.overall - a.overall; });
+  var display = _regionShowAll ? sorted : sorted.filter(function(cr) { return MAJOR_CITIES.indexOf(cr.idx) >= 0; });
+  toggleBtn.textContent = _regionShowAll ? t("regions.showLess") : t("regions.showAll");
+
+  var html = "";
+  for (var i = 0; i < display.length; i++) {
+    var cr = display[i];
+    var info = getRiskInfo(cr.overall);
+    var regionName = t("region." + cr.region);
+    var scoreNum = cr.overall.toFixed(1);
+    var chips = "";
+    if (cr.tree >= 1) chips += '<span class="region-chip">' + t("pollen.tree") + '</span>';
+    if (cr.grass >= 1) chips += '<span class="region-chip">' + t("pollen.grass") + '</span>';
+    if (cr.weed >= 1) chips += '<span class="region-chip">' + t("pollen.weed") + '</span>';
+    html += '<div class="region-city-card" style="border-left-color:' + info.color + '" data-city="' + cr.idx + '" onclick="highlightCityDot(' + cr.idx + ')">' +
+      '<div class="region-city-top"><div><div class="region-city-name">' + t("city." + cr.idx) + '</div>' +
+      '<div class="region-city-region">' + regionName + '</div></div>' +
+      '<div class="region-city-score"><div class="region-city-score-num" style="color:' + info.color + '">' + scoreNum + '</div>' +
+      '<div class="region-city-score-label" style="color:' + info.color + '">' + info.label + '</div></div></div>' +
+      (chips ? '<div class="region-city-chips">' + chips + '</div>' : '') +
+      '</div>';
+  }
+  list.innerHTML = html;
+}
+
+function renderRegionAlert(regionRisks) {
+  var alert = document.getElementById("region-alert");
+  if (!alert) return;
+  var anyHigh = false;
+  var keys = ["sughd", "khatlon", "drs", "gbao", "valleys"];
+  for (var i = 0; i < keys.length; i++) {
+    if (regionRisks[keys[i]].risk >= 3.5) { anyHigh = true; break; }
+  }
+  alert.style.display = anyHigh ? "flex" : "none";
+}
+
+function toggleRegionShowAll() {
+  _regionShowAll = !_regionShowAll;
+  renderRegionsTab();
+}
+
+var _lastRegionData = null;
+
+function showRegionFocus(regionKey, evt) {
+  if (evt) evt.stopPropagation();
+  var focusEl = document.getElementById("region-focus");
+  var nameEl = document.getElementById("region-focus-name");
+  var detailEl = document.getElementById("region-focus-detail");
+  if (!focusEl) return;
+  if (!_lastRegionData) {
+    var now = new Date();
+    _lastRegionData = { city: computeAllCityRisks(now, _regionWxCache) };
+    _lastRegionData.region = computeRegionRisks(_lastRegionData.city);
+  }
+  var rr = _lastRegionData.region[regionKey];
+  if (!rr) return;
+  nameEl.textContent = t("region." + regionKey + ".full");
+  detailEl.textContent = rr.info.label + " · " + t("regions.dominant") + ": " + t("pollen." + rr.dominant);
+  detailEl.style.color = rr.info.color;
+  focusEl.classList.add("visible");
+}
+
+function showCityFocus(cityIdx, evt) {
+  if (evt) evt.stopPropagation();
+  var focusEl = document.getElementById("region-focus");
+  var nameEl = document.getElementById("region-focus-name");
+  var detailEl = document.getElementById("region-focus-detail");
+  if (!focusEl) return;
+  if (!_lastRegionData) {
+    var now = new Date();
+    _lastRegionData = { city: computeAllCityRisks(now, _regionWxCache) };
+    _lastRegionData.region = computeRegionRisks(_lastRegionData.city);
+  }
+  var cr = null;
+  for (var i = 0; i < _lastRegionData.city.length; i++) {
+    if (_lastRegionData.city[i].idx === cityIdx) { cr = _lastRegionData.city[i]; break; }
+  }
+  if (!cr) return;
+  var info = getRiskInfo(cr.overall);
+  nameEl.textContent = t("city." + cityIdx);
+  detailEl.textContent = info.label + " · " + t("region." + cr.region);
+  detailEl.style.color = info.color;
+  focusEl.classList.add("visible");
+  document.querySelectorAll(".city-dot").forEach(function(d) { d.classList.remove("active"); });
+  var dot = document.querySelector('.city-dot[data-city="' + cityIdx + '"]');
+  if (dot) dot.classList.add("active");
+}
+
+function hideRegionFocus() {
+  var el = document.getElementById("region-focus");
+  if (el) el.classList.remove("visible");
+  document.querySelectorAll(".city-dot").forEach(function(d) { d.classList.remove("active"); });
+}
+
+function highlightCityDot(cityIdx) {
+  showCityFocus(cityIdx);
+  var dot = document.querySelector('.city-dot[data-city="' + cityIdx + '"]');
+  if (dot) {
+    var map = document.getElementById("region-map");
+    if (map) map.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
 }
 
 // ── Render Insights tab ──
