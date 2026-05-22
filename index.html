@@ -1605,6 +1605,21 @@
   .city-dot:hover, .city-dot.active {
     stroke-width: 3;
   }
+  .region-map path:focus-visible {
+    outline: none;
+    stroke: var(--primary);
+    stroke-width: 2.5;
+    filter: brightness(1.15);
+  }
+  .city-dot:focus-visible {
+    outline: none;
+    stroke: var(--primary);
+    stroke-width: 3;
+  }
+  .region-city-card:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
   .city-label {
     font-size: 9px;
     fill: var(--on-surface);
@@ -1726,8 +1741,14 @@
     background: var(--surface-container);
     color: var(--on-surface-variant);
   }
+  .region-updated {
+    margin-top: var(--space-sm);
+    font-size: var(--font-size-caption);
+    color: var(--on-surface-variant);
+    text-align: center;
+  }
   .region-attribution {
-    margin-top: var(--space-md);
+    margin-top: var(--space-xs);
     font-size: var(--font-size-caption);
     color: var(--on-surface-variant);
     text-align: center;
@@ -2046,12 +2067,14 @@
   </div>
   <div class="region-layout">
     <div class="region-map-wrap">
-      <svg class="region-map" id="region-map" viewBox="-30 -15 860 540" xmlns="http://www.w3.org/2000/svg" onclick="hideRegionFocus()">
-        <g id="region-paths"></g>
-        <g id="region-dots"></g>
-        <g id="region-labels"></g>
+      <svg class="region-map" id="region-map" viewBox="-30 -15 860 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="region-map-title region-map-desc" onclick="hideRegionFocus()">
+        <title id="region-map-title" data-i18n="regions.mapLabel">Pollen risk map of Tajikistan</title>
+        <desc id="region-map-desc" data-i18n="regions.mapDesc">Interactive map showing pollen risk levels across regions and cities of Tajikistan</desc>
+        <g id="region-paths" role="list" aria-label="Regions"></g>
+        <g id="region-dots" role="list" aria-label="Cities"></g>
+        <g id="region-labels" aria-hidden="true"></g>
       </svg>
-      <div class="region-focus" id="region-focus">
+      <div class="region-focus" id="region-focus" role="status" aria-live="polite">
         <div class="region-focus-name" id="region-focus-name"></div>
         <div class="region-focus-detail" id="region-focus-detail"></div>
       </div>
@@ -2062,11 +2085,12 @@
           <span class="region-sidebar-title" data-i18n="regions.majorCities">Major Cities</span>
           <div class="region-sidebar-sort" data-i18n="regions.sortedByRisk">Sorted by risk level</div>
         </div>
-        <button class="region-show-toggle" id="region-show-toggle" onclick="toggleRegionShowAll()" data-i18n="regions.showAll">Show All</button>
+        <button class="region-show-toggle" id="region-show-toggle" onclick="toggleRegionShowAll()" aria-expanded="false" data-i18n="regions.showAll">Show All</button>
       </div>
       <div class="region-city-list" id="region-city-list"></div>
     </div>
   </div>
+  <div class="region-updated" id="region-updated" style="display:none"></div>
   <div class="region-attribution" data-i18n="regions.attribution">Seasonal estimate · Open-Meteo weather data</div>
 </div>
 </section>
@@ -2357,7 +2381,12 @@ function switchTab(tabName) {
   if (target) target.classList.add('active');
   window.scrollTo({ top: 0 });
   history.replaceState(null, '', '#' + tabName);
-  if (tabName === 'regions') renderRegionsTab();
+  if (_regionUpdatedInterval) { clearInterval(_regionUpdatedInterval); _regionUpdatedInterval = null; }
+  if (tabName === 'regions') {
+    renderRegionsTab();
+    updateRegionTimestamp();
+    _regionUpdatedInterval = setInterval(updateRegionTimestamp, 60000);
+  }
 }
 
 (function() {
@@ -4104,6 +4133,16 @@ var REGION_REP_CITIES = {
 };
 
 var _regionWxCache = null;
+var _regionWxTimestamp = null;
+var _regionUpdatedInterval = null;
+
+function updateRegionTimestamp() {
+  var el = document.getElementById("region-updated");
+  if (!el || !_regionWxTimestamp) { if (el) el.style.display = "none"; return; }
+  var mins = Math.floor((Date.now() - _regionWxTimestamp) / 60000);
+  el.textContent = mins < 1 ? t("regions.updatedJustNow") : t("regions.updatedMinAgo", { min: mins });
+  el.style.display = "";
+}
 
 async function fetchRegionWeather() {
   var factors = { sughd: 1.0, khatlon: 1.0, drs: 1.0, gbao: 1.0, valleys: 1.0 };
@@ -4135,6 +4174,8 @@ async function fetchRegionWeather() {
   });
   await Promise.all(promises);
   _regionWxCache = factors;
+  _regionWxTimestamp = Date.now();
+  updateRegionTimestamp();
   return factors;
 }
 
@@ -4227,7 +4268,8 @@ function renderRegionMap(regionRisks, cityRisks) {
     var key = mapKeys[k];
     var rr = regionRisks[key];
     var fillColor = rr.info.color;
-    pathHtml += '<path d="' + REGION_PATHS[key] + '" fill="' + fillColor + '" fill-opacity="0.45" data-region="' + key + '" onmouseenter="showRegionFocus(\'' + key + '\',event)" onmouseleave="hideRegionFocus()" onclick="showRegionFocus(\'' + key + '\',event)"/>';
+    var ariaLabel = t("regions.regionLabel", { region: t("region." + key + ".full"), risk: rr.info.label, score: rr.risk.toFixed(1) });
+    pathHtml += '<path d="' + REGION_PATHS[key] + '" fill="' + fillColor + '" fill-opacity="0.45" data-region="' + key + '" role="listitem" tabindex="0" aria-label="' + ariaLabel.replace(/"/g, "&quot;") + '" onmouseenter="showRegionFocus(\'' + key + '\',event)" onmouseleave="hideRegionFocus()" onclick="showRegionFocus(\'' + key + '\',event)" onkeydown="handleMapKey(event,\'region\',\'' + key + '\')"/>';
   }
   pathsG.innerHTML = pathHtml;
 
@@ -4241,7 +4283,8 @@ function renderRegionMap(regionRisks, cityRisks) {
     var info = getRiskInfo(cr.overall);
     var r = cr.overall >= 3 ? 7 : (cr.overall >= 1 ? 5.5 : 4);
     var isMajor = MAJOR_CITIES.indexOf(cr.idx) >= 0;
-    dotHtml += '<circle class="city-dot" cx="' + pos.x.toFixed(1) + '" cy="' + pos.y.toFixed(1) + '" r="' + r + '" fill="' + info.color + '" data-city="' + cr.idx + '" onmouseenter="showCityFocus(' + cr.idx + ',event)" onmouseleave="hideRegionFocus()" onclick="showCityFocus(' + cr.idx + ',event)"/>';
+    var cityAriaLabel = t("regions.cityLabel", { city: t("city." + cr.idx), risk: info.label, score: cr.overall.toFixed(1) });
+    dotHtml += '<circle class="city-dot" cx="' + pos.x.toFixed(1) + '" cy="' + pos.y.toFixed(1) + '" r="' + r + '" fill="' + info.color + '" data-city="' + cr.idx + '" role="listitem" tabindex="0" aria-label="' + cityAriaLabel.replace(/"/g, "&quot;") + '" onmouseenter="showCityFocus(' + cr.idx + ',event)" onmouseleave="hideRegionFocus()" onclick="showCityFocus(' + cr.idx + ',event)" onkeydown="handleMapKey(event,\'city\',' + cr.idx + ')"/>';
     if (isMajor) {
       labelHtml += '<text class="city-label" x="' + (pos.x + r + 3).toFixed(1) + '" y="' + (pos.y + 3).toFixed(1) + '">' + t("city." + cr.idx) + '</text>';
     }
@@ -4285,7 +4328,8 @@ function renderRegionSidebar(cityRisks) {
     if (cr.tree >= 1) chips += '<span class="region-chip">' + t("pollen.tree") + '</span>';
     if (cr.grass >= 1) chips += '<span class="region-chip">' + t("pollen.grass") + '</span>';
     if (cr.weed >= 1) chips += '<span class="region-chip">' + t("pollen.weed") + '</span>';
-    html += '<div class="region-city-card" style="border-left-color:' + info.color + '" data-city="' + cr.idx + '" onclick="highlightCityDot(' + cr.idx + ')">' +
+    var cardAriaLabel = t("regions.cityLabel", { city: t("city." + cr.idx), risk: info.label, score: scoreNum });
+    html += '<div class="region-city-card" style="border-left-color:' + info.color + '" data-city="' + cr.idx + '" role="button" tabindex="0" aria-label="' + cardAriaLabel.replace(/"/g, "&quot;") + '" onclick="highlightCityDot(' + cr.idx + ')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();highlightCityDot(' + cr.idx + ')}">' +
       '<div class="region-city-top"><div><div class="region-city-name">' + t("city." + cr.idx) + '</div>' +
       '<div class="region-city-region">' + regionName + '</div></div>' +
       '<div class="region-city-score"><div class="region-city-score-num" style="color:' + info.color + '">' + scoreNum + '</div>' +
@@ -4309,7 +4353,19 @@ function renderRegionAlert(regionRisks) {
 
 function toggleRegionShowAll() {
   _regionShowAll = !_regionShowAll;
+  var btn = document.getElementById("region-show-toggle");
+  if (btn) btn.setAttribute("aria-expanded", _regionShowAll ? "true" : "false");
   renderRegionsTab();
+}
+
+function handleMapKey(event, type, id) {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    if (type === "region") showRegionFocus(id, event);
+    else showCityFocus(id, event);
+  } else if (event.key === "Escape") {
+    hideRegionFocus();
+  }
 }
 
 var _lastRegionData = null;
