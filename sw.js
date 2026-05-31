@@ -1,4 +1,4 @@
-var CACHE_VERSION = 'allergytj-v9';
+var CACHE_VERSION = 'allergytj-v10';
 
 var PRECACHE_URLS = [
   '/',
@@ -52,7 +52,7 @@ self.addEventListener('fetch', function(event) {
   if (url.pathname === '/robots.txt' || url.pathname === '/sitemap.xml') return;
 
   // Navigation requests (HTML): network-first, cache fallback
-  if (event.request.mode === 'navigate' || url.pathname === '/' || url.pathname === '/index.html') {
+  if (event.request.mode === 'navigate' || url.pathname === '/' || url.pathname === '/index.html' || /^\/(en|ru|tj)(\/|$)/.test(url.pathname)) {
     event.respondWith(
       fetch(event.request).then(function(response) {
         if (response && response.status === 200) {

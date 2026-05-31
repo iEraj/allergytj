@@ -1,8 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://allergytj.vercel.app/</loc>
-    <lastmod>2026-04-26</lastmod>
+    <loc>https://allergytj.vercel.app/en/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://allergytj.vercel.app/en/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://allergytj.vercel.app/ru/"/>
+    <xhtml:link rel="alternate" hreflang="tg" href="https://allergytj.vercel.app/tj/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://allergytj.vercel.app/"/>
+    <lastmod>2026-05-31</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://allergytj.vercel.app/ru/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://allergytj.vercel.app/en/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://allergytj.vercel.app/ru/"/>
+    <xhtml:link rel="alternate" hreflang="tg" href="https://allergytj.vercel.app/tj/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://allergytj.vercel.app/"/>
+    <lastmod>2026-05-31</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://allergytj.vercel.app/tj/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://allergytj.vercel.app/en/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://allergytj.vercel.app/ru/"/>
+    <xhtml:link rel="alternate" hreflang="tg" href="https://allergytj.vercel.app/tj/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://allergytj.vercel.app/"/>
+    <lastmod>2026-05-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>

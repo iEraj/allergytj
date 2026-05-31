@@ -4,23 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="google-site-verification" content="Dodf4c480Lb4XlPGXnVrHUyxFPyEH-bY06Pg-4re58w" />
-<meta name="description" id="meta-desc" content="Pollen risk tracker for Tajikistan — live forecast, air quality, hourly breakdown, and 5-day outlook for 30 cities. Cross-reactivity guide, regional profiles, trilingual (EN/RU/TJ). Free PWA, works offline.">
-<meta name="keywords" id="meta-keywords" content="pollen, allergy, Tajikistan, pollen forecast, air quality, AQI, seasonal allergy, hay fever, pollen risk, allergy tracker, cross-reactivity, oral allergy syndrome, UV index, hourly pollen forecast, regional pollen, PWA, offline allergy tracker, Dushanbe, Khujand, Bokhtar, Kulob, Khorog, poplar pollen, mugwort, Central Asia">
+<meta name="description" id="meta-desc" content="Live pollen risk and air quality for 30 cities in Tajikistan — AQI, PM2.5, hourly forecast, 5-day outlook. Dushanbe, Khujand, Bokhtar and more.">
+<meta name="keywords" id="meta-keywords" content="pollen, allergy, Tajikistan, allergy Dushanbe, pollen forecast, air quality, AQI, air quality Dushanbe, AQI Tajikistan, air pollution Dushanbe, air pollution Tajikistan, air quality Khujand, PM2.5 Tajikistan, seasonal allergy, hay fever, pollen risk, allergy tracker, cross-reactivity, oral allergy syndrome, UV index, hourly pollen forecast, regional pollen, PWA, offline allergy tracker, Dushanbe, Khujand, Bokhtar, Kulob, Khorog, poplar pollen, mugwort, Central Asia, allergy Central Asia, pollen Central Asia">
 <meta name="author" content="Eraj Ismatulloev">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
-<link rel="canonical" href="https://allergytj.vercel.app/">
-<link rel="alternate" hreflang="en" href="https://allergytj.vercel.app/">
-<link rel="alternate" hreflang="ru" href="https://allergytj.vercel.app/">
-<link rel="alternate" hreflang="tg" href="https://allergytj.vercel.app/">
+<link rel="canonical" href="https://allergytj.vercel.app/en/">
+<link rel="alternate" hreflang="en" href="https://allergytj.vercel.app/en/">
+<link rel="alternate" hreflang="ru" href="https://allergytj.vercel.app/ru/">
+<link rel="alternate" hreflang="tg" href="https://allergytj.vercel.app/tj/">
 <link rel="alternate" hreflang="x-default" href="https://allergytj.vercel.app/">
 <link rel="preconnect" href="https://api.open-meteo.com" crossorigin>
 <link rel="preconnect" href="https://air-quality-api.open-meteo.com" crossorigin>
 <link rel="dns-prefetch" href="https://api.open-meteo.com">
 <link rel="dns-prefetch" href="https://air-quality-api.open-meteo.com">
+<meta property="og:site_name" content="AllergyTJ">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://allergytj.vercel.app/">
-<meta property="og:title" id="og-title" content="AllergyTJ — Pollen & Allergy Tracker for Tajikistan">
-<meta property="og:description" id="og-desc" content="Pollen risk tracker for Tajikistan — live forecast, air quality, hourly breakdown, and 5-day outlook for 30 cities. Cross-reactivity guide, regional profiles, trilingual (EN/RU/TJ). Free PWA, works offline.">
+<meta property="og:url" content="https://allergytj.vercel.app/en/">
+<meta property="og:title" id="og-title" content="AllergyTJ — Pollen & Air Quality Tracker for Tajikistan">
+<meta property="og:description" id="og-desc" content="Live pollen risk and air quality for 30 cities in Tajikistan — AQI, PM2.5, hourly forecast, 5-day outlook. Dushanbe, Khujand, Bokhtar and more.">
 <meta property="og:locale" content="en">
 <meta property="og:locale:alternate" content="ru">
 <meta property="og:locale:alternate" content="tg">
@@ -28,9 +29,10 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="AllergyTJ — Pollen and air quality tracker for Tajikistan showing risk levels for Dushanbe">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" id="twitter-title" content="AllergyTJ — Pollen & Allergy Tracker for Tajikistan">
-<meta name="twitter:description" id="twitter-desc" content="Pollen risk tracker for Tajikistan — live forecast, air quality, hourly breakdown, and 5-day outlook for 30 cities. Cross-reactivity guide, regional profiles, trilingual (EN/RU/TJ). Free PWA, works offline.">
+<meta name="twitter:title" id="twitter-title" content="AllergyTJ — Pollen & Air Quality Tracker for Tajikistan">
+<meta name="twitter:description" id="twitter-desc" content="Live pollen risk and air quality for 30 cities in Tajikistan — AQI, PM2.5, hourly forecast, 5-day outlook. Dushanbe, Khujand, Bokhtar and more.">
 <meta name="twitter:image" content="https://allergytj.vercel.app/og-image.png">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 10 C20 30 10 60 30 80 Q40 70 50 50 Q60 70 70 80 C90 60 80 30 50 10Z' fill='%231a3a2a'/><path d='M50 25 Q50 55 50 80' stroke='%23a8e7c5' stroke-width='3' fill='none' stroke-linecap='round'/></svg>">
 <link rel="manifest" href="/manifest.json">
@@ -42,7 +44,7 @@
 <meta name="apple-mobile-web-app-title" content="AllergyTJ">
 <meta name="msapplication-TileImage" content="/icons/icon-144x144.png">
 <meta name="msapplication-TileColor" content="#1a3a2a">
-<title>AllergyTJ</title>
+<title>AllergyTJ — Pollen & Air Quality Tracker for Tajikistan</title>
 <script type="application/ld+json" id="jsonld">
 {
   "@context": "https://schema.org",
@@ -55,7 +57,7 @@
   "operatingSystem": "Any",
   "browserRequirements": "Requires JavaScript. Works in all modern browsers.",
   "softwareVersion": "2.0",
-  "dateModified": "2026-05-14",
+  "dateModified": "2026-05-31",
   "featureList": "Live pollen risk estimation, 5-day forecast, Air quality (US AQI with 6 pollutants), Hourly risk breakdown, Cross-reactivity guide (Oral Allergy Syndrome), Regional pollen profiles (5 vegetation zones), Elevation-adjusted bloom timing, 30 cities across Tajikistan, Trilingual (English/Russian/Tajik), Dark mode, PWA with offline support, UV index tracking",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "inLanguage": ["en", "ru", "tg"],
@@ -131,7 +133,49 @@
         "@type": "Answer",
         "text": "AllergyTJ is a Progressive Web App (PWA) that can be installed on your phone or desktop. Once installed, the app loads from cache even without internet. Offline mode shows seasonal pollen estimates without live weather adjustment. Full functionality resumes when connectivity returns."
       }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the air quality in Dushanbe today?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "AllergyTJ shows real-time air quality data for Dushanbe and 29 other cities in Tajikistan using the US AQI scale. Data comes from the Copernicus Atmosphere Monitoring Service (CAMS) and includes six pollutants: PM2.5, PM10, ozone (O₃), nitrogen dioxide (NO₂), sulfur dioxide (SO₂), and carbon monoxide (CO). Check the dashboard for the current AQI reading and per-pollutant breakdown."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where can I check AQI in Tajikistan?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "AllergyTJ provides real-time US AQI data for 30 cities across Tajikistan, including Dushanbe, Khujand, Bokhtar, Kulob, and Khorog. Since Tajikistan has no public ground-based air quality monitoring stations, the data relies on satellite-based atmospheric modeling from the Copernicus Atmosphere Monitoring Service (CAMS). The app shows composite AQI and a breakdown of all six pollutants."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is air pollution bad in Tajikistan?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Air quality in Tajikistan varies by season and location. Winter months often see elevated PM2.5 from heating and vehicle emissions in urban areas like Dushanbe. Summer can bring high ground-level ozone, especially at altitude. Agricultural burning in Khatlon and dust from arid regions also contribute. AllergyTJ tracks six pollutants in real time across 30 cities to help residents monitor conditions."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are the most common allergies in Central Asia?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In Tajikistan and Central Asia, the most common seasonal allergies are caused by poplar and cottonwood pollen (March–May), grasses (May–July), and mugwort/Artemisia (July–September). Poplar trees line most urban streets in Dushanbe and other cities. Chenopod (goosefoot) is also significant in agricultural lowlands like Khatlon. Desert dust can worsen symptoms year-round."
+      }
     }
+  ]
+}
+</script>
+<script type="application/ld+json" id="breadcrumbld">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "AllergyTJ", "item": "https://allergytj.vercel.app/" },
+    { "@type": "ListItem", "position": 2, "name": "Dashboard", "item": "https://allergytj.vercel.app/#dashboard" }
   ]
 }
 </script>
@@ -1889,7 +1933,7 @@
         <span class="icon filled">location_on</span>
         <span data-i18n="dash.currentLocation">Current Location</span>
       </div>
-      <h1 class="dash-city-name" id="dash-city-name">Dushanbe, Tajikistan</h1>
+      <h1 class="dash-city-name" id="dash-city-name">Dushanbe — Pollen Risk & Air Quality</h1>
       <p class="dash-recommendation" id="dash-recommendation"></p>
     </div>
     <div class="dash-gauge-wrap" id="dash-gauge">
@@ -1980,6 +2024,10 @@
     </div>
   </div>
 
+  <!-- Air Quality -->
+  <h2 class="section-title" data-i18n="section.airQuality">Air Quality</h2>
+  <div class="aqi-card" id="aqi-card"></div>
+
   <!-- Nearby Regions -->
   <div>
     <div class="dash-nearby-header">
@@ -2006,8 +2054,6 @@
     <div class="skel-label skeleton"></div>
     <div class="skel-cards"><div class="skeleton skel-card" style="height:90px"></div><div class="skeleton skel-card" style="height:90px"></div><div class="skeleton skel-card" style="height:90px"></div></div>
     <div class="skeleton skel-strip"></div>
-    <div class="skel-label skeleton"></div>
-    <div class="skeleton skel-aqi"></div>
     <div class="skel-label skeleton"></div>
     <div class="skel-forecast-grid">
       <div class="skeleton skel-fc-card"></div>
@@ -2038,10 +2084,6 @@
 
     <!-- Current weather conditions -->
     <div class="weather-strip" id="weather-strip"></div>
-
-    <!-- Air Quality -->
-    <h2 class="section-title" data-i18n="section.airQuality">Air Quality</h2>
-    <div class="aqi-card" id="aqi-card"></div>
 
     <!-- 5-day forecast -->
     <h2 class="section-title" id="forecast-title">5-Day Pollen Risk Forecast</h2>
@@ -2380,7 +2422,11 @@ function switchTab(tabName) {
   var target = document.getElementById('tab-' + tabName);
   if (target) target.classList.add('active');
   window.scrollTo({ top: 0 });
-  history.replaceState(null, '', '#' + tabName);
+  history.replaceState(null, '', '/' + LANG + '/#' + tabName);
+  var bcld = document.getElementById("breadcrumbld");
+  if (bcld) {
+    try { var bc = JSON.parse(bcld.textContent); bc.itemListElement[1].name = t("nav." + tabName); bc.itemListElement[1].item = SITE_BASE + "/" + LANG + "/#" + tabName; bc.itemListElement[0].item = SITE_BASE + "/" + LANG + "/"; bcld.textContent = JSON.stringify(bc); } catch(e) {}
+  }
   if (_regionUpdatedInterval) { clearInterval(_regionUpdatedInterval); _regionUpdatedInterval = null; }
   if (tabName === 'regions') {
     renderRegionsTab();
@@ -2542,9 +2588,16 @@ function renderNearbyRegions(cityIndex, now) {
   document.getElementById("dash-nearby").innerHTML = html;
 }
 
+// ── Base URL for SEO tags (change to "https://allergy.tj" when domain is ready) ──
+var SITE_BASE = "https://allergytj.vercel.app";
+
 // ── i18n: Language detection and translation loading ──
+var _pathLang = (function() {
+  var m = window.location.pathname.match(/^\/(en|ru|tj)(\/|$)/);
+  return m ? m[1] : null;
+})();
 var browserLang = (navigator.language || "").slice(0, 2);
-var LANG = localStorage.getItem("allergytj-lang") || (browserLang === "ru" ? "ru" : browserLang === "tg" || browserLang === "tj" ? "tj" : "en");
+var LANG = _pathLang || localStorage.getItem("allergytj-lang") || (browserLang === "ru" ? "ru" : browserLang === "tg" || browserLang === "tj" ? "tj" : "en");
 
 // Translation data loaded from lang/*.json files
 var T = { en: {}, ru: {}, tj: {} };
@@ -2552,7 +2605,7 @@ var T = { en: {}, ru: {}, tj: {} };
 async function loadTranslations(lang) {
   if (Object.keys(T[lang]).length > 0) return; // already loaded
   try {
-    var res = await fetch("lang/" + lang + ".json");
+    var res = await fetch("/lang/" + lang + ".json");
     if (res.ok) T[lang] = await res.json();
   } catch (e) {
     console.warn("Failed to load " + lang + " translations:", e.message);
@@ -3646,25 +3699,8 @@ function useGPS() {
   );
 }
 
-// ── Language switching ──
-async function setLanguage(lang) {
-  LANG = lang;
-  localStorage.setItem("allergytj-lang", lang);
-  await loadTranslations(lang);
-  await loadTranslations("en"); // ensure English fallback is always available
-  document.documentElement.lang = lang === "tj" ? "tg" : lang;
-
-  // Update lang pill active state
-  document.querySelectorAll(".lang-btn").forEach(function(btn) {
-    btn.classList.toggle("active", btn.getAttribute("data-lang") === lang);
-  });
-
-  // Sweep data-i18n elements
-  document.querySelectorAll("[data-i18n]").forEach(function(el) {
-    el.textContent = t(el.getAttribute("data-i18n"));
-  });
-
-  // Page title, meta description, keywords, OG tags, JSON-LD
+// ── Shared meta tag updater (used by setLanguage and init) ──
+function updateMetaTags(lang) {
   document.title = t("title");
   var metaDesc = document.getElementById("meta-desc");
   if (metaDesc) metaDesc.setAttribute("content", t("meta.desc"));
@@ -3684,6 +3720,39 @@ async function setLanguage(lang) {
   if (jsonld) {
     try { var ld = JSON.parse(jsonld.textContent); ld.description = t("meta.desc"); jsonld.textContent = JSON.stringify(ld); } catch(e) {}
   }
+  var canonical = document.querySelector('link[rel="canonical"]');
+  if (canonical) canonical.setAttribute("href", SITE_BASE + "/" + lang + "/");
+  document.querySelectorAll('link[hreflang]').forEach(function(el) {
+    var hl = el.getAttribute("hreflang");
+    if (hl === "x-default") {
+      el.setAttribute("href", SITE_BASE + "/");
+    } else {
+      var hlLang = hl === "tg" ? "tj" : hl;
+      el.setAttribute("href", SITE_BASE + "/" + hlLang + "/");
+    }
+  });
+  var ogUrl = document.querySelector('meta[property="og:url"]');
+  if (ogUrl) ogUrl.setAttribute("content", SITE_BASE + "/" + lang + "/");
+}
+
+// ── Language switching ──
+async function setLanguage(lang) {
+  LANG = lang;
+  localStorage.setItem("allergytj-lang", lang);
+  history.replaceState(null, '', '/' + lang + '/' + (location.hash || ''));
+  await loadTranslations(lang);
+  await loadTranslations("en");
+  document.documentElement.lang = lang === "tj" ? "tg" : lang;
+
+  document.querySelectorAll(".lang-btn").forEach(function(btn) {
+    btn.classList.toggle("active", btn.getAttribute("data-lang") === lang);
+  });
+
+  document.querySelectorAll("[data-i18n]").forEach(function(el) {
+    el.textContent = t(el.getAttribute("data-i18n"));
+  });
+
+  updateMetaTags(lang);
 
   // Update city dropdown
   var sel = document.getElementById("city-select");
@@ -4474,7 +4543,7 @@ async function sharePollen() {
     "\n🌳 " + t("pollen.tree") + ": " + treeInfo.label +
     " | 🌾 " + t("pollen.grass") + ": " + grassInfo.label +
     " | 🌿 " + t("pollen.weed") + ": " + weedInfo.label +
-    "\n" + t("share.checkYours") + " → allergytj.vercel.app";
+    "\n" + t("share.checkYours") + " → " + SITE_BASE.replace("https://", "");
 
   if (navigator.share) {
     try {
@@ -4507,40 +4576,24 @@ async function sharePollen() {
 
 // ── Init ──
 (async function() {
-  // Load active language + English fallback
   await loadTranslations(LANG);
   if (LANG !== "en") await loadTranslations("en");
 
+  // If on bare "/" with no language prefix, silently update URL
+  if (!_pathLang) {
+    history.replaceState(null, '', '/' + LANG + '/' + (location.hash || ''));
+  }
+
   document.documentElement.lang = LANG === "tj" ? "tg" : LANG;
 
-  // Set lang pill to active language
   document.querySelectorAll(".lang-btn").forEach(function(btn) {
     btn.classList.toggle("active", btn.getAttribute("data-lang") === LANG);
   });
 
-  // Apply translations to static HTML
   document.querySelectorAll("[data-i18n]").forEach(function(el) {
     el.textContent = t(el.getAttribute("data-i18n"));
   });
-  document.title = t("title");
-  var metaDesc = document.getElementById("meta-desc");
-  if (metaDesc) metaDesc.setAttribute("content", t("meta.desc"));
-  var metaKw = document.getElementById("meta-keywords");
-  if (metaKw) metaKw.setAttribute("content", t("meta.keywords"));
-  var ogTitle = document.getElementById("og-title");
-  if (ogTitle) ogTitle.setAttribute("content", t("og.title"));
-  var ogDesc = document.getElementById("og-desc");
-  if (ogDesc) ogDesc.setAttribute("content", t("meta.desc"));
-  var ogLocale = document.querySelector('meta[property="og:locale"]');
-  if (ogLocale) ogLocale.setAttribute("content", LANG === "tj" ? "tg" : LANG);
-  var twTitle2 = document.getElementById("twitter-title");
-  if (twTitle2) twTitle2.setAttribute("content", t("og.title"));
-  var twDesc2 = document.getElementById("twitter-desc");
-  if (twDesc2) twDesc2.setAttribute("content", t("meta.desc"));
-  var jsonld = document.getElementById("jsonld");
-  if (jsonld) {
-    try { var ld = JSON.parse(jsonld.textContent); ld.description = t("meta.desc"); jsonld.textContent = JSON.stringify(ld); } catch(e) {}
-  }
+  updateMetaTags(LANG);
 
   // Update city dropdown
   var sel = document.getElementById("city-select");

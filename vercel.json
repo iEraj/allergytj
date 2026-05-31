@@ -2,6 +2,9 @@
   "buildCommand": "",
   "outputDirectory": ".",
   "rewrites": [
+    { "source": "/en/:path*", "destination": "/index.html" },
+    { "source": "/ru/:path*", "destination": "/index.html" },
+    { "source": "/tj/:path*", "destination": "/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
