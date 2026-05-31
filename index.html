@@ -1933,7 +1933,7 @@
         <span class="icon filled">location_on</span>
         <span data-i18n="dash.currentLocation">Current Location</span>
       </div>
-      <h1 class="dash-city-name" id="dash-city-name">Dushanbe — Pollen Risk & Air Quality</h1>
+      <h1 class="dash-city-name" id="dash-city-name">Dushanbe | Pollen & Air Quality</h1>
       <p class="dash-recommendation" id="dash-recommendation"></p>
     </div>
     <div class="dash-gauge-wrap" id="dash-gauge">
@@ -2478,16 +2478,33 @@ function getDailyTip() {
   return null;
 }
 
+function buildRecommendation(overall, wxData) {
+  if (overall < 0.5) return t("rec.none");
+
+  var wxReason = "";
+  if (wxData) {
+    if (wxData.precip > 1) wxReason = t("rec.wx.rain");
+    else if (wxData.temp > 28 && wxData.humidity < 40) wxReason = t("rec.wx.hotDry");
+    else if (wxData.temp > 25) wxReason = t("rec.wx.warm");
+    else if (wxData.wind > 15) wxReason = t("rec.wx.windy");
+  }
+
+  if (overall >= 3.5) return t("rec.vhigh", { wx: wxReason });
+  if (overall >= 2.5) return t("rec.high", { wx: wxReason });
+  if (overall >= 1.5) return t("rec.moderate", { wx: wxReason });
+  return t("rec.low", { wx: wxReason });
+}
+
 function renderDashboard(overallRisk, treeRisk, grassRisk, weedRisk, wxData, cityIndex, now) {
   var cityName = t("city." + cityIndex);
   var info = getRiskInfo(overallRisk);
 
   // City name
-  document.getElementById("dash-city-name").textContent = cityName;
+  document.getElementById("dash-city-name").textContent = cityName + " | " + t("dash.pollenAndAir");
 
-  // Recommendation
+  // Context-aware recommendation
   var recEl = document.getElementById("dash-recommendation");
-  recEl.textContent = info.advice;
+  recEl.textContent = buildRecommendation(overallRisk, wxData);
 
   // Risk Gauge
   var circumference = 2 * Math.PI * 84; // ~527.79
