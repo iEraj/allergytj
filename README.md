@@ -27,7 +27,7 @@ No pollen monitoring stations exist in Tajikistan. AllergyTJ fills the gap by es
 - **PWA** — installable on mobile/desktop, offline support, service worker caching
 - **3-tier weather fallback** — automatically switches to backup weather source (wttr.in) or seasonal-only mode if the primary API is down
 - **Dark mode** — toggle with OS preference detection, persisted across sessions
-- **SEO-ready** — Open Graph image, JSON-LD (WebApplication + FAQPage + BreadcrumbList), canonical URLs with language prefixes, robots.txt, sitemap.xml with language alternates, hreflang tags
+- **SEO-ready** — Open Graph image, JSON-LD (WebApplication + FAQPage + BreadcrumbList), canonical URLs with language prefixes, robots.txt, sitemap.xml with language alternates, hreflang tags, brand-matched SVG favicon
 - **Accessible** — WCAG AA color contrast, semantic HTML landmarks, ARIA labels
 - **Share button** — share current pollen conditions via native share or clipboard copy
 
@@ -76,7 +76,8 @@ AllergyTJ/
 ├── requirements.txt    # Python dependencies (flask)
 ├── CLAUDE.md           # Development guidelines and architecture
 ├── testing/
-│   └── build_map_paths.py  # Dev tool: GADM polygon simplification + city containment checks
+│   ├── build_map_paths.py  # Dev tool: GADM polygon simplification + city containment checks
+│   └── favicon-preview.html # Favicon design preview at multiple sizes
 ├── docs/
 │   ├── ROADMAP.md      # Product roadmap and planned features
 │   ├── PRD.md          # Product requirements document
