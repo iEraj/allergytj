@@ -12,7 +12,7 @@ No pollen monitoring stations exist in Tajikistan. AllergyTJ fills the gap by es
 
 - **30 cities** across all regions of Tajikistan
 - **4-tab app** — Dashboard, Forecast, Regions, Insights with hash-based routing
-- **Dashboard** — circular SVG risk gauge, bento weather grid, top allergen triggers with severity bars, daily health tip, nearby regions strip
+- **Dashboard** — circular SVG risk gauge, context-aware weather recommendations, hero weather block, top allergen triggers with severity bars, live AQI card with pollutant breakdown, daily health tip, nearby regions strip
 - **Pollen risk estimation** — combines seasonal pollen calendar with real-time weather (temperature, humidity, wind, precipitation)
 - **5-day forecast** — daily pollen risk outlook with allergen chips, trend chart, and contextual insight tips
 - **Regional pollen map** — interactive SVG map of Tajikistan with GADM boundaries, 30 city dots, per-region weather, city sidebar sorted by risk
@@ -23,11 +23,11 @@ No pollen monitoring stations exist in Tajikistan. AllergyTJ fills the gap by es
 - **Insights tab** — "What's Active Now" allergen cards, 12-month timeline calendar, 11 knowledge cards (incl. Cross-Reactivity Guide)
 - **GPS detection** — auto-finds nearest city (HTTPS required)
 - **Zero config** — no API keys, no build step, no framework, no external fonts
-- **Trilingual** — English, Russian, and Tajik with browser auto-detection
+- **Trilingual** — English, Russian, and Tajik with browser auto-detection and URL-based language routing (`/en/`, `/ru/`, `/tj/`)
 - **PWA** — installable on mobile/desktop, offline support, service worker caching
 - **3-tier weather fallback** — automatically switches to backup weather source (wttr.in) or seasonal-only mode if the primary API is down
 - **Dark mode** — toggle with OS preference detection, persisted across sessions
-- **SEO-ready** — Open Graph image, JSON-LD, canonical, robots.txt, sitemap.xml, hreflang tags
+- **SEO-ready** — Open Graph image, JSON-LD (WebApplication + FAQPage + BreadcrumbList), canonical URLs with language prefixes, robots.txt, sitemap.xml with language alternates, hreflang tags
 - **Accessible** — WCAG AA color contrast, semantic HTML landmarks, ARIA labels
 - **Share button** — share current pollen conditions via native share or clipboard copy
 
@@ -93,7 +93,8 @@ The site is deployed as a static site on Vercel. Pushing to `master` triggers au
 
 Configuration is in `vercel.json`:
 - Static output from repo root
-- SPA rewrite (all routes serve `index.html`)
+- Language routing rewrites (`/en/*`, `/ru/*`, `/tj/*` → `index.html`)
+- SPA rewrite (all remaining routes serve `index.html`)
 - Security headers (CSP, HSTS, X-Frame-Options, etc.)
 
 ### Manual / other hosting
