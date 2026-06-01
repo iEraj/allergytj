@@ -117,7 +117,7 @@
   "aqi.3.label": "Unhealthy", "aqi.3.desc": "Everyone may begin to experience health effects.",
   "aqi.4.label": "Very Unhealthy", "aqi.4.desc": "Health alert. Avoid outdoor activity.",
   "aqi.urbanRange": "City estimate: {low}–{high}",
-  "aqi.disclaimer": "Satellite-based estimate via EU Copernicus CAMS. Actual levels in cities may be higher due to local traffic and construction.",
+  "aqi.disclaimer": "Satellite-based estimate via EU Copernicus CAMS. Actual levels in cities may be higher due to local traffic and active construction works.",
 
   "status.fetching": "Fetching weather & air quality for {city}...",
   "status.backupTrying": "Primary weather source unavailable, trying backup...",
