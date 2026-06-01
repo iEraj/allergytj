@@ -1065,6 +1065,41 @@
   .fc-trend-spline path.fc-spline-line { fill: none; stroke: var(--primary); stroke-width: 2.5; }
   .fc-trend-spline path.fc-spline-fill { fill: var(--primary); opacity: 0.08; stroke: none; }
 
+  /* AQI Forecast grid */
+  .forecast-aqi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-lg);
+    margin-top: var(--space-md);
+  }
+  .fc-aqi-card {
+    background: var(--card);
+    border-radius: var(--radius-xl);
+    padding: var(--space-lg);
+    box-shadow: var(--shadow-md);
+    border-top: 4px solid var(--outline-variant);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .fc-aqi-card:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+  .fc-aqi-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xs); }
+  .fc-aqi-day { font-size: var(--font-size-label-md); font-weight: var(--font-weight-semibold); color: var(--on-surface); text-transform: capitalize; }
+  .fc-aqi-score {
+    display: inline-flex; align-items: center; justify-content: center; flex-direction: column;
+    width: 46px; height: 46px; border-radius: 50%;
+    color: #fff; font-size: var(--font-size-body-md); font-weight: var(--font-weight-bold);
+    flex-shrink: 0; line-height: 1.1;
+  }
+  .fc-aqi-scale { font-size: 7px; font-weight: 500; opacity: 0.85; letter-spacing: 0.02em; }
+  .fc-aqi-label { font-size: var(--font-size-caption); font-weight: var(--font-weight-semibold); margin-bottom: var(--space-sm); }
+  .fc-aqi-subs { border-top: 1px solid var(--border); padding-top: var(--space-xs); margin-top: auto; }
+  .fc-aqi-sub { display: flex; align-items: center; gap: 6px; padding: 2px 0; font-size: 0.72rem; }
+  .fc-aqi-sub-name { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--on-surface); }
+  .fc-aqi-sub-val { min-width: 22px; text-align: right; font-weight: 700; }
+  .fc-aqi-sub-bar { width: 40px; height: 4px; border-radius: 2px; background: var(--border); flex-shrink: 0; }
+  .fc-aqi-sub-bar span { display: block; height: 100%; border-radius: 2px; }
+
   /* Dark mode forecast overrides */
   [data-theme="dark"] .fc-chip-tree { color: #a5d6a7; background: rgba(46,125,50,0.15); border-color: rgba(46,125,50,0.3); }
   [data-theme="dark"] .fc-chip-grass { color: #ffe082; background: rgba(140,109,0,0.15); border-color: rgba(140,109,0,0.3); }
@@ -1096,6 +1131,7 @@
   .aqi-details { font-size: 0.85rem; }
   .aqi-details .aqi-status { font-weight: var(--font-weight-bold); font-size: var(--font-size-body-md); margin-bottom: 4px; }
   .aqi-details .aqi-desc { color: var(--muted); font-size: 0.8rem; }
+  .aqi-details .aqi-urban-range { font-size: 0.78rem; margin-top: 6px; color: var(--text-secondary, var(--muted)); }
   .aqi-details .aqi-dominant-label { font-size: 0.8rem; margin-top: 6px; color: var(--muted); }
   .aqi-details .aqi-dominant-label strong { color: var(--text); font-weight: 700; }
   .aqi-breakdown { border-top: 1px solid var(--border); padding-top: 12px; }
@@ -1106,6 +1142,7 @@
   .aqi-row .pol-sub { min-width: 28px; text-align: right; font-weight: 700; }
   .aqi-row .pol-bar { width: 50px; height: 5px; border-radius: 3px; background: var(--border); flex-shrink: 0; }
   .aqi-row .pol-bar-fill { height: 100%; border-radius: 3px; }
+  .aqi-disclaimer { margin-top: 12px; padding: 8px 10px; font-size: 0.72rem; color: var(--muted); background: var(--surface-container); border-radius: var(--radius-sm); line-height: 1.4; }
 
   /* ── Active Now Hero ── */
   .active-now { margin-bottom: var(--space-lg); }
@@ -1853,6 +1890,7 @@
     .fc-tip { grid-row: span 1; grid-column: span 2; }
     .skel-forecast-grid { grid-template-columns: repeat(2, 1fr); }
     .skel-fc-tip { grid-row: span 1; grid-column: span 2; }
+    .forecast-aqi-grid { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 600px) {
     :root {
@@ -1868,6 +1906,7 @@
     .forecast-grid, .skel-forecast-grid { grid-template-columns: 1fr; }
     .fc-tip { grid-column: span 1; }
     .skel-fc-tip { grid-column: span 1; }
+    .forecast-aqi-grid { grid-template-columns: 1fr; }
     .fc-trend-bars { display: none; }
     .fc-trend-labels.fc-labels-bar { display: none; }
     .fc-trend-spline { display: block; }
@@ -2089,6 +2128,9 @@
     <h2 class="section-title" id="forecast-title">5-Day Pollen Risk Forecast</h2>
     <div class="forecast-grid" id="forecast-cards"></div>
     <div id="forecast-trend"></div>
+    <h2 class="section-title" id="forecast-aqi-title" data-i18n="section.aqiForecast">Air Quality Forecast</h2>
+
+    <div class="forecast-aqi-grid" id="forecast-aqi-cards"></div>
   </div>
 </div>
 </section>
@@ -2965,6 +3007,8 @@ async function fetchAirQuality(lat, lng) {
     var aqUrl = "https://air-quality-api.open-meteo.com/v1/air-quality?" + new URLSearchParams({
       latitude: lat, longitude: lng,
       current: "pm2_5,pm10,ozone,nitrogen_dioxide,sulphur_dioxide,carbon_monoxide,us_aqi,us_aqi_pm2_5,us_aqi_pm10,us_aqi_ozone,us_aqi_nitrogen_dioxide,us_aqi_sulphur_dioxide,us_aqi_carbon_monoxide",
+      hourly: "us_aqi,us_aqi_pm2_5,us_aqi_pm10,us_aqi_ozone,us_aqi_nitrogen_dioxide,us_aqi_sulphur_dioxide,us_aqi_carbon_monoxide",
+      forecast_days: "6",
       timezone: "auto",
     });
     var res = await fetchWithTimeout(aqUrl, 6000);
@@ -3285,6 +3329,7 @@ async function fetchData() {
       document.getElementById("weather-strip").style.display = "none";
       document.getElementById("forecast-cards").innerHTML = "";
       document.getElementById("forecast-trend").innerHTML = "";
+      document.getElementById("forecast-aqi-cards").innerHTML = "";
       fcTitle.textContent = t("section.forecastNone");
       var _notifRisk = overallRisk;
       var _notifUv = null;
@@ -3293,8 +3338,10 @@ async function fetchData() {
     // Air quality: always render independently
     if (aq) {
       renderAqi(aq);
+      renderAqiForecast(aq, daily);
     } else {
       document.getElementById("aqi-card").innerHTML = '<div style="color:var(--muted)">' + t("aqi.unavailable") + '</div>';
+      document.getElementById("forecast-aqi-cards").innerHTML = '';
     }
 
     // Store render state for language switch re-render
@@ -3485,6 +3532,10 @@ function renderAqi(aq) {
     '</div>';
   }).join("");
 
+  var urbanLow = Math.round(aqi * 1.5);
+  var urbanHigh = Math.round(aqi * 2);
+  var urbanInfo = aqiInfo(urbanHigh);
+
   card.innerHTML =
     '<div class="aqi-summary">' +
       '<div class="aqi-circle" style="background:' + info.color + '">' +
@@ -3494,10 +3545,96 @@ function renderAqi(aq) {
       '<div class="aqi-details">' +
         '<div class="aqi-status" style="color:' + info.color + '">' + info.label + '</div>' +
         '<div class="aqi-desc">' + info.desc + '</div>' +
+        '<div class="aqi-urban-range">' + t("aqi.urbanRange", { low: urbanLow, high: urbanHigh }) + ' <span style="color:' + urbanInfo.color + '">' + urbanInfo.label + '</span></div>' +
         (dominant ? '<div class="aqi-dominant-label">' + t("aqi.dominant") + ': <strong>' + t("aqi.pol." + dominant.key) + '</strong></div>' : '') +
       '</div>' +
     '</div>' +
-    '<div class="aqi-breakdown">' + rows + '</div>';
+    '<div class="aqi-breakdown">' + rows + '</div>' +
+    '<div class="aqi-disclaimer">' + t("aqi.disclaimer") + '</div>';
+}
+
+function aggregateAqiForecast(aq) {
+  if (!aq || !aq.hourly || !aq.hourly.time) return [];
+  var h = aq.hourly;
+  var byDay = {};
+  for (var i = 0; i < h.time.length; i++) {
+    var day = h.time[i].slice(0, 10);
+    if (!byDay[day]) byDay[day] = { aqi: [], pm25: [], pm10: [], o3: [], no2: [], so2: [], co: [] };
+    if (h.us_aqi[i] != null) byDay[day].aqi.push(h.us_aqi[i]);
+    if (h.us_aqi_pm2_5 && h.us_aqi_pm2_5[i] != null) byDay[day].pm25.push(h.us_aqi_pm2_5[i]);
+    if (h.us_aqi_pm10 && h.us_aqi_pm10[i] != null) byDay[day].pm10.push(h.us_aqi_pm10[i]);
+    if (h.us_aqi_ozone && h.us_aqi_ozone[i] != null) byDay[day].o3.push(h.us_aqi_ozone[i]);
+    if (h.us_aqi_nitrogen_dioxide && h.us_aqi_nitrogen_dioxide[i] != null) byDay[day].no2.push(h.us_aqi_nitrogen_dioxide[i]);
+    if (h.us_aqi_sulphur_dioxide && h.us_aqi_sulphur_dioxide[i] != null) byDay[day].so2.push(h.us_aqi_sulphur_dioxide[i]);
+    if (h.us_aqi_carbon_monoxide && h.us_aqi_carbon_monoxide[i] != null) byDay[day].co.push(h.us_aqi_carbon_monoxide[i]);
+  }
+  var days = Object.keys(byDay).sort();
+  var result = [];
+  for (var d = 0; d < days.length; d++) {
+    var b = byDay[days[d]];
+    if (b.aqi.length === 0) continue;
+    var maxAqi = Math.max.apply(null, b.aqi);
+    var subs = [
+      { key: "pm25", max: b.pm25.length ? Math.max.apply(null, b.pm25) : 0 },
+      { key: "pm10", max: b.pm10.length ? Math.max.apply(null, b.pm10) : 0 },
+      { key: "o3", max: b.o3.length ? Math.max.apply(null, b.o3) : 0 },
+      { key: "no2", max: b.no2.length ? Math.max.apply(null, b.no2) : 0 },
+      { key: "so2", max: b.so2.length ? Math.max.apply(null, b.so2) : 0 },
+      { key: "co", max: b.co.length ? Math.max.apply(null, b.co) : 0 },
+    ];
+    subs.sort(function(a, b) { return b.max - a.max; });
+    result.push({ date: days[d], aqi: maxAqi, dominantKey: subs[0].key, subs: subs });
+  }
+  return result;
+}
+
+function renderAqiForecast(aq, daily) {
+  var container = document.getElementById("forecast-aqi-cards");
+  var title = document.getElementById("forecast-aqi-title");
+  if (!container) return;
+
+  var forecast = aggregateAqiForecast(aq);
+  if (forecast.length < 2) {
+    container.innerHTML = '';
+    if (title) title.style.display = 'none';
+    return;
+  }
+  if (title) title.style.display = '';
+
+  var today = forecast[0].date;
+  var days = forecast.slice(1, 6);
+
+  var WEEKDAYS_EN = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  var WEEKDAYS_RU = ["Вс","Пн","Вт","Ср","Чт","Пт","Сб"];
+  var WEEKDAYS_TJ = ["Яш","Дш","Сш","Чш","Пш","Ҷм","Шб"];
+  var weekdays = LANG === "ru" ? WEEKDAYS_RU : LANG === "tj" ? WEEKDAYS_TJ : WEEKDAYS_EN;
+
+  var cards = days.map(function(d) {
+    var info = aqiInfo(d.aqi);
+    var dt = new Date(d.date + "T12:00:00");
+    var dayName = weekdays[dt.getDay()] + ", " + t("month." + dt.getMonth()) + " " + dt.getDate();
+    var topSubs = d.subs.filter(function(s) { return s.max > 0; });
+    var subRows = topSubs.map(function(s) {
+      var si = aqiInfo(s.max);
+      var pct = Math.min(s.max / 150 * 100, 100);
+      return '<div class="fc-aqi-sub">' +
+        '<span class="fc-aqi-sub-name">' + t("aqi.pol." + s.key) + '</span>' +
+        '<span class="fc-aqi-sub-val" style="color:' + si.color + '">' + Math.round(s.max) + '</span>' +
+        '<span class="fc-aqi-sub-bar"><span style="width:' + pct + '%;background:' + si.color + '"></span></span>' +
+      '</div>';
+    }).join("");
+
+    return '<div class="fc-aqi-card" style="border-top: 4px solid ' + info.color + '">' +
+      '<div class="fc-aqi-header">' +
+        '<div class="fc-aqi-day">' + dayName + '</div>' +
+        '<div class="fc-aqi-score" style="background:' + info.color + '">' + Math.round(d.aqi) + '<span class="fc-aqi-scale">US AQI</span></div>' +
+      '</div>' +
+      '<div class="fc-aqi-label" style="color:' + info.color + '">' + info.label + '</div>' +
+      '<div class="fc-aqi-subs">' + subRows + '</div>' +
+    '</div>';
+  }).join("");
+
+  container.innerHTML = cards;
 }
 
 function getActiveChips(date, cityElev, reg) {
@@ -3842,7 +3979,10 @@ async function setLanguage(lang) {
       document.getElementById("forecast-title").textContent = t("section.forecastNone");
     }
 
-    if (s.aq) renderAqi(s.aq);
+    if (s.aq) {
+      renderAqi(s.aq);
+      renderAqiForecast(s.aq, s.wx ? s.wx.daily : null);
+    }
     renderTierNotice(s.weatherTier);
     renderRegionsTab();
   }
