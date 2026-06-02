@@ -547,6 +547,12 @@
     line-height: var(--line-height-body-lg);
     color: var(--on-surface-variant);
     max-width: 480px;
+    margin-bottom: var(--space-xs);
+  }
+  .dash-updated {
+    font-size: var(--font-size-caption);
+    color: var(--on-surface-variant);
+    opacity: 0.7;
     margin-bottom: var(--space-md);
   }
   .dash-hero-actions {
@@ -1974,6 +1980,7 @@
       </div>
       <h1 class="dash-city-name" id="dash-city-name">Dushanbe | Pollen & Air Quality</h1>
       <p class="dash-recommendation" id="dash-recommendation"></p>
+      <div class="dash-updated" id="dash-updated" style="display:none"></div>
     </div>
     <div class="dash-gauge-wrap" id="dash-gauge">
       <svg viewBox="0 0 200 200">
@@ -3171,6 +3178,18 @@ function renderTierNotice(tier) {
   }
 }
 
+// ── Dashboard "last updated" timestamp ──
+var _dashWxTimestamp = null;
+var _dashUpdatedInterval = null;
+
+function updateDashTimestamp() {
+  var el = document.getElementById("dash-updated");
+  if (!el || !_dashWxTimestamp) { if (el) el.style.display = "none"; return; }
+  var mins = Math.floor((Date.now() - _dashWxTimestamp) / 60000);
+  el.textContent = mins < 1 ? t("dash.updatedJustNow") : t("dash.updatedMinAgo", { min: mins });
+  el.style.display = "";
+}
+
 // ── Fetch Data (3-tier fallback) ──
 var _fetchId = 0; // abort-and-replace: each call gets an incrementing ID
 async function fetchData() {
@@ -3278,6 +3297,16 @@ async function fetchData() {
         wxData = {temp: todayTemp, humidity: todayHumidity, wind: todayWind, precip: todayPrecip, wxCode: todayWxCode};
         wxFactor = weatherFactor(todayTemp, todayHumidity, todayWind, todayPrecip, todayWxCode);
       }
+      // Real-time override: if current observations are more suppressive than
+      // the period forecast (e.g. thunderstorm the forecast missed), use them
+      if (curWx && curWx.weather_code !== undefined) {
+        var curWxData = {temp: curWx.temperature_2m, humidity: curWx.relative_humidity_2m, wind: curWx.wind_speed_10m, precip: curWx.precipitation, wxCode: curWx.weather_code};
+        var curFactor = weatherFactor(curWxData.temp, curWxData.humidity, curWxData.wind, curWxData.precip, curWxData.wxCode);
+        if (curFactor < wxFactor) {
+          wxFactor = curFactor;
+          wxData = curWxData;
+        }
+      }
       var adjNow = adjustDateForElevation(now, cityElev);
       var treeBase = getSeasonalBase(TREE_SEASON, adjNow) * reg.tree;
       var grassBase = getSeasonalBase(GRASS_SEASON, adjNow) * reg.grass;
@@ -3364,6 +3393,11 @@ async function fetchData() {
     checkAndNotify(_notifRisk, _notifUv);
     _regionWxCache = null;
     if (document.getElementById('tab-regions').classList.contains('active')) renderRegionsTab();
+
+    _dashWxTimestamp = Date.now();
+    updateDashTimestamp();
+    if (_dashUpdatedInterval) clearInterval(_dashUpdatedInterval);
+    _dashUpdatedInterval = setInterval(updateDashTimestamp, 60000);
 
   } catch (e) {
     document.getElementById("results-skeleton").style.display = "none";
@@ -3945,6 +3979,14 @@ async function setLanguage(lang) {
         wxData = {temp: todayTemp, humidity: todayHumidity, wind: todayWind, precip: todayPrecip, wxCode: todayWxCode};
         wxFactor = weatherFactor(todayTemp, todayHumidity, todayWind, todayPrecip, todayWxCode);
       }
+      if (curWx && curWx.weather_code !== undefined) {
+        var curWxData = {temp: curWx.temperature_2m, humidity: curWx.relative_humidity_2m, wind: curWx.wind_speed_10m, precip: curWx.precipitation, wxCode: curWx.weather_code};
+        var curFactor = weatherFactor(curWxData.temp, curWxData.humidity, curWxData.wind, curWxData.precip, curWxData.wxCode);
+        if (curFactor < wxFactor) {
+          wxFactor = curFactor;
+          wxData = curWxData;
+        }
+      }
       var treeRisk = computeRisk(getSeasonalBase(TREE_SEASON, adjNow) * rg.tree, wxFactor);
       var grassRisk = computeRisk(getSeasonalBase(GRASS_SEASON, adjNow) * rg.grass, wxFactor);
       var weedRisk = computeRisk(getSeasonalBase(WEED_SEASON, adjNow) * rg.weed, wxFactor);
@@ -3984,6 +4026,7 @@ async function setLanguage(lang) {
       renderAqiForecast(s.aq, s.wx ? s.wx.daily : null);
     }
     renderTierNotice(s.weatherTier);
+    updateDashTimestamp();
     renderRegionsTab();
   }
 }
@@ -4685,6 +4728,10 @@ async function sharePollen() {
     var todayPrecip = daily.precipitation_sum[0];
     var todayWxCode = daily.weather_code[0];
     wxFactor = weatherFactor(todayTemp, todayHumidity, todayWind, todayPrecip, todayWxCode);
+    if (curWx && curWx.weather_code !== undefined) {
+      var curFactor = weatherFactor(curWx.temperature_2m, curWx.relative_humidity_2m, curWx.wind_speed_10m, curWx.precipitation, curWx.weather_code);
+      if (curFactor < wxFactor) wxFactor = curFactor;
+    }
   }
 
   var treeRisk = computeRisk(treeBase, wxFactor);
@@ -4775,6 +4822,19 @@ async function sharePollen() {
 
   // Auto-fetch pollen data for selected city
   fetchData();
+
+  // Auto-refresh: re-fetch every 15 minutes so data stays current
+  var AUTO_REFRESH_MS = 15 * 60 * 1000;
+  var STALE_TAB_MS = 5 * 60 * 1000;
+  setInterval(function() { fetchData(); }, AUTO_REFRESH_MS);
+
+  // Re-fetch when user returns to a tab that's been hidden for >5 min
+  document.addEventListener("visibilitychange", function() {
+    if (document.visibilityState === "visible" && _dashWxTimestamp &&
+        Date.now() - _dashWxTimestamp > STALE_TAB_MS) {
+      fetchData();
+    }
+  });
 })();
 
 // ── PWA ──

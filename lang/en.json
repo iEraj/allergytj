@@ -244,6 +244,8 @@
   "dash.dailyTip": "Daily Tip",
   "dash.nearbyRegions": "Nearby Regions",
   "dash.viewAll": "View All",
+  "dash.updatedJustNow": "Updated just now",
+  "dash.updatedMinAgo": "Updated {min} min ago",
   "regions.subtitle": "Pollen risk across Tajikistan",
   "regions.majorCities": "Major Cities",
   "regions.sortedByRisk": "Sorted by risk level",

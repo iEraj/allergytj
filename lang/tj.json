@@ -87,6 +87,8 @@
   "dash.dailyTip":"Маслиҳати рӯз",
   "dash.nearbyRegions":"Шаҳрҳои наздик",
   "dash.viewAll":"Ҳамаро дидан",
+  "dash.updatedJustNow":"Ҳозир нав шуд",
+  "dash.updatedMinAgo":"{min} дақиқа пеш нав шуд",
   "regions.subtitle":"Сатҳи чанги гул дар минтақаҳои Тоҷикистон",
   "regions.majorCities":"Шаҳрҳои калон",
   "regions.sortedByRisk":"Аз рӯи сатҳи хатар",

@@ -244,6 +244,8 @@
   "dash.dailyTip": "Совет дня",
   "dash.nearbyRegions": "Ближайшие города",
   "dash.viewAll": "Показать все",
+  "dash.updatedJustNow": "Обновлено только что",
+  "dash.updatedMinAgo": "Обновлено {min} мин назад",
   "regions.subtitle": "Уровень пыльцы по регионам Таджикистана",
   "regions.majorCities": "Крупные города",
   "regions.sortedByRisk": "По уровню риска",
