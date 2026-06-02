@@ -25,6 +25,7 @@ No pollen monitoring stations exist in Tajikistan. AllergyTJ fills the gap by es
 - **Zero config** — no API keys, no build step, no framework, no external fonts
 - **Trilingual** — English, Russian, and Tajik with browser auto-detection and URL-based language routing (`/en/`, `/ru/`, `/tj/`)
 - **PWA** — installable on mobile/desktop, offline support, service worker caching
+- **Auto-refresh** — weather data refreshes every 15 minutes and on returning to a stale tab; "Updated X min ago" timestamp on Dashboard
 - **3-tier weather fallback** — automatically switches to backup weather source (wttr.in) or seasonal-only mode if the primary API is down
 - **Dark mode** — toggle with OS preference detection, persisted across sessions
 - **SEO-ready** — Open Graph image, JSON-LD (WebApplication + FAQPage + BreadcrumbList), canonical URLs with language prefixes, robots.txt, sitemap.xml with language alternates, hreflang tags, brand-matched SVG favicon
