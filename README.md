@@ -28,7 +28,7 @@ No pollen monitoring stations exist in Tajikistan. AllergyTJ fills the gap by es
 - **Auto-refresh** — weather data refreshes every 15 minutes and on returning to a stale tab; "Updated X min ago" timestamp on Dashboard
 - **3-tier weather fallback** — automatically switches to backup weather source (wttr.in) or seasonal-only mode if the primary API is down
 - **Dark mode** — toggle with OS preference detection, persisted across sessions
-- **SEO-ready** — Open Graph image, JSON-LD (WebApplication + FAQPage + BreadcrumbList), canonical URLs with language prefixes, robots.txt, sitemap.xml with language alternates, hreflang tags, brand-matched SVG favicon
+- **SEO-ready** — Open Graph image, JSON-LD (WebApplication + FAQPage + BreadcrumbList), canonical URLs with language prefixes, geo meta tags, dynamic page title per city, translation preload hints, robots.txt, sitemap.xml with language alternates, hreflang tags, brand-matched SVG favicon
 - **Accessible** — WCAG AA color contrast, semantic HTML landmarks, ARIA labels
 - **Share button** — share current pollen conditions via native share or clipboard copy
 
