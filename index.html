@@ -165,6 +165,14 @@
         "@type": "Answer",
         "text": "In Tajikistan and Central Asia, the most common seasonal allergies are caused by poplar and cottonwood pollen (March–May), grasses (May–July), and mugwort/Artemisia (July–September). Poplar trees line most urban streets in Dushanbe and other cities. Chenopod (goosefoot) is also significant in agricultural lowlands like Khatlon. Desert dust can worsen symptoms year-round."
       }
+    },
+    {
+      "@type": "Question",
+      "name": "How does AllergyTJ calculate and display air quality data?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "AllergyTJ uses AQI data from the Copernicus Atmosphere Monitoring Service (CAMS), a satellite-based atmospheric model with 45 km grid resolution updated every 12 hours — Tajikistan has no public ground-based air quality sensors. The composite US AQI shown is the highest sub-index across six pollutants (PM2.5, PM10, O₃, NO₂, SO₂, CO). PM2.5 concentration is compared against the WHO 2021 annual guideline (5 µg/m³) to show how many times it exceeds the health benchmark. Because CAMS models a city-wide average, a 'City estimate' range applies a 1.5–2× multiplier to approximate street-level conditions near traffic and construction."
+      }
     }
   ]
 }
@@ -1150,6 +1158,59 @@
   .aqi-row .pol-bar-fill { height: 100%; border-radius: 3px; }
   .aqi-disclaimer { margin-top: 12px; padding: 8px 10px; font-size: 0.72rem; color: var(--muted); background: var(--surface-container); border-radius: var(--radius-sm); line-height: 1.4; }
 
+  /* ── WHO Comparison Badge ── */
+  .aqi-who-badge { display: flex; align-items: center; gap: 6px; margin-top: 8px; padding: 6px 10px; font-size: 0.78rem; font-weight: 600; color: #b71c1c; background: #fde8e8; border-radius: var(--radius-sm); }
+  [data-theme="dark"] .aqi-who-badge { color: #ef9a9a; background: rgba(183, 28, 28, 0.15); }
+  .aqi-who-badge.aqi-who-ok { color: #1b5e20; background: #e8f5e9; }
+  [data-theme="dark"] .aqi-who-badge.aqi-who-ok { color: #a5d6a7; background: rgba(27, 94, 32, 0.15); }
+  .aqi-who-badge .icon { width: 16px; height: 16px; flex-shrink: 0; }
+
+  /* ── AQI Health Context ── */
+  .aqi-health-context { margin-top: 12px; padding: 12px; border-radius: var(--radius-md); font-size: 0.8rem; line-height: 1.5; border-left: 4px solid; }
+  .aqi-health-tier-0 { border-color: #1b5e20; background: rgba(27, 94, 32, 0.06); }
+  .aqi-health-tier-1 { border-color: #8c6d00; background: rgba(140, 109, 0, 0.06); }
+  .aqi-health-tier-2 { border-color: #bf360c; background: rgba(191, 54, 12, 0.06); }
+  .aqi-health-tier-3 { border-color: #b71c1c; background: rgba(183, 28, 28, 0.06); }
+  .aqi-health-tier-4 { border-color: #4a148c; background: rgba(74, 20, 140, 0.08); }
+  [data-theme="dark"] .aqi-health-tier-0 { background: rgba(27, 94, 32, 0.12); }
+  [data-theme="dark"] .aqi-health-tier-1 { background: rgba(140, 109, 0, 0.12); }
+  [data-theme="dark"] .aqi-health-tier-2 { background: rgba(191, 54, 12, 0.12); }
+  [data-theme="dark"] .aqi-health-tier-3 { background: rgba(183, 28, 28, 0.12); }
+  [data-theme="dark"] .aqi-health-tier-4 { background: rgba(74, 20, 140, 0.15); }
+  .aqi-health-general { margin-bottom: 6px; }
+  .aqi-health-vulnerable { display: flex; align-items: flex-start; gap: 6px; color: var(--on-surface-variant, var(--muted)); font-size: 0.78rem; }
+  .aqi-health-vulnerable .icon { width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; }
+  .aqi-health-actions { margin: 8px 0 0 20px; padding: 0; font-size: 0.76rem; color: var(--text-secondary, var(--muted)); }
+  .aqi-health-actions li { margin-bottom: 4px; }
+
+  /* ── Dust Awareness Note ── */
+  .aqi-dust-note { display: flex; align-items: flex-start; gap: 8px; margin-top: 10px; padding: 8px 12px; font-size: 0.76rem; color: #795548; background: #efebe9; border-radius: var(--radius-sm); line-height: 1.4; }
+  [data-theme="dark"] .aqi-dust-note { color: #bcaaa4; background: rgba(121, 85, 72, 0.15); }
+  .aqi-dust-note .icon { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── AQI Action Card ── */
+  .aqi-action-card { margin-top: 12px; padding: 12px; border-radius: var(--radius-md); border-left: 4px solid; }
+  .aqi-action-tier-1 { border-color: #8c6d00; background: rgba(140, 109, 0, 0.06); }
+  .aqi-action-tier-2 { border-color: #bf360c; background: rgba(191, 54, 12, 0.06); }
+  .aqi-action-tier-3 { border-color: #b71c1c; background: rgba(183, 28, 28, 0.06); }
+  .aqi-action-tier-4 { border-color: #4a148c; background: rgba(74, 20, 140, 0.08); }
+  [data-theme="dark"] .aqi-action-tier-1 { background: rgba(140, 109, 0, 0.12); }
+  [data-theme="dark"] .aqi-action-tier-2 { background: rgba(191, 54, 12, 0.12); }
+  [data-theme="dark"] .aqi-action-tier-3 { background: rgba(183, 28, 28, 0.12); }
+  [data-theme="dark"] .aqi-action-tier-4 { background: rgba(74, 20, 140, 0.15); }
+  .aqi-action-title { display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.82rem; margin-bottom: 8px; }
+  .aqi-action-title .icon { width: 18px; height: 18px; }
+  .aqi-action-list { margin: 0 0 0 20px; padding: 0; font-size: 0.78rem; line-height: 1.6; }
+
+  /* ── AQI Safety Banner ── */
+  .aqi-safety-banner { display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-md); border-radius: var(--radius-md); margin-bottom: var(--space-md); font-size: var(--font-size-body-sm); }
+  .aqi-safety-banner .icon { flex-shrink: 0; }
+  .aqi-safety-banner-content { flex: 1; }
+  .aqi-safety-banner-content strong { display: block; margin-bottom: 2px; }
+  .aqi-banner-unhealthy { background: var(--error-container, #fde8e8); color: var(--on-error-container, #c62828); }
+  .aqi-banner-veryUnhealthy { background: #4a148c; color: #e1bee7; }
+  .aqi-banner-hazardous { background: #880e4f; color: #f8bbd0; }
+
   /* ── Active Now Hero ── */
   .active-now { margin-bottom: var(--space-lg); }
   .active-now-grid {
@@ -1297,6 +1358,8 @@
   .knowledge-card-body li { margin: 3px 0; }
   .knowledge-card-body strong { color: var(--text); font-weight: 600; }
   .knowledge-card.card-wide { grid-column: 1 / -1; }
+  .aqi-method-ref { margin-top: 10px; font-size: 0.74rem; color: var(--muted); }
+  .aqi-method-ref a { color: var(--primary); text-decoration: underline; }
 
   /* Legacy calendar classes (kept for hidden fallback) */
   .calendar { display: none; }
@@ -2071,6 +2134,13 @@
   </div>
 
   <!-- Air Quality -->
+  <div class="aqi-safety-banner" id="aqi-safety-banner" style="display:none;">
+    <span class="icon">alert_triangle</span>
+    <div class="aqi-safety-banner-content">
+      <strong id="aqi-banner-title"></strong>
+      <span id="aqi-banner-text"></span>
+    </div>
+  </div>
   <h2 class="section-title" data-i18n="section.airQuality">Air Quality</h2>
   <div class="aqi-card" id="aqi-card"></div>
 
@@ -2329,6 +2399,24 @@
           <li data-i18n="about.uv.veryHigh">Very High (8–10): avoid midday sun exposure</li>
           <li data-i18n="about.uv.extreme">Extreme (11+): take all precautions</li>
         </ul>
+      </div>
+    </div>
+
+    <!-- Full-width: AQI methodology deep-dive -->
+    <div class="knowledge-card card-wide">
+      <div class="knowledge-card-header">
+        <div class="knowledge-card-icon"><span class="icon">trending_up</span></div>
+        <div class="knowledge-card-title" data-i18n="about.methodTitle">How AQI Data Works</div>
+      </div>
+      <div class="knowledge-card-body">
+        <p data-i18n="about.methodIntro">The Air Quality Index (AQI) on this dashboard is computed from satellite data. Here is how each number is derived.</p>
+        <ul>
+          <li data-i18n="about.methodSource">All readings come from CAMS (Copernicus Atmosphere Monitoring Service), a satellite-based atmospheric model operated by the European Union. It divides the globe into 45 km grid cells and updates every 12 hours. As of 2026, Tajikistan has no public ground-based air quality sensors.</li>
+          <li data-i18n="about.methodComposite">The composite US AQI score equals the highest sub-index among six pollutants: fine particles (PM2.5), coarse particles (PM10), ground-level ozone (O₃), nitrogen dioxide (NO₂), sulfur dioxide (SO₂), and carbon monoxide (CO). If any single pollutant is elevated, it determines the overall score.</li>
+          <li data-i18n="about.methodWho">The WHO badge divides the current PM2.5 concentration by 5 µg/m³, the World Health Organization's recommended annual limit for fine particulate matter. For example, a reading of 13.7 µg/m³ gives 2.7× above the guideline (13.7 ÷ 5 = 2.74).</li>
+          <li data-i18n="about.methodUrban">CAMS reports a regional average across its 45 km grid cell, which smooths out local variation. Street-level pollution near roads and construction sites is typically 1.5 to 2 times higher. The "City estimate" range applies this multiplier to better approximate actual urban exposure.</li>
+        </ul>
+        <p class="aqi-method-ref"><span data-i18n="about.methodRef">Reference:</span> <a href="https://www.who.int/publications/i/item/9789240034228" target="_blank" rel="noopener" data-i18n="about.methodWhoLink">WHO Global Air Quality Guidelines (2021)</a></p>
       </div>
     </div>
 
@@ -2997,7 +3085,83 @@ function wxDescription(code) {
 function aqiInfo(aqi) {
   var idx = aqi <= 50 ? 0 : aqi <= 100 ? 1 : aqi <= 150 ? 2 : aqi <= 200 ? 3 : 4;
   var colors = ["#1b5e20", "#8c6d00", "#bf360c", "#b71c1c", "#4a148c"];
-  return { label: t("aqi." + idx + ".label"), color: colors[idx], desc: t("aqi." + idx + ".desc") };
+  return { label: t("aqi." + idx + ".label"), color: colors[idx], desc: t("aqi." + idx + ".desc"), idx: idx };
+}
+
+function whoComparisonHtml(pm25) {
+  if (pm25 == null) return '';
+  var WHO_ANNUAL = 5;
+  if (pm25 < WHO_ANNUAL) {
+    return '<div class="aqi-who-badge aqi-who-ok">' + mIcon('check_circle') + ' ' + t("aqi.who.withinGuideline") + '</div>';
+  }
+  var x = Math.round(pm25 / WHO_ANNUAL * 10) / 10;
+  return '<div class="aqi-who-badge">' + mIcon('alert_triangle') + ' ' + t("aqi.who.above", { x: x }) + '</div>';
+}
+
+function aqiHealthContextHtml(idx) {
+  var general = t("aqi.health." + idx + ".general");
+  if (!general || general === "aqi.health." + idx + ".general") return '';
+  var html = '<div class="aqi-health-context aqi-health-tier-' + idx + '"><div class="aqi-health-general">' + general + '</div>';
+  var vulnerable = t("aqi.health." + idx + ".vulnerable");
+  if (vulnerable && vulnerable !== "aqi.health." + idx + ".vulnerable") {
+    html += '<div class="aqi-health-vulnerable">' + mIcon('info') + '<span>' + vulnerable + '</span></div>';
+    var actions = [];
+    for (var i = 1; i <= 3; i++) {
+      var a = t("aqi.health." + idx + ".action" + i);
+      if (a && a !== "aqi.health." + idx + ".action" + i) actions.push('<li>' + a + '</li>');
+    }
+    if (actions.length) html += '<ul class="aqi-health-actions">' + actions.join('') + '</ul>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function aqiActionCardHtml(aqi) {
+  if (aqi == null || aqi <= 100) return '';
+  var tier, actions = [];
+  actions.push(t("aqi.action.reduce"));
+  if (aqi > 300) {
+    tier = 4;
+    actions.push(t("aqi.action.stayIndoors"));
+    actions.push(t("aqi.action.windows"));
+    actions.push(t("aqi.action.mask"));
+    actions.push(t("aqi.action.purifier"));
+    actions.push(t("aqi.action.emergency"));
+  } else if (aqi > 200) {
+    tier = 3;
+    actions.push(t("aqi.action.stayIndoors"));
+    actions.push(t("aqi.action.windows"));
+    actions.push(t("aqi.action.mask"));
+    actions.push(t("aqi.action.purifier"));
+  } else if (aqi > 150) {
+    tier = 2;
+    actions.push(t("aqi.action.sensitive"));
+    actions.push(t("aqi.action.windows"));
+  } else {
+    tier = 1;
+  }
+  var items = actions.map(function(a) { return '<li>' + a + '</li>'; }).join('');
+  return '<div class="aqi-action-card aqi-action-tier-' + tier + '">' +
+    '<div class="aqi-action-title">' + mIcon('health_and_safety') + ' ' + t("aqi.action.title") + '</div>' +
+    '<ol class="aqi-action-list">' + items + '</ol></div>';
+}
+
+function renderAqiSafetyBanner(aq) {
+  var banner = document.getElementById("aqi-safety-banner");
+  if (!banner) return;
+  var aqi = aq && aq.current ? aq.current.us_aqi : null;
+  if (aqi == null || aqi <= 150) {
+    banner.style.display = 'none';
+    return;
+  }
+  var tier;
+  if (aqi > 300) tier = 'hazardous';
+  else if (aqi > 200) tier = 'veryUnhealthy';
+  else tier = 'unhealthy';
+  banner.className = 'aqi-safety-banner aqi-banner-' + tier;
+  document.getElementById("aqi-banner-title").textContent = t("aqi.banner." + tier + ".title");
+  document.getElementById("aqi-banner-text").textContent = t("aqi.banner." + tier + ".text");
+  banner.style.display = 'flex';
 }
 
 // ── Fetch with timeout (AbortController) ──
@@ -3368,8 +3532,10 @@ async function fetchData() {
     if (aq) {
       renderAqi(aq);
       renderAqiForecast(aq, daily);
+      renderAqiSafetyBanner(aq);
     } else {
       document.getElementById("aqi-card").innerHTML = '<div style="color:var(--muted)">' + t("aqi.unavailable") + '</div>';
+      renderAqiSafetyBanner(null);
       document.getElementById("forecast-aqi-cards").innerHTML = '';
     }
 
@@ -3390,7 +3556,7 @@ async function fetchData() {
     document.getElementById("results").style.display = "block";
     document.getElementById("share-btn").disabled = false;
     status.textContent = "";
-    checkAndNotify(_notifRisk, _notifUv);
+    checkAndNotify(_notifRisk, _notifUv, aq);
     _regionWxCache = null;
     if (document.getElementById('tab-regions').classList.contains('active')) renderRegionsTab();
 
@@ -3570,6 +3736,10 @@ function renderAqi(aq) {
   var urbanHigh = Math.round(aqi * 2);
   var urbanInfo = aqiInfo(urbanHigh);
 
+  var dustNote = (dominant && dominant.key === 'pm10')
+    ? '<div class="aqi-dust-note">' + mIcon('air') + '<span>' + t("aqi.dustNote") + '</span></div>'
+    : '';
+
   card.innerHTML =
     '<div class="aqi-summary">' +
       '<div class="aqi-circle" style="background:' + info.color + '">' +
@@ -3581,9 +3751,13 @@ function renderAqi(aq) {
         '<div class="aqi-desc">' + info.desc + '</div>' +
         '<div class="aqi-urban-range">' + t("aqi.urbanRange", { low: urbanLow, high: urbanHigh }) + ' <span style="color:' + urbanInfo.color + '">' + urbanInfo.label + '</span></div>' +
         (dominant ? '<div class="aqi-dominant-label">' + t("aqi.dominant") + ': <strong>' + t("aqi.pol." + dominant.key) + '</strong></div>' : '') +
+        whoComparisonHtml(cur.pm2_5) +
       '</div>' +
     '</div>' +
     '<div class="aqi-breakdown">' + rows + '</div>' +
+    aqiHealthContextHtml(info.idx) +
+    aqiActionCardHtml(aqi) +
+    dustNote +
     '<div class="aqi-disclaimer">' + t("aqi.disclaimer") + '</div>';
 }
 
@@ -4024,6 +4198,7 @@ async function setLanguage(lang) {
     if (s.aq) {
       renderAqi(s.aq);
       renderAqiForecast(s.aq, s.wx ? s.wx.daily : null);
+      renderAqiSafetyBanner(s.aq);
     }
     renderTierNotice(s.weatherTier);
     updateDashTimestamp();
@@ -4069,6 +4244,7 @@ function defaultNotifPrefs() {
     enabled: true,
     pollenAlerts: { highRisk: true, extremeRisk: true, allergens: ['tree','grass','weed'] },
     weatherAlerts: { uvWarning: true },
+    aqiAlerts: { unhealthy: true, veryUnhealthy: true, hazardous: true },
     quietHours: { enabled: true, from: '22:00', to: '07:00' },
     lastNotified: null
   };
@@ -4131,6 +4307,15 @@ function renderNotificationSettings() {
   html += makeToggleRow('notif-uv', t('notif.uvWarning'), prefs.weatherAlerts.uvWarning);
   html += '</div>';
 
+  // Air Quality Alerts
+  var aqiPrefs = prefs.aqiAlerts || defaultNotifPrefs().aqiAlerts;
+  html += '<div class="notif-section">';
+  html += '<div class="notif-section-title">' + mIcon('air') + ' ' + t('notif.aqiAlerts') + '</div>';
+  html += makeToggleRow('notif-aqi-unhealthy', t('notif.aqiUnhealthy'), aqiPrefs.unhealthy);
+  html += makeToggleRow('notif-aqi-veryunhealthy', t('notif.aqiVeryUnhealthy'), aqiPrefs.veryUnhealthy);
+  html += makeToggleRow('notif-aqi-hazardous', t('notif.aqiHazardous'), aqiPrefs.hazardous);
+  html += '</div>';
+
   // Quiet Hours
   html += '<div class="notif-section">';
   html += '<div class="notif-section-title">' + mIcon('schedule') + ' ' + t('notif.quietHours') + '</div>';
@@ -4171,6 +4356,11 @@ function saveNotificationPrefs() {
     weatherAlerts: {
       uvWarning: document.getElementById('notif-uv').checked
     },
+    aqiAlerts: {
+      unhealthy: document.getElementById('notif-aqi-unhealthy').checked,
+      veryUnhealthy: document.getElementById('notif-aqi-veryunhealthy').checked,
+      hazardous: document.getElementById('notif-aqi-hazardous').checked
+    },
     quietHours: {
       enabled: document.getElementById('notif-quiet').checked,
       from: document.getElementById('notif-quiet-from').value || '22:00',
@@ -4196,6 +4386,10 @@ function showNotifConfirmation(prefs) {
   if (prefs.pollenAlerts.highRisk) summary.push(t('notif.highRisk'));
   if (prefs.pollenAlerts.extremeRisk) summary.push(t('notif.extremeRisk'));
   if (prefs.weatherAlerts.uvWarning) summary.push(t('notif.uvWarning'));
+  var aqiP = prefs.aqiAlerts || {};
+  if (aqiP.unhealthy) summary.push(t('notif.aqiUnhealthy'));
+  if (aqiP.veryUnhealthy) summary.push(t('notif.aqiVeryUnhealthy'));
+  if (aqiP.hazardous) summary.push(t('notif.aqiHazardous'));
 
   var permState = typeof Notification !== 'undefined' ? Notification.permission : 'unsupported';
   var permNote = '';
@@ -4228,7 +4422,7 @@ function isQuietHours(prefs) {
   return curMin >= fromMin && curMin < toMin;
 }
 
-function checkAndNotify(overallRisk, uvVal) {
+function checkAndNotify(overallRisk, uvVal, aqData) {
   var prefs = getNotifPrefs();
   if (!prefs || !prefs.enabled) return;
   if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
@@ -4255,6 +4449,24 @@ function checkAndNotify(overallRisk, uvVal) {
     shouldNotify = true;
     title = t('notif.alert.uvTitle');
     msg = t('notif.alert.uvBody');
+  }
+
+  if (!shouldNotify && aqData && aqData.current && aqData.current.us_aqi != null) {
+    var aqiAlerts = prefs.aqiAlerts || {};
+    var currentAqi = aqData.current.us_aqi;
+    if (aqiAlerts.hazardous && currentAqi > 300) {
+      shouldNotify = true;
+      title = t('notif.alert.aqiHazardousTitle');
+      msg = t('notif.alert.aqiHazardousBody');
+    } else if (aqiAlerts.veryUnhealthy && currentAqi > 200) {
+      shouldNotify = true;
+      title = t('notif.alert.aqiVeryUnhealthyTitle');
+      msg = t('notif.alert.aqiVeryUnhealthyBody');
+    } else if (aqiAlerts.unhealthy && currentAqi > 150) {
+      shouldNotify = true;
+      title = t('notif.alert.aqiUnhealthyTitle');
+      msg = t('notif.alert.aqiUnhealthyBody');
+    }
   }
 
   if (!shouldNotify) return;
