@@ -4,7 +4,7 @@
 
 No pollen monitoring stations exist in Tajikistan. AllergyTJ fills the gap by estimating pollen risk from curated botanical data and real-time weather conditions.
 
-**Live**: [allergytj.vercel.app](https://allergytj.vercel.app)
+**Live**: [allergy.tj](https://allergy.tj)
 
 ---
 

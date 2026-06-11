@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://allergytj.vercel.app/sitemap.xml
+Sitemap: https://allergy.tj/sitemap.xml

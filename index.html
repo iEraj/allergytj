@@ -8,11 +8,11 @@
 <meta name="keywords" id="meta-keywords" content="pollen, allergy, Tajikistan, allergy Dushanbe, pollen forecast, air quality, AQI, air quality Dushanbe, air quality index Dushanbe, AQI Dushanbe, AQI Tajikistan, air pollution Dushanbe, air pollution Tajikistan, air quality Khujand, AQI Khujand, air quality Bokhtar, air quality Kulob, air quality Khorog, PM2.5 Tajikistan, seasonal allergy, hay fever, pollen risk, allergy tracker, cross-reactivity, oral allergy syndrome, UV index, hourly pollen forecast, regional pollen, PWA, offline allergy tracker, Dushanbe, Khujand, Bokhtar, Kulob, Khorog, poplar pollen, mugwort, Central Asia, allergy Central Asia, pollen Central Asia">
 <meta name="author" content="Eraj Ismatulloev">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
-<link rel="canonical" href="https://allergytj.vercel.app/en/">
-<link rel="alternate" hreflang="en" href="https://allergytj.vercel.app/en/">
-<link rel="alternate" hreflang="ru" href="https://allergytj.vercel.app/ru/">
-<link rel="alternate" hreflang="tg" href="https://allergytj.vercel.app/tj/">
-<link rel="alternate" hreflang="x-default" href="https://allergytj.vercel.app/">
+<link rel="canonical" href="https://allergy.tj/en/">
+<link rel="alternate" hreflang="en" href="https://allergy.tj/en/">
+<link rel="alternate" hreflang="ru" href="https://allergy.tj/ru/">
+<link rel="alternate" hreflang="tg" href="https://allergy.tj/tj/">
+<link rel="alternate" hreflang="x-default" href="https://allergy.tj/">
 <script>!function(){var m=location.pathname.match(/^\/(en|ru|tj)(\/|$)/),b=(navigator.language||"").slice(0,2),l=m?m[1]:localStorage.getItem("allergytj-lang")||(b==="ru"?"ru":b==="tg"||b==="tj"?"tj":"en"),k=document.createElement("link");k.rel="preload";k.as="fetch";k.crossOrigin="anonymous";k.href="/lang/"+l+".json";document.head.appendChild(k)}()</script>
 <link rel="preconnect" href="https://api.open-meteo.com" crossorigin>
 <link rel="preconnect" href="https://air-quality-api.open-meteo.com" crossorigin>
@@ -20,13 +20,13 @@
 <link rel="dns-prefetch" href="https://air-quality-api.open-meteo.com">
 <meta property="og:site_name" content="AllergyTJ">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://allergytj.vercel.app/en/">
+<meta property="og:url" content="https://allergy.tj/en/">
 <meta property="og:title" id="og-title" content="AllergyTJ — Pollen & Air Quality Tracker for Tajikistan">
 <meta property="og:description" id="og-desc" content="Live pollen risk and air quality for 30 cities in Tajikistan — AQI, PM2.5, hourly forecast, 5-day outlook. Dushanbe, Khujand, Bokhtar and more.">
 <meta property="og:locale" content="en">
 <meta property="og:locale:alternate" content="ru">
 <meta property="og:locale:alternate" content="tg">
-<meta property="og:image" content="https://allergytj.vercel.app/og-image.png">
+<meta property="og:image" content="https://allergy.tj/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="image/png">
@@ -34,7 +34,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" id="twitter-title" content="AllergyTJ — Pollen & Air Quality Tracker for Tajikistan">
 <meta name="twitter:description" id="twitter-desc" content="Live pollen risk and air quality for 30 cities in Tajikistan — AQI, PM2.5, hourly forecast, 5-day outlook. Dushanbe, Khujand, Bokhtar and more.">
-<meta name="twitter:image" content="https://allergytj.vercel.app/og-image.png">
+<meta name="twitter:image" content="https://allergy.tj/og-image.png">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='bg' x1='0' y1='0' x2='0.3' y2='1'><stop offset='0%25' stop-color='%230f5238'/><stop offset='100%25' stop-color='%231a3a2a'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23bg)'/><g transform='translate(6,12) scale(3.6)' fill='none' stroke='%23a8e7c5' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z' fill='%23a8e7c5' fill-opacity='0.25'/><path d='M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12'/></g><text x='58' y='82' font-family='system-ui,sans-serif' font-weight='800' font-size='52' fill='%23ffffff' text-anchor='middle'>A</text></svg>">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#1a3a2a" media="(prefers-color-scheme: light)">
@@ -55,14 +55,14 @@
   "@context": "https://schema.org",
   "@type": "WebApplication",
   "name": "AllergyTJ",
-  "url": "https://allergytj.vercel.app",
+  "url": "https://allergy.tj",
   "description": "Pollen risk tracker for Tajikistan — live forecast, air quality, hourly breakdown, and 5-day outlook for 30 cities. Cross-reactivity guide, regional profiles, trilingual. Free PWA, works offline.",
   "applicationCategory": "HealthApplication",
   "applicationSubCategory": "Allergy Tracker",
   "operatingSystem": "Any",
   "browserRequirements": "Requires JavaScript. Works in all modern browsers.",
   "softwareVersion": "2.0",
-  "dateModified": "2026-05-31",
+  "dateModified": "2026-06-11",
   "featureList": "Live pollen risk estimation, 5-day forecast, Air quality (US AQI with 6 pollutants), Hourly risk breakdown, Cross-reactivity guide (Oral Allergy Syndrome), Regional pollen profiles (5 vegetation zones), Elevation-adjusted bloom timing, 30 cities across Tajikistan, Trilingual (English/Russian/Tajik), Dark mode, PWA with offline support, UV index tracking",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "inLanguage": ["en", "ru", "tg"],
@@ -187,8 +187,8 @@
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "AllergyTJ", "item": "https://allergytj.vercel.app/" },
-    { "@type": "ListItem", "position": 2, "name": "Dashboard", "item": "https://allergytj.vercel.app/#dashboard" }
+    { "@type": "ListItem", "position": 1, "name": "AllergyTJ", "item": "https://allergy.tj/" },
+    { "@type": "ListItem", "position": 2, "name": "Dashboard", "item": "https://allergy.tj/#dashboard" }
   ]
 }
 </script>
@@ -2755,8 +2755,8 @@ function renderNearbyRegions(cityIndex, now) {
   document.getElementById("dash-nearby").innerHTML = html;
 }
 
-// ── Base URL for SEO tags (change to "https://allergy.tj" when domain is ready) ──
-var SITE_BASE = "https://allergytj.vercel.app";
+// ── Base URL for SEO tags ──
+var SITE_BASE = "https://allergy.tj";
 
 // ── i18n: Language detection and translation loading ──
 var _pathLang = (function() {
