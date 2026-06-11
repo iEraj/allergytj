@@ -11,7 +11,7 @@ No pollen monitoring stations exist in Tajikistan. AllergyTJ fills the gap by es
 ## Features
 
 - **30 cities** across all regions of Tajikistan
-- **4-tab app** — Dashboard, Forecast, Regions, Insights with hash-based routing
+- **4-tab app** — Dashboard, Forecast, Regions, Insights with clean path-based routing (`/en/forecast`, `/ru/regions`, `/insights`)
 - **Dashboard** — circular SVG risk gauge, context-aware weather recommendations, hero weather block, top allergen triggers with severity bars, live AQI card with pollutant breakdown, daily health tip, nearby regions strip
 - **Pollen risk estimation** — combines seasonal pollen calendar with real-time weather (temperature, humidity, wind, precipitation)
 - **5-day forecast** — daily pollen risk outlook with allergen chips, trend chart, and contextual insight tips
@@ -29,6 +29,7 @@ No pollen monitoring stations exist in Tajikistan. AllergyTJ fills the gap by es
 - **3-tier weather fallback** — automatically switches to backup weather source (wttr.in) or seasonal-only mode if the primary API is down
 - **Dark mode** — toggle with OS preference detection, persisted across sessions
 - **SEO-ready** — Open Graph image, JSON-LD (WebApplication + FAQPage + BreadcrumbList), canonical URLs with language prefixes, geo meta tags, dynamic page title per city, translation preload hints, robots.txt, sitemap.xml with language alternates, hreflang tags, brand-matched SVG favicon
+- **Secure** — A+ Mozilla HTTP Observatory; strict CSP with SHA-256 script hashes, HSTS preload, zero inline event handlers
 - **Accessible** — WCAG AA color contrast, semantic HTML landmarks, ARIA labels
 - **Share button** — share current pollen conditions via native share or clipboard copy
 
@@ -61,11 +62,12 @@ Open `index.html` directly in a browser. City selection works immediately; GPS r
 
 ```
 AllergyTJ/
-├── index.html          # Entire frontend (HTML + CSS + JS) — the app
+├── index.html          # Frontend structure (HTML + CSS + structured data)
+├── app.js              # All application JavaScript (rendering, routing, API calls)
 ├── sw.js               # Service worker (PWA caching, offline support)
 ├── manifest.json       # PWA manifest (app identity, icons, display mode)
 ├── lang/
-│   ├── en.json         # English translations (~320 keys)
+│   ├── en.json         # English translations (~402 keys)
 │   ├── ru.json         # Russian translations
 │   └── tj.json         # Tajik translations
 ├── icons/              # PWA icons (10 PNGs + 1 master SVG)
@@ -97,11 +99,11 @@ Configuration is in `vercel.json`:
 - Static output from repo root
 - Language routing rewrites (`/en/*`, `/ru/*`, `/tj/*` → `index.html`)
 - SPA rewrite (all remaining routes serve `index.html`)
-- Security headers (CSP, HSTS, X-Frame-Options, etc.)
+- Security headers (CSP A+ with SHA-256 hashes, HSTS preload, X-Frame-Options, etc.)
 
 ### Manual / other hosting
 
-Copy `index.html` to any static file server. Requirements:
+Copy `index.html` and `app.js` to any static file server. Requirements:
 - Outbound HTTPS to `api.open-meteo.com`, `air-quality-api.open-meteo.com`, and `wttr.in`
 - HTTPS for GPS geolocation (optional but recommended)
 
@@ -116,7 +118,7 @@ Copy `index.html` to any static file server. Requirements:
 
 ## Tech Stack
 
-- **Frontend**: Vanilla HTML + CSS + JS (single file, zero dependencies)
+- **Frontend**: Vanilla HTML + CSS + JS (two files, zero dependencies)
 - **Local dev**: Python / Flask
 - **Hosting**: Vercel (static)
 - **APIs**: Open-Meteo (free, no key)
