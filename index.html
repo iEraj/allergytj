@@ -176,7 +176,7 @@
       "name": "How does AllergyTJ calculate and display air quality data?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "AllergyTJ uses AQI data from the Copernicus Atmosphere Monitoring Service (CAMS), a satellite-based atmospheric model with 45 km grid resolution updated every 12 hours — Tajikistan has no public ground-based air quality sensors. The composite US AQI shown is the highest sub-index across six pollutants (PM2.5, PM10, O₃, NO₂, SO₂, CO). PM2.5 is compared against the WHO 2021 24-hour guideline (15 µg/m³) and annual target (5 µg/m³). Most of Central Asia exceeds the annual target year-round due to regional dust and arid climate. Because CAMS models a regional average across 45 km grid cells, a street-level estimate range (1.5–2×) provides context for likely urban exposure near traffic and construction — this is not a measured value."
+        "text": "AllergyTJ uses AQI data from the Copernicus Atmosphere Monitoring Service (CAMS), a satellite-based atmospheric model with 45 km grid resolution updated every 12 hours — Tajikistan has no public ground-based air quality sensors. The composite US AQI shown is the highest sub-index across six pollutants (PM2.5, PM10, O₃, NO₂, SO₂, CO). PM2.5 is compared against the WHO 2021 24-hour guideline (15 µg/m³) and annual target (5 µg/m³). Most of Central Asia exceeds the annual target year-round due to regional dust and arid climate. Because CAMS models a regional average across 45 km grid cells, street-level air quality near roads and construction can be significantly worse than the satellite estimate."
       }
     }
   ]
@@ -2421,7 +2421,7 @@
           <li data-i18n="about.methodSource">All readings come from CAMS (Copernicus Atmosphere Monitoring Service), a satellite-based atmospheric model operated by the European Union. It divides the globe into 45 km grid cells and updates every 12 hours. As of 2026, Tajikistan has no public ground-based air quality sensors.</li>
           <li data-i18n="about.methodComposite">The composite US AQI score equals the highest sub-index among six pollutants: fine particles (PM2.5), coarse particles (PM10), ground-level ozone (O₃), nitrogen dioxide (NO₂), sulfur dioxide (SO₂), and carbon monoxide (CO). If any single pollutant is elevated, it determines the overall score.</li>
           <li data-i18n="about.methodWho">The WHO badge compares PM2.5 against two thresholds: the 24-hour guideline (15 µg/m³, the relevant standard for a current reading) and the annual target (5 µg/m³, a long-term exposure goal). Most of Central Asia exceeds the annual target year-round due to regional dust and arid climate.</li>
-          <li data-i18n="about.methodUrban">CAMS reports a regional average across its 45 km grid cell, which smooths out local variation. Street-level pollution near roads and construction sites is typically 1.5 to 2 times higher. The "Street-level estimate" range applies this multiplier as context — it is not a measured value.</li>
+          <li data-i18n="about.methodUrban">CAMS reports a regional average across its 45 km grid cell, which smooths out local variation. Street-level pollution near roads and construction sites can be significantly higher than the satellite value, especially in dense urban areas with heavy traffic.</li>
         </ul>
         <p class="aqi-method-ref"><span data-i18n="about.methodRef">Reference:</span> <a href="https://www.who.int/publications/i/item/9789240034228" target="_blank" rel="noopener" data-i18n="about.methodWhoLink">WHO Global Air Quality Guidelines (2021)</a></p>
       </div>
@@ -3780,9 +3780,6 @@ function renderAqi(aq) {
     '</div>';
   }).join("");
 
-  var urbanLow = Math.round(aqi * 1.5);
-  var urbanHigh = Math.round(aqi * 2);
-
   var dustNote = (dominant && dominant.key === 'pm10')
     ? '<div class="aqi-dust-note">' + mIcon('air') + '<span>' + t("aqi.dustNote") + '</span></div>'
     : '';
@@ -3796,7 +3793,7 @@ function renderAqi(aq) {
       '<div class="aqi-details">' +
         '<div class="aqi-status" style="color:' + info.color + '">' + info.label + '</div>' +
         '<div class="aqi-desc">' + info.desc + '</div>' +
-        '<div class="aqi-urban-range">' + t("aqi.urbanRange", { low: urbanLow, high: urbanHigh }) + '</div>' +
+        '<div class="aqi-urban-range">' + t("aqi.satelliteNote") + '</div>' +
         (dominant ? '<div class="aqi-dominant-label">' + t("aqi.dominant") + ': <strong>' + t("aqi.pol." + dominant.key) + '</strong></div>' : '') +
         whoComparisonHtml(cur.pm2_5) +
       '</div>' +
