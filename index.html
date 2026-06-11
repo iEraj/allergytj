@@ -3792,8 +3792,7 @@ function renderAqi(aq) {
       '</div>' +
       '<div class="aqi-details">' +
         '<div class="aqi-status" style="color:' + info.color + '">' + info.label + '</div>' +
-        '<div class="aqi-desc">' + info.desc + '</div>' +
-        '<div class="aqi-urban-range">' + t("aqi.satelliteNote") + '</div>' +
+        '<div class="aqi-desc" style="color:' + info.color + '">' + info.desc + '</div>' +
         (dominant ? '<div class="aqi-dominant-label">' + t("aqi.dominant") + ': <strong>' + t("aqi.pol." + dominant.key) + '</strong></div>' : '') +
         whoComparisonHtml(cur.pm2_5) +
       '</div>' +
