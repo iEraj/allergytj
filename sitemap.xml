@@ -2,10 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://allergy.tj/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://allergy.tj/en/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://allergy.tj/ru/"/>
+    <xhtml:link rel="alternate" hreflang="tg" href="https://allergy.tj/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://allergy.tj/"/>
+    <lastmod>2026-06-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
     <loc>https://allergy.tj/en/</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://allergy.tj/en/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://allergy.tj/ru/"/>
-    <xhtml:link rel="alternate" hreflang="tg" href="https://allergy.tj/tj/"/>
+    <xhtml:link rel="alternate" hreflang="tg" href="https://allergy.tj/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://allergy.tj/"/>
     <lastmod>2026-06-11</lastmod>
     <changefreq>daily</changefreq>
@@ -15,20 +25,40 @@
     <loc>https://allergy.tj/ru/</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://allergy.tj/en/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://allergy.tj/ru/"/>
-    <xhtml:link rel="alternate" hreflang="tg" href="https://allergy.tj/tj/"/>
+    <xhtml:link rel="alternate" hreflang="tg" href="https://allergy.tj/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://allergy.tj/"/>
     <lastmod>2026-06-11</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://allergy.tj/tj/</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://allergy.tj/en/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://allergy.tj/ru/"/>
-    <xhtml:link rel="alternate" hreflang="tg" href="https://allergy.tj/tj/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://allergy.tj/"/>
+    <loc>https://allergy.tj/forecast</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://allergy.tj/en/forecast"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://allergy.tj/ru/forecast"/>
+    <xhtml:link rel="alternate" hreflang="tg" href="https://allergy.tj/forecast"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://allergy.tj/forecast"/>
     <lastmod>2026-06-11</lastmod>
     <changefreq>daily</changefreq>
-    <priority>1.0</priority>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://allergy.tj/regions</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://allergy.tj/en/regions"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://allergy.tj/ru/regions"/>
+    <xhtml:link rel="alternate" hreflang="tg" href="https://allergy.tj/regions"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://allergy.tj/regions"/>
+    <lastmod>2026-06-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://allergy.tj/insights</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://allergy.tj/en/insights"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://allergy.tj/ru/insights"/>
+    <xhtml:link rel="alternate" hreflang="tg" href="https://allergy.tj/insights"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://allergy.tj/insights"/>
+    <lastmod>2026-06-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>

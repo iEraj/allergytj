@@ -8,19 +8,19 @@
 <meta name="keywords" id="meta-keywords" content="pollen, allergy, Tajikistan, allergy Dushanbe, pollen forecast, air quality, AQI, air quality Dushanbe, air quality index Dushanbe, AQI Dushanbe, AQI Tajikistan, air pollution Dushanbe, air pollution Tajikistan, air quality Khujand, AQI Khujand, air quality Bokhtar, air quality Kulob, air quality Khorog, PM2.5 Tajikistan, seasonal allergy, hay fever, pollen risk, allergy tracker, cross-reactivity, oral allergy syndrome, UV index, hourly pollen forecast, regional pollen, PWA, offline allergy tracker, Dushanbe, Khujand, Bokhtar, Kulob, Khorog, poplar pollen, mugwort, Central Asia, allergy Central Asia, pollen Central Asia">
 <meta name="author" content="Eraj Ismatulloev">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
-<link rel="canonical" href="https://allergy.tj/en/">
+<link rel="canonical" href="https://allergy.tj/">
 <link rel="alternate" hreflang="en" href="https://allergy.tj/en/">
 <link rel="alternate" hreflang="ru" href="https://allergy.tj/ru/">
-<link rel="alternate" hreflang="tg" href="https://allergy.tj/tj/">
+<link rel="alternate" hreflang="tg" href="https://allergy.tj/">
 <link rel="alternate" hreflang="x-default" href="https://allergy.tj/">
-<script>!function(){var m=location.pathname.match(/^\/(en|ru|tj)(\/|$)/),b=(navigator.language||"").slice(0,2),l=m?m[1]:localStorage.getItem("allergytj-lang")||(b==="ru"?"ru":b==="tg"||b==="tj"?"tj":"en"),k=document.createElement("link");k.rel="preload";k.as="fetch";k.crossOrigin="anonymous";k.href="/lang/"+l+".json";document.head.appendChild(k)}()</script>
+<script>!function(){var m=location.pathname.match(/^\/(en|ru|tj)(\/|$)/),l=m?m[1]:localStorage.getItem("allergytj-lang")||"tj",k=document.createElement("link");k.rel="preload";k.as="fetch";k.crossOrigin="anonymous";k.href="/lang/"+l+".json";document.head.appendChild(k)}()</script>
 <link rel="preconnect" href="https://api.open-meteo.com" crossorigin>
 <link rel="preconnect" href="https://air-quality-api.open-meteo.com" crossorigin>
 <link rel="dns-prefetch" href="https://api.open-meteo.com">
 <link rel="dns-prefetch" href="https://air-quality-api.open-meteo.com">
 <meta property="og:site_name" content="AllergyTJ">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://allergy.tj/en/">
+<meta property="og:url" content="https://allergy.tj/">
 <meta property="og:title" id="og-title" content="AllergyTJ — Pollen & Air Quality Tracker for Tajikistan">
 <meta property="og:description" id="og-desc" content="Live pollen risk and air quality for 30 cities in Tajikistan — AQI, PM2.5, hourly forecast, 5-day outlook. Dushanbe, Khujand, Bokhtar and more.">
 <meta property="og:locale" content="en">
@@ -188,7 +188,7 @@
   "@type": "BreadcrumbList",
   "itemListElement": [
     { "@type": "ListItem", "position": 1, "name": "AllergyTJ", "item": "https://allergy.tj/" },
-    { "@type": "ListItem", "position": 2, "name": "Dashboard", "item": "https://allergy.tj/#dashboard" }
+    { "@type": "ListItem", "position": 2, "name": "Dashboard", "item": "https://allergy.tj/dashboard" }
   ]
 }
 </script>
@@ -2008,21 +2008,21 @@
 
 <!-- Top Navigation -->
 <nav class="top-nav">
-  <a href="#dashboard" class="nav-brand" onclick="switchTab('dashboard')">
+  <a href="/" class="nav-brand" onclick="switchTab('dashboard',event)">
     <span class="icon filled">eco</span>
     AllergyTJ
   </a>
   <div class="nav-links">
-    <a href="#dashboard" class="active" data-tab="dashboard" data-i18n="nav.dashboard">Dashboard</a>
-    <a href="#forecast" data-tab="forecast" data-i18n="nav.forecast">Forecast</a>
-    <a href="#regions" data-tab="regions" data-i18n="nav.regions">Regions</a>
-    <a href="#insights" data-tab="insights" data-i18n="nav.insights">Insights</a>
+    <a href="/dashboard" class="active" data-tab="dashboard" data-i18n="nav.dashboard">Dashboard</a>
+    <a href="/forecast" data-tab="forecast" data-i18n="nav.forecast">Forecast</a>
+    <a href="/regions" data-tab="regions" data-i18n="nav.regions">Regions</a>
+    <a href="/insights" data-tab="insights" data-i18n="nav.insights">Insights</a>
   </div>
   <div class="nav-actions">
     <div class="lang-pill" id="lang-pill" role="radiogroup" aria-label="Language">
-      <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
+      <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
       <button class="lang-btn" data-lang="ru" onclick="setLanguage('ru')">РУ</button>
-      <button class="lang-btn" data-lang="tj" onclick="setLanguage('tj')">ТҶ</button>
+      <button class="lang-btn active" data-lang="tj" onclick="setLanguage('tj')">ТҶ</button>
     </div>
     <button class="nav-icon-btn" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
       <span class="icon">dark_mode</span>
@@ -2153,7 +2153,7 @@
   <div>
     <div class="dash-nearby-header">
       <h2 data-i18n="dash.nearbyRegions">Nearby Regions</h2>
-      <a href="#regions" onclick="switchTab('regions')"><span data-i18n="dash.viewAll">View All</span> <span class="icon">chevron_right</span></a>
+      <a href="/regions" onclick="switchTab('regions',event)"><span data-i18n="dash.viewAll">View All</span> <span class="icon">chevron_right</span></a>
     </div>
     <div class="dash-nearby-grid" id="dash-nearby"></div>
   </div>
@@ -2469,19 +2469,19 @@
 
 <!-- Bottom Tab Bar (mobile) -->
 <nav class="bottom-nav">
-  <a href="#dashboard" class="active" data-tab="dashboard" onclick="switchTab('dashboard')">
+  <a href="/dashboard" class="active" data-tab="dashboard" onclick="switchTab('dashboard',event)">
     <span class="icon">dashboard</span>
     <span data-i18n="nav.dashboard">Dashboard</span>
   </a>
-  <a href="#forecast" data-tab="forecast" onclick="switchTab('forecast')">
+  <a href="/forecast" data-tab="forecast" onclick="switchTab('forecast',event)">
     <span class="icon">calendar_month</span>
     <span data-i18n="nav.forecast">Forecast</span>
   </a>
-  <a href="#regions" data-tab="regions" onclick="switchTab('regions')">
+  <a href="/regions" data-tab="regions" onclick="switchTab('regions',event)">
     <span class="icon">map</span>
     <span data-i18n="nav.regions">Regions</span>
   </a>
-  <a href="#insights" data-tab="insights" onclick="switchTab('insights')">
+  <a href="/insights" data-tab="insights" onclick="switchTab('insights',event)">
     <span class="icon">lightbulb</span>
     <span data-i18n="nav.insights">Insights</span>
   </a>
@@ -2554,7 +2554,29 @@ document.querySelectorAll('span.icon').forEach(function(el) {
 });
 
 // ── Tab Routing ──
-function switchTab(tabName) {
+var TABS = ['dashboard','forecast','regions','insights'];
+
+function getTabFromPath() {
+  var parts = location.pathname.replace(/\/+$/, '').split('/');
+  var last = parts[parts.length - 1];
+  return TABS.indexOf(last) >= 0 ? last : 'dashboard';
+}
+
+function buildTabPath(lang, tabName) {
+  var langPrefix = lang === 'tj' ? '' : '/' + lang;
+  return tabName === 'dashboard' ? (langPrefix || '/') : langPrefix + '/' + tabName;
+}
+
+function updateNavHrefs() {
+  document.querySelectorAll('[data-tab]').forEach(function(el) {
+    el.setAttribute('href', buildTabPath(LANG, el.getAttribute('data-tab')));
+  });
+  var brand = document.querySelector('.nav-brand');
+  if (brand) brand.setAttribute('href', buildTabPath(LANG, 'dashboard'));
+}
+
+function switchTab(tabName, evt) {
+  if (evt) evt.preventDefault();
   document.querySelectorAll('.tab-content').forEach(function(el) {
     el.classList.remove('active');
   });
@@ -2564,10 +2586,12 @@ function switchTab(tabName) {
   var target = document.getElementById('tab-' + tabName);
   if (target) target.classList.add('active');
   window.scrollTo({ top: 0 });
-  history.replaceState(null, '', '/' + LANG + '/#' + tabName);
+  var newPath = buildTabPath(LANG, tabName);
+  if (location.pathname !== newPath) history.pushState(null, '', newPath);
   var bcld = document.getElementById("breadcrumbld");
   if (bcld) {
-    try { var bc = JSON.parse(bcld.textContent); bc.itemListElement[1].name = t("nav." + tabName); bc.itemListElement[1].item = SITE_BASE + "/" + LANG + "/#" + tabName; bc.itemListElement[0].item = SITE_BASE + "/" + LANG + "/"; bcld.textContent = JSON.stringify(bc); } catch(e) {}
+    var langPrefix = LANG === 'tj' ? '' : '/' + LANG;
+    try { var bc = JSON.parse(bcld.textContent); bc.itemListElement[1].name = t("nav." + tabName); bc.itemListElement[1].item = SITE_BASE + langPrefix + '/' + tabName; bc.itemListElement[0].item = SITE_BASE + (langPrefix || '/'); bcld.textContent = JSON.stringify(bc); } catch(e) {}
   }
   if (_regionUpdatedInterval) { clearInterval(_regionUpdatedInterval); _regionUpdatedInterval = null; }
   if (tabName === 'regions') {
@@ -2578,10 +2602,16 @@ function switchTab(tabName) {
 }
 
 (function() {
-  var hash = (location.hash || '#dashboard').slice(1);
-  if (['dashboard','forecast','regions','insights'].indexOf(hash) >= 0) {
-    switchTab(hash);
+  // Backwards compat: old hash URLs like /en/#forecast → /en/forecast
+  if (location.hash) {
+    var hashTab = location.hash.slice(1);
+    if (TABS.indexOf(hashTab) >= 0) {
+      history.replaceState(null, '', buildTabPath(LANG, hashTab));
+    }
   }
+  var tab = getTabFromPath();
+  switchTab(tab);
+  updateNavHrefs();
   document.querySelectorAll('.nav-links a[data-tab]').forEach(function(a) {
     a.addEventListener('click', function(e) {
       e.preventDefault();
@@ -2594,9 +2624,9 @@ function switchTab(tabName) {
       switchTab(this.getAttribute('data-tab'));
     });
   });
-  window.addEventListener('hashchange', function() {
-    var h = (location.hash || '#dashboard').slice(1);
-    if (['dashboard','forecast','regions','insights'].indexOf(h) >= 0) switchTab(h);
+  window.addEventListener('popstate', function() {
+    var tab = getTabFromPath();
+    if (TABS.indexOf(tab) >= 0) switchTab(tab);
   });
 })();
 
@@ -2760,11 +2790,10 @@ var SITE_BASE = "https://allergy.tj";
 
 // ── i18n: Language detection and translation loading ──
 var _pathLang = (function() {
-  var m = window.location.pathname.match(/^\/(en|ru|tj)(\/|$)/);
+  var m = window.location.pathname.match(/^\/(en|ru)(\/|$)/);
   return m ? m[1] : null;
 })();
-var browserLang = (navigator.language || "").slice(0, 2);
-var LANG = _pathLang || localStorage.getItem("allergytj-lang") || (browserLang === "ru" ? "ru" : browserLang === "tg" || browserLang === "tj" ? "tj" : "en");
+var LANG = _pathLang || localStorage.getItem("allergytj-lang") || "tj";
 
 // Translation data loaded from lang/*.json files
 var T = { en: {}, ru: {}, tj: {} };
@@ -4096,25 +4125,25 @@ function updateMetaTags(lang) {
     try { var ld = JSON.parse(jsonld.textContent); ld.description = t("meta.desc"); jsonld.textContent = JSON.stringify(ld); } catch(e) {}
   }
   var canonical = document.querySelector('link[rel="canonical"]');
-  if (canonical) canonical.setAttribute("href", SITE_BASE + "/" + lang + "/");
+  if (canonical) canonical.setAttribute("href", SITE_BASE + (lang === "tj" ? "/" : "/" + lang + "/"));
   document.querySelectorAll('link[hreflang]').forEach(function(el) {
     var hl = el.getAttribute("hreflang");
-    if (hl === "x-default") {
+    if (hl === "x-default" || hl === "tg") {
       el.setAttribute("href", SITE_BASE + "/");
     } else {
-      var hlLang = hl === "tg" ? "tj" : hl;
-      el.setAttribute("href", SITE_BASE + "/" + hlLang + "/");
+      el.setAttribute("href", SITE_BASE + "/" + hl + "/");
     }
   });
   var ogUrl = document.querySelector('meta[property="og:url"]');
-  if (ogUrl) ogUrl.setAttribute("content", SITE_BASE + "/" + lang + "/");
+  if (ogUrl) ogUrl.setAttribute("content", SITE_BASE + (lang === "tj" ? "/" : "/" + lang + "/"));
 }
 
 // ── Language switching ──
 async function setLanguage(lang) {
   LANG = lang;
   localStorage.setItem("allergytj-lang", lang);
-  history.replaceState(null, '', '/' + lang + '/' + (location.hash || ''));
+  var currentTab = getTabFromPath();
+  history.replaceState(null, '', buildTabPath(lang, currentTab));
   await loadTranslations(lang);
   await loadTranslations("en");
   document.documentElement.lang = lang === "tj" ? "tg" : lang;
@@ -4128,6 +4157,7 @@ async function setLanguage(lang) {
   });
 
   updateMetaTags(lang);
+  updateNavHrefs();
 
   // Update city dropdown
   var sel = document.getElementById("city-select");
@@ -5008,10 +5038,9 @@ async function sharePollen() {
   await loadTranslations(LANG);
   if (LANG !== "en") await loadTranslations("en");
 
-  // If on bare "/" with no language prefix, silently update URL
-  if (!_pathLang) {
-    history.replaceState(null, '', '/' + LANG + '/' + (location.hash || ''));
-  }
+  // Ensure URL reflects current language + tab
+  var currentTab = getTabFromPath();
+  history.replaceState(null, '', buildTabPath(LANG, currentTab));
 
   document.documentElement.lang = LANG === "tj" ? "tg" : LANG;
 
