@@ -1,8 +1,9 @@
-var CACHE_VERSION = 'allergytj-v13';
+var CACHE_VERSION = 'allergytj-v14';
 
 var PRECACHE_URLS = [
   '/',
   '/index.html',
+  '/app.js',
   '/lang/en.json',
   '/lang/ru.json',
   '/lang/tj.json',
@@ -50,6 +51,24 @@ self.addEventListener('fetch', function(event) {
 
   // Never cache bot-only files
   if (url.pathname === '/robots.txt' || url.pathname === '/sitemap.xml') return;
+
+  // App JS: network-first, cache fallback (must update with deploys)
+  if (url.pathname === '/app.js') {
+    event.respondWith(
+      fetch(event.request).then(function(response) {
+        if (response && response.status === 200) {
+          var clone = response.clone();
+          caches.open(CACHE_VERSION).then(function(cache) {
+            cache.put(event.request, clone);
+          });
+        }
+        return response;
+      }).catch(function() {
+        return caches.match(event.request);
+      })
+    );
+    return;
+  }
 
   // Navigation requests (HTML): network-first, cache fallback
   if (event.request.mode === 'navigate' || url.pathname === '/' || url.pathname === '/index.html' || /^\/(en|ru|tj)?(\/|$)(dashboard|forecast|regions|insights)?$/.test(url.pathname)) {
