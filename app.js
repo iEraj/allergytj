@@ -1643,6 +1643,13 @@ function updateMetaTags(lang) {
   });
   var ogUrl = document.querySelector('meta[property="og:url"]');
   if (ogUrl) ogUrl.setAttribute("content", SITE_BASE + (lang === "tj" ? "/" : "/" + lang + "/"));
+  var ogImageFile = lang === "tj" ? "/og-image.png" : "/og-image-" + lang + ".png";
+  var ogImage = document.getElementById("og-image");
+  if (ogImage) ogImage.setAttribute("content", SITE_BASE + ogImageFile);
+  var ogImageAlt = document.getElementById("og-image-alt");
+  if (ogImageAlt) ogImageAlt.setAttribute("content", t("og.title"));
+  var twImage = document.getElementById("twitter-image");
+  if (twImage) twImage.setAttribute("content", SITE_BASE + ogImageFile);
 }
 
 // ── Language switching ──
