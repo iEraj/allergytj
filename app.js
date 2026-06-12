@@ -733,7 +733,7 @@ async function fetchAirQuality(lat, lng) {
       latitude: lat, longitude: lng,
       current: "pm2_5,pm10,ozone,nitrogen_dioxide,sulphur_dioxide,carbon_monoxide,us_aqi,us_aqi_pm2_5,us_aqi_pm10,us_aqi_ozone,us_aqi_nitrogen_dioxide,us_aqi_sulphur_dioxide,us_aqi_carbon_monoxide",
       hourly: "us_aqi,us_aqi_pm2_5,us_aqi_pm10,us_aqi_ozone,us_aqi_nitrogen_dioxide,us_aqi_sulphur_dioxide,us_aqi_carbon_monoxide",
-      forecast_days: "6",
+      forecast_days: "5",
       timezone: "auto",
     });
     var res = await fetchWithTimeout(aqUrl, 6000);
@@ -1329,7 +1329,9 @@ function aggregateAqiForecast(aq) {
   var result = [];
   for (var d = 0; d < days.length; d++) {
     var b = byDay[days[d]];
-    if (b.aqi.length === 0) continue;
+    // CAMS coverage ends mid-window: a trailing day with only a few overnight
+    // hours would report a misleadingly low "daily peak" — require most of the day
+    if (b.aqi.length < 20) continue;
     var maxAqi = Math.max.apply(null, b.aqi);
     var subs = [
       { key: "pm25", max: b.pm25.length ? Math.max.apply(null, b.pm25) : 0 },
@@ -1359,7 +1361,7 @@ function renderAqiForecast(aq, daily) {
   if (title) title.style.display = '';
 
   var today = forecast[0].date;
-  var days = forecast.slice(1, 6);
+  var days = forecast.slice(1, 5);
 
   var WEEKDAYS_EN = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
   var WEEKDAYS_RU = ["Вс","Пн","Вт","Ср","Чт","Пт","Сб"];
