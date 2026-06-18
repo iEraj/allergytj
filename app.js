@@ -42,7 +42,8 @@ settings:'<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 
 bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
 bell_off:'<path d="M8.7 3A6 6 0 0 1 18 8a21.3 21.3 0 0 0 .6 5"/><path d="M17 17H3s3-2 3-9a4.67 4.67 0 0 1 .3-1.7"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/><line x1="2" x2="22" y1="2" y2="22"/>',
 x_icon:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
-alert_triangle:'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>'
+alert_triangle:'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+edit:'<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/>'
 };
 
 function mIcon(name, cls) {
@@ -175,9 +176,10 @@ function buildRecommendation(overall, wxData) {
   return t("rec.low", { wx: wxReason });
 }
 
-function renderDashboard(overallRisk, treeRisk, grassRisk, weedRisk, wxData, cityIndex, now) {
+function renderDashboard(overallRisk, treeRisk, grassRisk, weedRisk, wxData, cityIndex, now, personalRisk) {
   var cityName = t("city." + cityIndex);
-  var info = getRiskInfo(overallRisk);
+  var displayRisk = personalRisk != null ? personalRisk : overallRisk;
+  var info = getRiskInfo(displayRisk);
 
   // City name + dynamic title + geo tags
   document.getElementById("dash-city-name").textContent = cityName + " | " + t("dash.pollenAndAir");
@@ -192,18 +194,37 @@ function renderDashboard(overallRisk, treeRisk, grassRisk, weedRisk, wxData, cit
 
   // Context-aware recommendation
   var recEl = document.getElementById("dash-recommendation");
-  recEl.textContent = buildRecommendation(overallRisk, wxData);
+  recEl.textContent = buildRecommendation(displayRisk, wxData);
 
   // Risk Gauge
   var circumference = 2 * Math.PI * 84; // ~527.79
-  var riskPct = Math.min(overallRisk / 4, 1);
+  var riskPct = Math.min(displayRisk / 4, 1);
   var offset = circumference * (1 - riskPct * 0.75); // 75% of circle max
   var arc = document.getElementById("dash-gauge-arc");
   arc.style.strokeDashoffset = offset;
   arc.style.stroke = info.bg;
   document.getElementById("dash-gauge-risk").textContent = info.label;
   document.getElementById("dash-gauge-risk").style.color = info.color;
-  document.getElementById("dash-gauge-score").textContent = overallRisk.toFixed(1) + " / 4";
+  var gaugeYours = document.getElementById("dash-gauge-yours");
+  var gaugeStaticLabel = document.querySelector(".dash-gauge-label");
+  if (gaugeYours) {
+    gaugeYours.textContent = personalRisk != null ? t("profile.yourRisk") : "";
+    gaugeYours.style.display = personalRisk != null ? "" : "none";
+  }
+  if (gaugeStaticLabel) {
+    gaugeStaticLabel.style.display = personalRisk != null ? "none" : "";
+  }
+  document.getElementById("dash-gauge-score").textContent = displayRisk.toFixed(1) + " / 4";
+  var gaugeSecondary = document.getElementById("dash-gauge-secondary");
+  if (gaugeSecondary) {
+    if (personalRisk != null) {
+      gaugeSecondary.textContent = t("profile.generalRisk") + ": " + overallRisk.toFixed(1);
+      gaugeSecondary.style.display = "";
+    } else {
+      gaugeSecondary.textContent = "";
+      gaugeSecondary.style.display = "none";
+    }
+  }
   document.getElementById("dash-gauge-glow").style.background = info.bg;
 
   // Dashboard Weather Hero
@@ -224,20 +245,22 @@ function renderDashboard(overallRisk, treeRisk, grassRisk, weedRisk, wxData, cit
   }
 
   // Top Triggers
+  var profile = getAllergenProfile();
   var triggers = [
-    { icon: "park", name: t("pollen.tree"), sub: t("species.tree"), risk: treeRisk },
-    { icon: "grass", name: t("pollen.grass"), sub: t("species.grass"), risk: grassRisk },
-    { icon: "psychiatry", name: t("pollen.weed"), sub: t("species.weed"), risk: weedRisk },
+    { icon: "park", name: t("pollen.tree"), sub: t("species.tree"), risk: treeRisk, cat: "tree" },
+    { icon: "grass", name: t("pollen.grass"), sub: t("species.grass"), risk: grassRisk, cat: "grass" },
+    { icon: "psychiatry", name: t("pollen.weed"), sub: t("species.weed"), risk: weedRisk, cat: "weed" },
   ];
   triggers.sort(function(a, b) { return b.risk - a.risk; });
 
   var triggerHtml = triggers.map(function(tr) {
     var ti = getRiskInfo(tr.risk);
     var barPct = Math.min(tr.risk / 4 * 100, 100);
+    var badge = profile && profileHasCategory(profile, tr.cat) ? '<span class="dash-trigger-yours">' + t("profile.yours") + '</span>' : '';
     return '<div class="dash-trigger-row">' +
       '<div class="dash-trigger-left">' +
         '<div class="dash-trigger-icon">' + mIcon(tr.icon) + '</div>' +
-        '<div><div class="dash-trigger-name">' + tr.name + '</div>' +
+        '<div><div class="dash-trigger-name">' + tr.name + badge + '</div>' +
         '<div class="dash-trigger-sub">' + (tr.sub || '') + '</div></div>' +
       '</div>' +
       '<div class="dash-trigger-right">' +
@@ -247,6 +270,9 @@ function renderDashboard(overallRisk, treeRisk, grassRisk, weedRisk, wxData, cit
     '</div>';
   }).join('');
   document.getElementById("dash-trigger-rows").innerHTML = triggerHtml;
+
+  // Allergen Profile section
+  renderAllergenProfile();
 
   // Health Tip
   var tipText = getDailyTip();
@@ -259,6 +285,132 @@ function renderDashboard(overallRisk, treeRisk, grassRisk, weedRisk, wxData, cit
 
   // Nearby Regions
   renderNearbyRegions(cityIndex, now);
+}
+
+var _profileExpanded = false;
+
+function renderAllergenProfile() {
+  var container = document.getElementById("allergen-profile");
+  if (!container) return;
+  var profile = getAllergenProfile();
+
+  if (!profile && !_profileExpanded) {
+    container.innerHTML = '<div class="profile-invite">' +
+      '<span>' + mIcon('health_and_safety') + ' ' + t("profile.setup") + '</span>' +
+      '<button class="profile-setup-btn" id="profile-setup-btn">' + t("profile.setupBtn") + '</button>' +
+    '</div>';
+    return;
+  }
+
+  if (!_profileExpanded && profile) {
+    var chipHtml = profile.species.map(function(idx) {
+      return '<span class="profile-chip-display">' + t("cal." + idx) + '</span>';
+    }).join('');
+    container.innerHTML = '<div class="profile-summary">' +
+      '<div class="profile-summary-label">' + mIcon('health_and_safety') + ' ' + t("profile.title") + '</div>' +
+      '<div class="profile-chips-row">' + chipHtml + '</div>' +
+      '<button class="profile-edit-btn" id="profile-edit-btn">' + mIcon('edit') + '</button>' +
+    '</div>';
+    return;
+  }
+
+  var selected = profile ? profile.species.slice() : [];
+  var categories = [
+    { label: t("profile.categoryTree"), indices: [0,1,2,3,4] },
+    { label: t("profile.categoryGrass"), indices: [5] },
+    { label: t("profile.categoryWeed"), indices: [6,7,8] },
+  ];
+  var html = '<div class="profile-selector">';
+  html += '<div class="profile-selector-title">' + mIcon('health_and_safety') + ' ' + t("profile.title") + '</div>';
+  for (var c = 0; c < categories.length; c++) {
+    var cat = categories[c];
+    html += '<div class="profile-cat-label">' + cat.label + '</div><div class="profile-cat-chips">';
+    for (var j = 0; j < cat.indices.length; j++) {
+      var si = cat.indices[j];
+      var sel = selected.indexOf(si) !== -1 ? ' selected' : '';
+      html += '<button class="profile-species-chip' + sel + '" data-species="' + si + '">' + t("cal." + si) + '</button>';
+    }
+    html += '</div>';
+  }
+  html += '<div class="profile-actions">';
+  if (profile) html += '<button class="profile-clear-btn" id="profile-clear-btn">' + t("profile.clear") + '</button>';
+  html += '<button class="profile-done-btn" id="profile-done-btn">' + t("profile.done") + '</button>';
+  html += '</div></div>';
+  container.innerHTML = html;
+}
+
+function toggleProfileExpand() {
+  _profileExpanded = !_profileExpanded;
+  renderAllergenProfile();
+}
+
+function saveProfileFromSelector() {
+  var chips = document.querySelectorAll('.profile-species-chip.selected');
+  var species = [];
+  for (var i = 0; i < chips.length; i++) {
+    species.push(parseInt(chips[i].getAttribute('data-species'), 10));
+  }
+  saveAllergenProfile(species);
+  _profileExpanded = false;
+  if (lastRenderState) {
+    var s = lastRenderState;
+    reRenderWithProfile(s);
+  } else {
+    renderAllergenProfile();
+  }
+}
+
+function clearProfile() {
+  saveAllergenProfile(null);
+  _profileExpanded = false;
+  if (lastRenderState) {
+    reRenderWithProfile(lastRenderState);
+  } else {
+    renderAllergenProfile();
+  }
+}
+
+function reRenderWithProfile(s) {
+  var now = new Date();
+  var elev = s.cityElev || BASELINE_ELEV;
+  var rg = s.reg || REGIONS.drs;
+  var adjNow = adjustDateForElevation(now, elev);
+  var wxFactor = 1.0;
+
+  if (s.weatherTier === 1 || s.weatherTier === 2) {
+    var curWx = s.wx.current;
+    var daily = s.wx.daily;
+    var periodWx = s.wx.hourly ? getCurrentPeriodWeather(s.wx.hourly, now) : null;
+    if (periodWx) {
+      wxFactor = weatherFactor(periodWx.temp, periodWx.humidity, periodWx.wind, periodWx.precip, periodWx.wxCode);
+    } else {
+      var todayTemp = daily.temperature_2m_max[0];
+      var todayHumidity = daily.relative_humidity_2m_mean ? daily.relative_humidity_2m_mean[0] : curWx.relative_humidity_2m;
+      var todayWind = daily.wind_speed_10m_max[0];
+      var todayPrecip = daily.precipitation_sum[0];
+      var todayWxCode = daily.weather_code[0];
+      wxFactor = weatherFactor(todayTemp, todayHumidity, todayWind, todayPrecip, todayWxCode);
+    }
+    if (curWx && curWx.weather_code !== undefined) {
+      var curFactor = weatherFactor(curWx.temperature_2m, curWx.relative_humidity_2m, curWx.wind_speed_10m, curWx.precipitation, curWx.weather_code);
+      if (curFactor < wxFactor) wxFactor = curFactor;
+    }
+  }
+
+  var treeRisk = computeRisk(getSeasonalBase(TREE_SEASON, adjNow) * rg.tree, wxFactor);
+  var grassRisk = computeRisk(getSeasonalBase(GRASS_SEASON, adjNow) * rg.grass, wxFactor);
+  var weedRisk = computeRisk(getSeasonalBase(WEED_SEASON, adjNow) * rg.weed, wxFactor);
+  var overallRisk = Math.max(treeRisk, grassRisk, weedRisk);
+  var profile = getAllergenProfile();
+  var personalRisk = computePersonalRisk(profile, adjNow, rg, wxFactor);
+
+  var wxData = null;
+  if (s.weatherTier === 1 || s.weatherTier === 2) {
+    wxData = { temp: curWx.temperature_2m, humidity: curWx.relative_humidity_2m, wind: curWx.wind_speed_10m, precip: s.wx.daily.precipitation_sum[0], wxCode: curWx.weather_code, uv: curWx.uv_index };
+  }
+
+  renderBanner(personalRisk != null ? personalRisk : overallRisk, t("city." + s.cityIndex), wxFactor, wxData);
+  renderDashboard(overallRisk, treeRisk, grassRisk, weedRisk, wxData, s.cityIndex, now, personalRisk);
 }
 
 function renderNearbyRegions(cityIndex, now) {
@@ -395,6 +547,50 @@ var SEASONAL = [
 ];
 var MONTH_LABELS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 var CAL_CLASSES = ["cal-none","cal-low","cal-mod","cal-high","cal-vhigh"];
+var SPECIES_CATEGORY = ['tree','tree','tree','tree','tree','grass','weed','weed','weed'];
+var ALLERGEN_PROFILE_KEY = 'allergytj-allergen-profile';
+
+function getAllergenProfile() {
+  try {
+    var raw = localStorage.getItem(ALLERGEN_PROFILE_KEY);
+    if (!raw) return null;
+    var p = JSON.parse(raw);
+    if (!p || !Array.isArray(p.species) || p.species.length === 0) return null;
+    var valid = p.species.filter(function(i) { return typeof i === 'number' && i >= 0 && i < 9; });
+    if (valid.length === 0) return null;
+    return { species: valid, version: p.version || 1 };
+  } catch (e) { return null; }
+}
+
+function saveAllergenProfile(speciesArray) {
+  if (!speciesArray || speciesArray.length === 0) {
+    localStorage.removeItem(ALLERGEN_PROFILE_KEY);
+    return;
+  }
+  localStorage.setItem(ALLERGEN_PROFILE_KEY, JSON.stringify({ species: speciesArray, version: 1 }));
+}
+
+function computePersonalRisk(profile, adjDate, reg, wxFactor) {
+  if (!profile || !profile.species || profile.species.length === 0) return null;
+  var maxRisk = 0;
+  for (var i = 0; i < profile.species.length; i++) {
+    var idx = profile.species[i];
+    var cat = SPECIES_CATEGORY[idx];
+    var mul = cat === 'tree' ? reg.tree : (cat === 'grass' ? reg.grass : reg.weed);
+    var base = getSeasonalBase(SEASONAL[idx].months, adjDate) * mul;
+    var risk = computeRisk(base, wxFactor);
+    if (risk > maxRisk) maxRisk = risk;
+  }
+  return maxRisk;
+}
+
+function profileHasCategory(profile, category) {
+  if (!profile) return false;
+  for (var i = 0; i < profile.species.length; i++) {
+    if (SPECIES_CATEGORY[profile.species[i]] === category) return true;
+  }
+  return false;
+}
 
 // ── Risk level colors (labels/advice come from translations) ──
 var RISK_LEVELS = [
@@ -1034,12 +1230,14 @@ async function fetchData() {
       var grassRisk = computeRisk(grassBase, wxFactor);
       var weedRisk = computeRisk(weedBase, wxFactor);
       var overallRisk = Math.max(treeRisk, grassRisk, weedRisk);
+      var _profile = getAllergenProfile();
+      var _personalRisk = computePersonalRisk(_profile, adjNow, reg, wxFactor);
 
-      renderBanner(overallRisk, cityName, wxFactor, wxData);
+      renderBanner(_personalRisk != null ? _personalRisk : overallRisk, cityName, wxFactor, wxData);
       renderPollenCards(treeRisk, grassRisk, weedRisk, now);
       renderDashboard(overallRisk, treeRisk, grassRisk, weedRisk,
         { temp: curWx.temperature_2m, humidity: curWx.relative_humidity_2m, wind: curWx.wind_speed_10m, precip: todayPrecip, wxCode: curWx.weather_code, uv: curWx.uv_index },
-        cityIndex, now);
+        cityIndex, now, _personalRisk);
       renderInsights(cityIndex);
 
       var hourlyBlocks = wx.hourly ? computeHourlyBreakdown(wx.hourly, now, cityElev, reg) : null;
@@ -1051,7 +1249,7 @@ async function fetchData() {
 
       document.getElementById("weather-strip").style.display = "";
       fcTitle.textContent = weatherTier === 2 ? t("section.forecast2") : t("section.forecast5");
-      var _notifRisk = overallRisk;
+      var _notifRisk = _personalRisk != null ? _personalRisk : overallRisk;
       var _notifUv = curWx.uv_index;
 
     } else {
@@ -1066,10 +1264,12 @@ async function fetchData() {
       var grassRisk = computeRisk(grassBase, wxFactor);
       var weedRisk = computeRisk(weedBase, wxFactor);
       var overallRisk = Math.max(treeRisk, grassRisk, weedRisk);
+      var _profile = getAllergenProfile();
+      var _personalRisk = computePersonalRisk(_profile, adjNow, reg, wxFactor);
 
-      renderBanner(overallRisk, cityName, wxFactor, null);
+      renderBanner(_personalRisk != null ? _personalRisk : overallRisk, cityName, wxFactor, null);
       renderPollenCards(treeRisk, grassRisk, weedRisk, now);
-      renderDashboard(overallRisk, treeRisk, grassRisk, weedRisk, null, cityIndex, now);
+      renderDashboard(overallRisk, treeRisk, grassRisk, weedRisk, null, cityIndex, now, _personalRisk);
       renderInsights(cityIndex);
       renderHourlyBreakdown(null);
 
@@ -1078,7 +1278,7 @@ async function fetchData() {
       document.getElementById("forecast-trend").innerHTML = "";
       document.getElementById("forecast-aqi-cards").innerHTML = "";
       fcTitle.textContent = t("section.forecastNone");
-      var _notifRisk = overallRisk;
+      var _notifRisk = _personalRisk != null ? _personalRisk : overallRisk;
       var _notifUv = null;
     }
 
@@ -1724,14 +1924,16 @@ async function setLanguage(lang) {
       var grassRisk = computeRisk(getSeasonalBase(GRASS_SEASON, adjNow) * rg.grass, wxFactor);
       var weedRisk = computeRisk(getSeasonalBase(WEED_SEASON, adjNow) * rg.weed, wxFactor);
       var overallRisk = Math.max(treeRisk, grassRisk, weedRisk);
+      var _prof = getAllergenProfile();
+      var _pRisk = computePersonalRisk(_prof, adjNow, rg, wxFactor);
 
-      renderBanner(overallRisk, cityName, wxFactor, wxData);
+      renderBanner(_pRisk != null ? _pRisk : overallRisk, cityName, wxFactor, wxData);
       renderPollenCards(treeRisk, grassRisk, weedRisk, now);
       var todayPrecip = daily.precipitation_sum[0];
       var todayWxCode = daily.weather_code[0];
       renderDashboard(overallRisk, treeRisk, grassRisk, weedRisk,
         { temp: curWx.temperature_2m, humidity: curWx.relative_humidity_2m, wind: curWx.wind_speed_10m, precip: todayPrecip, wxCode: curWx.weather_code, uv: curWx.uv_index },
-        s.cityIndex, now);
+        s.cityIndex, now, _pRisk);
       renderInsights(s.cityIndex);
       var hourlyBlocks = s.wx.hourly ? computeHourlyBreakdown(s.wx.hourly, now, elev, rg) : null;
       renderHourlyBreakdown(hourlyBlocks);
@@ -1745,10 +1947,12 @@ async function setLanguage(lang) {
       var grassRisk = computeRisk(getSeasonalBase(GRASS_SEASON, adjNow) * rg.grass, wxFactor);
       var weedRisk = computeRisk(getSeasonalBase(WEED_SEASON, adjNow) * rg.weed, wxFactor);
       var overallRisk = Math.max(treeRisk, grassRisk, weedRisk);
+      var _prof = getAllergenProfile();
+      var _pRisk = computePersonalRisk(_prof, adjNow, rg, wxFactor);
 
-      renderBanner(overallRisk, cityName, wxFactor, null);
+      renderBanner(_pRisk != null ? _pRisk : overallRisk, cityName, wxFactor, null);
       renderPollenCards(treeRisk, grassRisk, weedRisk, now);
-      renderDashboard(overallRisk, treeRisk, grassRisk, weedRisk, null, s.cityIndex, now);
+      renderDashboard(overallRisk, treeRisk, grassRisk, weedRisk, null, s.cityIndex, now, _pRisk);
       renderInsights(s.cityIndex);
       renderHourlyBreakdown(null);
       document.getElementById("forecast-title").textContent = t("section.forecastNone");
@@ -2103,6 +2307,17 @@ function initStaticListeners() {
     if (backBtn) { closeNotificationSettings(); return; }
     var fcastBtn = e.target.closest(".notif-forecast-btn");
     if (fcastBtn) { closeNotificationSettings(); switchTab("forecast"); return; }
+  });
+
+  // Dynamic content delegation: allergen profile
+  document.getElementById("allergen-profile").addEventListener("click", function(e) {
+    if (e.target.closest("#profile-setup-btn") || e.target.closest("#profile-edit-btn")) {
+      _profileExpanded = true; renderAllergenProfile(); return;
+    }
+    var chip = e.target.closest(".profile-species-chip");
+    if (chip) { chip.classList.toggle("selected"); return; }
+    if (e.target.closest("#profile-done-btn")) { saveProfileFromSelector(); return; }
+    if (e.target.closest("#profile-clear-btn")) { clearProfile(); return; }
   });
 
   // Dynamic content delegation: region map SVG
@@ -2609,12 +2824,16 @@ async function sharePollen() {
   var grassRisk = computeRisk(grassBase, wxFactor);
   var weedRisk = computeRisk(weedBase, wxFactor);
   var overall = Math.max(treeRisk, grassRisk, weedRisk);
-  var overallInfo = getRiskInfo(overall);
+  var _prof = getAllergenProfile();
+  var _pRisk = computePersonalRisk(_prof, adjNow, rg, wxFactor);
+  var shareRisk = _pRisk != null ? _pRisk : overall;
+  var overallInfo = getRiskInfo(shareRisk);
   var treeInfo = getRiskInfo(treeRisk);
   var grassInfo = getRiskInfo(grassRisk);
   var weedInfo = getRiskInfo(weedRisk);
 
-  var text = "🌿 " + overallInfo.label + " " + t("pollen.riskSuffix") + " — " + cityName +
+  var personalLine = _pRisk != null ? "👤 " + t("profile.yourRisk") + ": " + overallInfo.label + "\n" : "";
+  var text = personalLine + "🌿 " + getRiskInfo(overall).label + " " + t("pollen.riskSuffix") + " — " + cityName +
     "\n🌳 " + t("pollen.tree") + ": " + treeInfo.label +
     " | 🌾 " + t("pollen.grass") + ": " + grassInfo.label +
     " | 🌿 " + t("pollen.weed") + ": " + weedInfo.label +

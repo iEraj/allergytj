@@ -636,6 +636,140 @@
     z-index: -1;
   }
 
+  .dash-gauge-yours {
+    font-size: var(--font-size-caption);
+    color: var(--primary);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+  .dash-gauge-secondary {
+    font-size: var(--font-size-caption);
+    color: var(--on-surface-variant);
+    margin-top: 2px;
+    opacity: 0.7;
+  }
+
+  /* Allergen Profile */
+  .profile-invite {
+    display: flex; align-items: center; gap: var(--space-sm);
+    padding: var(--space-md);
+    background: var(--surface-container);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-md);
+    font-size: var(--font-size-body-sm);
+    color: var(--on-surface-variant);
+    flex-wrap: wrap;
+  }
+  .profile-invite .icon { opacity: 0.6; }
+  .profile-setup-btn {
+    margin-left: auto;
+    padding: 6px 16px;
+    background: var(--primary);
+    color: var(--on-primary);
+    border: none; border-radius: var(--radius-sm);
+    font-size: var(--font-size-body-sm);
+    cursor: pointer; font-weight: 600;
+  }
+  .profile-summary {
+    display: flex; align-items: center; gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    background: var(--surface-container);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-md);
+    flex-wrap: wrap;
+  }
+  .profile-summary-label {
+    font-size: var(--font-size-body-sm);
+    font-weight: 600; color: var(--on-surface);
+    display: flex; align-items: center; gap: 4px;
+    white-space: nowrap;
+  }
+  .profile-chips-row { display: flex; flex-wrap: wrap; gap: 4px; flex: 1; }
+  .profile-chip-display {
+    padding: 2px 10px;
+    background: var(--primary-container);
+    color: var(--on-primary-container);
+    border-radius: 999px;
+    font-size: var(--font-size-caption);
+    white-space: nowrap;
+  }
+  .profile-edit-btn {
+    background: none; border: none; cursor: pointer;
+    color: var(--on-surface-variant); padding: 4px;
+    display: flex; align-items: center;
+  }
+  .profile-selector {
+    padding: var(--space-md);
+    background: var(--surface-container);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-md);
+  }
+  .profile-selector-title {
+    font-size: var(--font-size-body-md);
+    font-weight: 600; color: var(--on-surface);
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: var(--space-sm);
+  }
+  .profile-cat-label {
+    font-size: var(--font-size-caption);
+    color: var(--on-surface-variant);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin: var(--space-sm) 0 4px;
+    font-weight: 600;
+  }
+  .profile-cat-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .profile-species-chip {
+    padding: 6px 14px;
+    border: 1.5px solid var(--outline-variant);
+    background: var(--surface);
+    color: var(--on-surface);
+    border-radius: 999px;
+    font-size: var(--font-size-body-sm);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .profile-species-chip.selected {
+    background: var(--primary);
+    color: var(--on-primary);
+    border-color: var(--primary);
+  }
+  .profile-actions {
+    display: flex; gap: var(--space-sm);
+    margin-top: var(--space-md);
+    justify-content: flex-end;
+  }
+  .profile-done-btn {
+    padding: 8px 24px;
+    background: var(--primary);
+    color: var(--on-primary);
+    border: none; border-radius: var(--radius-sm);
+    font-size: var(--font-size-body-sm);
+    cursor: pointer; font-weight: 600;
+  }
+  .profile-clear-btn {
+    padding: 8px 16px;
+    background: none;
+    color: var(--on-surface-variant);
+    border: 1px solid var(--outline-variant);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-body-sm);
+    cursor: pointer;
+  }
+  .dash-trigger-yours {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 8px;
+    background: var(--primary-container);
+    color: var(--on-primary-container);
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    vertical-align: middle;
+  }
+
   /* Dashboard Weather Hero */
   .dash-wx {
     background: var(--surface-container-lowest);
@@ -2060,9 +2194,11 @@
           transform="rotate(-90 100 100)"></circle>
       </svg>
       <div class="dash-gauge-center">
+        <div class="dash-gauge-yours" id="dash-gauge-yours" style="display:none"></div>
         <div class="dash-gauge-label" data-i18n="dash.pollenRisk">Pollen Risk</div>
         <div class="dash-gauge-risk" id="dash-gauge-risk">—</div>
         <div class="dash-gauge-score" id="dash-gauge-score"></div>
+        <div class="dash-gauge-secondary" id="dash-gauge-secondary" style="display:none"></div>
       </div>
       <div class="dash-gauge-glow" id="dash-gauge-glow"></div>
     </div>
@@ -2124,6 +2260,9 @@
     </div>
     <div class="dash-wx-stats" id="dash-wx-stats"></div>
   </div>
+
+  <!-- Allergen Profile -->
+  <div id="allergen-profile"></div>
 
   <!-- Top Triggers + Health Tip -->
   <div class="dash-triggers-tip">
