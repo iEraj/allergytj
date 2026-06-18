@@ -256,6 +256,9 @@
   "share.button": "Share",
   "share.copied": "Copied!",
   "share.checkYours": "Check yours",
+  "share.imageSaved": "Image saved, text copied!",
+  "share.pollenRisk": "Pollen Risk",
+  "share.checkCard": "Check yours at",
 
   "footer.authorName": "Eraj Ismatulloev",
   "footer.allRights": "All rights reserved.",

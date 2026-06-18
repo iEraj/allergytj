@@ -2792,6 +2792,266 @@ function renderInsights(cityIndex) {
 }
 
 // ── Share ──
+async function copyToClipboard(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    try { await navigator.clipboard.writeText(text); return; } catch (e) {}
+  }
+  var ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position = "fixed";
+  ta.style.opacity = "0";
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand("copy");
+  document.body.removeChild(ta);
+}
+
+function showShareFeedback(key) {
+  var fb = document.getElementById("share-feedback");
+  fb.textContent = t(key);
+  fb.classList.add("show");
+  setTimeout(function() { fb.classList.remove("show"); }, 2000);
+}
+
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+    if (typeof r === "number") r = [r, r, r, r];
+    var tl = r[0], tr = r[1] || tl, br = r[2] || tl, bl = r[3] || tl;
+    this.moveTo(x + tl, y);
+    this.lineTo(x + w - tr, y);
+    this.quadraticCurveTo(x + w, y, x + w, y + tr);
+    this.lineTo(x + w, y + h - br);
+    this.quadraticCurveTo(x + w, y + h, x + w - br, y + h);
+    this.lineTo(x + bl, y + h);
+    this.quadraticCurveTo(x, y + h, x, y + h - bl);
+    this.lineTo(x, y + tl);
+    this.quadraticCurveTo(x, y, x + tl, y);
+    this.closePath();
+    return this;
+  };
+}
+
+function generateShareCard(data) {
+  var W = 1080, H = 1080;
+  var P = 80;
+  var CW = W - P * 2;
+  var canvas = document.createElement("canvas");
+  canvas.width = W;
+  canvas.height = H;
+  var ctx = canvas.getContext("2d");
+  var hasAqi = data.aqi != null;
+  var hasWx = data.temp != null;
+  var hasPers = data.isPersonal && data.generalRisk != null;
+
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, W, H);
+
+  // ── Header: 0–150 ──
+  var grad = ctx.createLinearGradient(0, 0, W, 0);
+  grad.addColorStop(0, "#1a3a2a");
+  grad.addColorStop(1, "#0f5238");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, 150);
+  ctx.fillStyle = "#a8e7c5";
+  ctx.font = "bold 52px system-ui, sans-serif";
+  ctx.fillText("AllergyTJ", P, 95);
+  var brandW = ctx.measureText("AllergyTJ").width;
+  ctx.font = "34px system-ui, sans-serif";
+  var siteW = ctx.measureText("allergy.tj").width;
+  var descText = t("dash.pollenAndAir");
+  var barGap = 22, barW2 = 3, textGap = 16;
+  var descLeft = P + brandW + barGap + barW2 + textGap;
+  var descAvail = W - P - siteW - 20 - descLeft;
+  var descSize = 32;
+  ctx.font = descSize + "px system-ui, sans-serif";
+  while (descSize > 20 && ctx.measureText(descText).width > descAvail) {
+    descSize -= 2;
+    ctx.font = descSize + "px system-ui, sans-serif";
+  }
+  if (ctx.measureText(descText).width <= descAvail) {
+    ctx.fillStyle = "rgba(255,255,255,0.35)";
+    ctx.fillRect(P + brandW + barGap, 62, barW2, 44);
+    ctx.fillStyle = "rgba(255,255,255,0.55)";
+    ctx.font = descSize + "px system-ui, sans-serif";
+    ctx.fillText(descText, descLeft, 95);
+  }
+  ctx.fillStyle = "rgba(255,255,255,0.6)";
+  ctx.font = "34px system-ui, sans-serif";
+  ctx.textAlign = "right";
+  ctx.fillText("allergy.tj", W - P, 95);
+  ctx.textAlign = "left";
+
+  // ── Footer: 970–1080 ──
+  ctx.fillStyle = "#e8efe8";
+  ctx.fillRect(0, 970, W, 110);
+  ctx.fillStyle = "#1a3a2a";
+  ctx.font = "bold 34px system-ui, sans-serif";
+  ctx.fillText(t("share.checkCard") + "  allergy.tj", P, 1038);
+
+  // ── City + Date: y=210 ──
+  ctx.font = "bold 46px system-ui, sans-serif";
+  if (ctx.measureText(data.cityName).width > CW - 360) ctx.font = "bold 38px system-ui, sans-serif";
+  ctx.fillStyle = "#1a3a2a";
+  ctx.fillText(data.cityName, P, 216);
+  ctx.font = "34px system-ui, sans-serif";
+  ctx.fillStyle = "#888";
+  ctx.textAlign = "right";
+  ctx.fillText(data.dateStr, W - P, 216);
+  ctx.textAlign = "left";
+
+  // Thin divider
+  ctx.fillStyle = "#e0e0e0";
+  ctx.fillRect(P, 240, CW, 2);
+
+  // ── Risk score card: 270–470 ──
+  var info = getRiskInfo(data.risk);
+  ctx.fillStyle = "#f3f7f3";
+  ctx.beginPath();
+  ctx.roundRect(P, 270, CW, 200, 20);
+  ctx.fill();
+
+  var riskLabel = data.isPersonal ? t("profile.yourRisk") : t("share.pollenRisk");
+  ctx.font = "bold 30px system-ui, sans-serif";
+  ctx.fillStyle = "#6a8a6a";
+  ctx.fillText(riskLabel, P + 40, 316);
+
+  ctx.font = "bold 96px system-ui, sans-serif";
+  ctx.fillStyle = info.bg;
+  ctx.fillText(data.risk.toFixed(1), P + 40, 416);
+  var sw = ctx.measureText(data.risk.toFixed(1)).width;
+  ctx.font = "42px system-ui, sans-serif";
+  ctx.fillStyle = "#c0c0c0";
+  ctx.fillText("/ 4", P + 50 + sw, 416);
+
+  ctx.font = "bold 48px system-ui, sans-serif";
+  ctx.fillStyle = info.bg;
+  ctx.textAlign = "right";
+  ctx.fillText(info.label, W - P - 40, 416);
+  ctx.textAlign = "left";
+
+  // Risk bar
+  var bx = P + 40, bw = CW - 80;
+  ctx.fillStyle = "#dde5dd";
+  ctx.beginPath();
+  ctx.roundRect(bx, 440, bw, 16, 8);
+  ctx.fill();
+  ctx.fillStyle = info.bg;
+  ctx.beginPath();
+  ctx.roundRect(bx, 440, Math.max(16, (data.risk / 4) * bw), 16, 8);
+  ctx.fill();
+
+  // ── Allergen breakdown: 510–780 ──
+  var cats = [
+    { label: t("pollen.tree"), risk: data.treeRisk, dot: "#2e7d32" },
+    { label: t("pollen.grass"), risk: data.grassRisk, dot: "#558b2f" },
+    { label: t("pollen.weed"), risk: data.weedRisk, dot: "#8c6d00" }
+  ];
+  var ay = 520;
+  for (var i = 0; i < 3; i++) {
+    var c = cats[i];
+    var ci = getRiskInfo(c.risk);
+
+    ctx.fillStyle = c.dot;
+    ctx.beginPath();
+    ctx.arc(P + 16, ay + 8, 12, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.font = "34px system-ui, sans-serif";
+    ctx.fillStyle = "#333";
+    ctx.fillText(c.label, P + 44, ay + 18);
+
+    ctx.font = "bold 34px system-ui, sans-serif";
+    ctx.fillStyle = ci.bg;
+    ctx.textAlign = "right";
+    ctx.fillText(ci.label, W - P, ay + 18);
+    ctx.textAlign = "left";
+
+    ctx.fillStyle = "#e5e5e5";
+    ctx.beginPath();
+    ctx.roundRect(P, ay + 42, CW, 16, 8);
+    ctx.fill();
+    ctx.fillStyle = ci.bg;
+    ctx.beginPath();
+    ctx.roundRect(P, ay + 42, Math.max(16, (c.risk / 4) * CW), 16, 8);
+    ctx.fill();
+
+    ay += 90;
+  }
+
+  // ── Bottom section: AQI + Weather ──
+  var by = 800;
+
+  if (hasAqi && hasWx) {
+    var ai = aqiInfo(data.aqi);
+    var aqW = 300;
+    ctx.fillStyle = ai.color;
+    ctx.beginPath();
+    ctx.roundRect(P, by, aqW, 100, 16);
+    ctx.fill();
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 24px system-ui, sans-serif";
+    ctx.fillText("US AQI", P + 28, by + 36);
+    ctx.font = "bold 44px system-ui, sans-serif";
+    ctx.fillText(String(Math.round(data.aqi)), P + 28, by + 80);
+    var aqnw = ctx.measureText(String(Math.round(data.aqi))).width;
+    ctx.font = "28px system-ui, sans-serif";
+    ctx.fillText(ai.label, P + 40 + aqnw, by + 78);
+
+    var wxX = P + aqW + 20;
+    ctx.fillStyle = "#f4f4f4";
+    ctx.beginPath();
+    ctx.roundRect(wxX, by, W - P - wxX, 100, 16);
+    ctx.fill();
+    ctx.font = "32px system-ui, sans-serif";
+    ctx.fillStyle = "#444";
+    var wl = Math.round(data.temp) + "°C";
+    if (data.humidity != null) wl += "  ·  " + data.humidity + "%";
+    if (data.uv != null) wl += "  ·  UV " + data.uv;
+    ctx.fillText(wl, wxX + 28, by + 42);
+    if (data.condition) {
+      ctx.font = "30px system-ui, sans-serif";
+      ctx.fillStyle = "#777";
+      ctx.fillText(data.condition, wxX + 28, by + 80);
+    }
+  } else if (hasAqi) {
+    var ai2 = aqiInfo(data.aqi);
+    ctx.fillStyle = ai2.color;
+    ctx.beginPath();
+    ctx.roundRect(P, by, 300, 100, 16);
+    ctx.fill();
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 24px system-ui, sans-serif";
+    ctx.fillText("US AQI", P + 28, by + 36);
+    ctx.font = "bold 44px system-ui, sans-serif";
+    ctx.fillText(String(Math.round(data.aqi)), P + 28, by + 80);
+    var aqnw2 = ctx.measureText(String(Math.round(data.aqi))).width;
+    ctx.font = "28px system-ui, sans-serif";
+    ctx.fillText(ai2.label, P + 40 + aqnw2, by + 78);
+  } else if (hasWx) {
+    ctx.fillStyle = "#f4f4f4";
+    ctx.beginPath();
+    ctx.roundRect(P, by, CW, 100, 16);
+    ctx.fill();
+    ctx.font = "32px system-ui, sans-serif";
+    ctx.fillStyle = "#444";
+    var wl2 = Math.round(data.temp) + "°C";
+    if (data.humidity != null) wl2 += "  ·  " + data.humidity + "%";
+    if (data.uv != null) wl2 += "  ·  UV " + data.uv;
+    if (data.condition) wl2 += "  ·  " + data.condition;
+    ctx.fillText(wl2, P + 28, by + 60);
+  }
+
+  // ── Personal risk note ──
+  if (hasPers) {
+    ctx.font = "30px system-ui, sans-serif";
+    ctx.fillStyle = "#999";
+    var gi = getRiskInfo(data.generalRisk);
+    ctx.fillText(t("profile.generalRisk") + ": " + data.generalRisk.toFixed(1) + " — " + gi.label, P, 940);
+  }
+
+  return canvas;
+}
+
 async function sharePollen() {
   if (!lastRenderState) return;
   var s = lastRenderState;
@@ -2803,7 +3063,7 @@ async function sharePollen() {
   var treeBase = getSeasonalBase(TREE_SEASON, adjNow) * rg.tree;
   var grassBase = getSeasonalBase(GRASS_SEASON, adjNow) * rg.grass;
   var weedBase = getSeasonalBase(WEED_SEASON, adjNow) * rg.weed;
-  var wxFactor = 1.0;
+  var wxF = 1.0;
 
   if ((s.weatherTier === 1 || s.weatherTier === 2) && s.wx) {
     var daily = s.wx.daily;
@@ -2813,19 +3073,19 @@ async function sharePollen() {
     var todayWind = daily.wind_speed_10m_max[0];
     var todayPrecip = daily.precipitation_sum[0];
     var todayWxCode = daily.weather_code[0];
-    wxFactor = weatherFactor(todayTemp, todayHumidity, todayWind, todayPrecip, todayWxCode);
+    wxF = weatherFactor(todayTemp, todayHumidity, todayWind, todayPrecip, todayWxCode);
     if (curWx && curWx.weather_code !== undefined) {
       var curFactor = weatherFactor(curWx.temperature_2m, curWx.relative_humidity_2m, curWx.wind_speed_10m, curWx.precipitation, curWx.weather_code);
-      if (curFactor < wxFactor) wxFactor = curFactor;
+      if (curFactor < wxF) wxF = curFactor;
     }
   }
 
-  var treeRisk = computeRisk(treeBase, wxFactor);
-  var grassRisk = computeRisk(grassBase, wxFactor);
-  var weedRisk = computeRisk(weedBase, wxFactor);
+  var treeRisk = computeRisk(treeBase, wxF);
+  var grassRisk = computeRisk(grassBase, wxF);
+  var weedRisk = computeRisk(weedBase, wxF);
   var overall = Math.max(treeRisk, grassRisk, weedRisk);
   var _prof = getAllergenProfile();
-  var _pRisk = computePersonalRisk(_prof, adjNow, rg, wxFactor);
+  var _pRisk = computePersonalRisk(_prof, adjNow, rg, wxF);
   var shareRisk = _pRisk != null ? _pRisk : overall;
   var overallInfo = getRiskInfo(shareRisk);
   var treeInfo = getRiskInfo(treeRisk);
@@ -2833,39 +3093,71 @@ async function sharePollen() {
   var weedInfo = getRiskInfo(weedRisk);
 
   var personalLine = _pRisk != null ? "👤 " + t("profile.yourRisk") + ": " + overallInfo.label + "\n" : "";
-  var text = personalLine + "🌿 " + getRiskInfo(overall).label + " " + t("pollen.riskSuffix") + " — " + cityName +
+  var textMessage = personalLine + "🌿 " + getRiskInfo(overall).label + " " + t("pollen.riskSuffix") + " — " + cityName +
     "\n🌳 " + t("pollen.tree") + ": " + treeInfo.label +
     " | 🌾 " + t("pollen.grass") + ": " + grassInfo.label +
     " | 🌿 " + t("pollen.weed") + ": " + weedInfo.label +
     "\n" + t("share.checkYours") + " → " + SITE_BASE.replace("https://", "");
 
-  if (navigator.share) {
-    try {
-      await navigator.share({ text: text });
+  var dateStr = now.getDate() + " " + t("month." + now.getMonth()) + " " + now.getFullYear();
+
+  var cardData = {
+    cityName: cityName,
+    dateStr: dateStr,
+    risk: shareRisk,
+    isPersonal: _pRisk != null,
+    generalRisk: _pRisk != null ? overall : null,
+    treeRisk: treeRisk,
+    grassRisk: grassRisk,
+    weedRisk: weedRisk,
+    aqi: s.aq ? s.aq.current.us_aqi : null,
+    temp: null,
+    humidity: null,
+    uv: null,
+    condition: null
+  };
+
+  if ((s.weatherTier === 1 || s.weatherTier === 2) && s.wx) {
+    var cur = s.wx.current;
+    cardData.temp = cur.temperature_2m;
+    cardData.humidity = cur.relative_humidity_2m;
+    cardData.uv = s.wx.daily && s.wx.daily.uv_index_max ? Math.round(s.wx.daily.uv_index_max[0]) : null;
+    cardData.condition = wxDescription(cur.weather_code);
+  }
+
+  var canvas = generateShareCard(cardData);
+
+  canvas.toBlob(async function(blob) {
+    if (!blob) {
+      await copyToClipboard(textMessage);
+      showShareFeedback("share.copied");
       return;
-    } catch (e) {
-      if (e.name === "AbortError") return;
     }
-  }
 
-  var copied = false;
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    try { await navigator.clipboard.writeText(text); copied = true; } catch (e) {}
-  }
-  if (!copied) {
-    var ta = document.createElement("textarea");
-    ta.value = text;
-    ta.style.position = "fixed";
-    ta.style.opacity = "0";
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand("copy");
-    document.body.removeChild(ta);
-  }
+    var dateSlug = now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0") + "-" + String(now.getDate()).padStart(2, "0");
+    var file = new File([blob], "allergytj-" + dateSlug + ".png", { type: "image/png" });
 
-  var fb = document.getElementById("share-feedback");
-  fb.classList.add("show");
-  setTimeout(function() { fb.classList.remove("show"); }, 2000);
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({ files: [file], text: textMessage });
+        return;
+      } catch (e) {
+        if (e.name === "AbortError") return;
+      }
+    }
+
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "allergytj-" + dateSlug + ".png";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+
+    await copyToClipboard(textMessage);
+    showShareFeedback("share.imageSaved");
+  }, "image/png");
 }
 
 // ── Init ──
