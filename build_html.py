@@ -11,10 +11,12 @@ Output: dist/index.html (Tajik), dist/en/index.html (EN), dist/ru/index.html (RU
 Usage: python build_html.py
 """
 
+import glob
 import html as html_mod
 import json
 import os
 import re
+import shutil
 import sys
 
 SITE_BASE = "https://allergy.tj"
@@ -658,6 +660,45 @@ def write_output(lang, html):
     return out_path
 
 
+COPY_FILES = [
+    "app.js",
+    "sw.js",
+    "manifest.json",
+    "robots.txt",
+    "sitemap.xml",
+    "og-image.png",
+    "og-image.svg",
+    "og-image-en.png",
+    "og-image-en.svg",
+    "og-image-ru.png",
+    "og-image-ru.svg",
+]
+
+COPY_DIRS = [
+    "icons",
+    "lang",
+]
+
+
+def copy_static_assets():
+    """Copy static assets into dist/ so it's a complete deployable directory."""
+    copied = 0
+    for fname in COPY_FILES:
+        src = os.path.join(SCRIPT_DIR, fname)
+        if os.path.exists(src):
+            shutil.copy2(src, os.path.join(DIST_DIR, fname))
+            copied += 1
+    for dirname in COPY_DIRS:
+        src = os.path.join(SCRIPT_DIR, dirname)
+        dst = os.path.join(DIST_DIR, dirname)
+        if os.path.isdir(src):
+            if os.path.exists(dst):
+                shutil.rmtree(dst)
+            shutil.copytree(src, dst)
+            copied += 1
+    return copied
+
+
 def main():
     print("build_html.py — Static HTML pre-generation")
     print(f"Output directory: {DIST_DIR}\n")
@@ -668,7 +709,9 @@ def main():
         rel_path = os.path.relpath(out_path, SCRIPT_DIR)
         print(f"  [{lang.upper()}] {rel_path}")
 
-    print("\nDone. Generated 3 language-specific HTML files.")
+    n = copy_static_assets()
+    print(f"\n  Copied {n} static assets to dist/")
+    print("\nDone.")
 
 
 if __name__ == "__main__":
