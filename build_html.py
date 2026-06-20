@@ -11,6 +11,7 @@ Output: dist/index.html (Tajik), dist/en/index.html (EN), dist/ru/index.html (RU
 Usage: python build_html.py
 """
 
+import html as html_mod
 import json
 import os
 import re
@@ -377,10 +378,274 @@ def transform_head(html, lang, tr):
     return html
 
 
+# ── Phase 1.2: Pre-rendered body content ──
+
+CITIES_DATA = [
+    {"idx": 0, "region": "khatlon", "elev": 390},
+    {"idx": 1, "region": "khatlon", "elev": 430},
+    {"idx": 2, "region": "sughd", "elev": 300},
+    {"idx": 3, "region": "khatlon", "elev": 649},
+    {"idx": 4, "region": "drs", "elev": 800},
+    {"idx": 5, "region": "khatlon", "elev": 450},
+    {"idx": 6, "region": "sughd", "elev": 400},
+    {"idx": 7, "region": "sughd", "elev": 347},
+    {"idx": 8, "region": "khatlon", "elev": 440},
+    {"idx": 9, "region": "drs", "elev": 802},
+    {"idx": 10, "region": "sughd", "elev": 863},
+    {"idx": 11, "region": "gbao", "elev": 2535},
+    {"idx": 12, "region": "sughd", "elev": 992},
+    {"idx": 13, "region": "gbao", "elev": 2200},
+    {"idx": 14, "region": "sughd", "elev": 300},
+    {"idx": 15, "region": "sughd", "elev": 410},
+    {"idx": 16, "region": "khatlon", "elev": 580},
+    {"idx": 17, "region": "gbao", "elev": 3618},
+    {"idx": 18, "region": "khatlon", "elev": 885},
+    {"idx": 19, "region": "valleys", "elev": 1348},
+    {"idx": 20, "region": "sughd", "elev": 996},
+    {"idx": 21, "region": "valleys", "elev": 1355},
+    {"idx": 22, "region": "valleys", "elev": 1230},
+    {"idx": 23, "region": "khatlon", "elev": 367},
+    {"idx": 24, "region": "sughd", "elev": 350},
+    {"idx": 25, "region": "drs", "elev": 708},
+    {"idx": 26, "region": "drs", "elev": 870},
+    {"idx": 27, "region": "khatlon", "elev": 426},
+    {"idx": 28, "region": "khatlon", "elev": 475},
+    {"idx": 29, "region": "khatlon", "elev": 655},
+]
+
+SEASONAL_DATA = [
+    {"key": "cal.0", "cat": "tree",  "months": [0,1,3,4,3,1,0,0,0,0,0,0]},
+    {"key": "cal.1", "cat": "tree",  "months": [0,1,2,3,2,0,0,0,0,0,0,0]},
+    {"key": "cal.2", "cat": "tree",  "months": [0,0,2,3,2,0,0,0,0,0,0,0]},
+    {"key": "cal.3", "cat": "tree",  "months": [0,0,1,3,3,1,0,0,0,0,0,0]},
+    {"key": "cal.4", "cat": "tree",  "months": [0,0,0,2,3,2,0,0,0,0,0,0]},
+    {"key": "cal.5", "cat": "grass", "months": [0,0,0,1,3,4,3,1,0,0,0,0]},
+    {"key": "cal.6", "cat": "weed",  "months": [0,0,0,0,0,1,2,4,4,2,0,0]},
+    {"key": "cal.7", "cat": "weed",  "months": [0,0,0,0,0,1,3,4,3,1,0,0]},
+    {"key": "cal.8", "cat": "weed",  "months": [0,0,0,0,0,0,1,3,3,1,0,0]},
+]
+
+INTENSITY_LABELS = {
+    "en": ["—", "Low", "Moderate", "High", "Very High"],
+    "ru": ["—", "Низкий", "Умеренный", "Высокий", "Очень высокий"],
+    "tj": ["—", "Паст", "Мӯътадил", "Баланд", "Хеле баланд"],
+}
+
+REGION_ORDER = ["sughd", "khatlon", "drs", "gbao", "valleys"]
+
+SEO_TITLES = {
+    "faq": {
+        "en": "Frequently Asked Questions",
+        "ru": "Часто задаваемые вопросы",
+        "tj": "Саволҳои маъмул",
+    },
+    "cities": {
+        "en": "Cities Covered in Tajikistan",
+        "ru": "Города Таджикистана",
+        "tj": "Шаҳрҳои Тоҷикистон",
+    },
+    "allergens": {
+        "en": "Seasonal Allergen Guide",
+        "ru": "Сезонный справочник аллергенов",
+        "tj": "Дастури аллергенҳои мавсимӣ",
+    },
+    "elev_label": {
+        "en": "m elevation",
+        "ru": "м высота",
+        "tj": "м баландӣ",
+    },
+}
+
+CAT_LABELS = {
+    "tree": {"en": "Tree", "ru": "Дерево", "tj": "Дарахт"},
+    "grass": {"en": "Grass", "ru": "Злак", "tj": "Алаф"},
+    "weed": {"en": "Weed", "ru": "Сорняк", "tj": "Бегона"},
+}
+
+
+def _h(text):
+    """HTML-escape text content."""
+    return html_mod.escape(str(text), quote=False)
+
+
+def translate_body(html, tr):
+    """Replace text content of elements with data-i18n attributes."""
+    def _replace(m):
+        prefix = m.group(1)
+        key = m.group(2)
+        translated = tr.get(key)
+        if translated is None:
+            return m.group(0)
+        return prefix + _h(translated) + "</"
+    return re.sub(
+        r'(data-i18n="([^"]+)"[^>]*>)[^<]*</',
+        _replace,
+        html,
+    )
+
+
+def translate_options(html, tr):
+    """Translate <option> text inside the city-select dropdown."""
+    def _replace_option(m):
+        value = m.group(1)
+        return f'<option value="{value}"'
+    select_match = re.search(
+        r'(<select\s+id="city-select"[^>]*>)(.*?)(</select>)',
+        html,
+        re.DOTALL,
+    )
+    if not select_match:
+        return html
+    select_inner = select_match.group(2)
+    idx = 0
+    def _replace_opt_text(m):
+        nonlocal idx
+        attrs = m.group(1)
+        city_name = tr.get(f"city.{idx}", m.group(2))
+        idx += 1
+        return f"<option {attrs}>{_h(city_name)}</option>"
+    new_inner = re.sub(
+        r'<option\s+([^>]*)>([^<]*)</option>',
+        _replace_opt_text,
+        select_inner,
+    )
+    return html[:select_match.start(2)] + new_inner + html[select_match.end(2):]
+
+
+def build_faq_html(lang):
+    """Build visible FAQ section with <details>/<summary> elements."""
+    lines = []
+    for faq in FAQ_DATA:
+        q = _h(faq["q"][lang])
+        a = _h(faq["a"][lang])
+        lines.append(f"  <details><summary>{q}</summary><p>{a}</p></details>")
+    return "\n".join(lines)
+
+
+def build_city_directory_html(lang, tr):
+    """Build city directory grouped by region."""
+    grouped = {}
+    for city in CITIES_DATA:
+        r = city["region"]
+        if r not in grouped:
+            grouped[r] = []
+        name_full = tr.get(f"city.{city['idx']}", f"City {city['idx']}")
+        name = name_full.split(",")[0].strip()
+        grouped[r].append((name, city["elev"]))
+
+    elev_label = SEO_TITLES["elev_label"][lang]
+    lines = []
+    for region in REGION_ORDER:
+        cities = grouped.get(region, [])
+        if not cities:
+            continue
+        region_name = _h(tr.get(f"region.{region}.full", region))
+        lines.append(f"  <h4>{region_name}</h4>")
+        lines.append("  <ul>")
+        for name, elev in sorted(cities, key=lambda c: c[0]):
+            lines.append(f"    <li>{_h(name)} — {elev} {_h(elev_label)}</li>")
+        lines.append("  </ul>")
+    return "\n".join(lines)
+
+
+def build_allergen_guide_html(lang, tr):
+    """Build allergen table with species and monthly intensity."""
+    months = [_h(tr.get(f"month.{i}", "")) for i in range(12)]
+    labels = INTENSITY_LABELS[lang]
+
+    lines = []
+    lines.append('  <table class="seo-allergen-table">')
+    lines.append("    <thead><tr>")
+    lines.append(f"      <th></th>")
+    for m in months:
+        lines.append(f"      <th>{m}</th>")
+    lines.append("    </tr></thead>")
+    lines.append("    <tbody>")
+    for sp in SEASONAL_DATA:
+        name = _h(tr.get(sp["key"], sp["key"]))
+        cat = CAT_LABELS[sp["cat"]][lang]
+        lines.append("    <tr>")
+        lines.append(f'      <td><strong>{name}</strong> <small>({_h(cat)})</small></td>')
+        for val in sp["months"]:
+            label = labels[val]
+            cls = ["seo-none", "seo-low", "seo-mod", "seo-high", "seo-vhigh"][val]
+            lines.append(f'      <td class="{cls}" title="{_h(label)}">{_h(label)}</td>')
+        lines.append("    </tr>")
+    lines.append("    </tbody>")
+    lines.append("  </table>")
+    return "\n".join(lines)
+
+
+def build_seo_section(lang, tr):
+    """Build the complete pre-rendered SEO content section."""
+    faq_title = _h(SEO_TITLES["faq"][lang])
+    cities_title = _h(SEO_TITLES["cities"][lang])
+    allergens_title = _h(SEO_TITLES["allergens"][lang])
+
+    faq_html = build_faq_html(lang)
+    cities_html = build_city_directory_html(lang, tr)
+    allergen_html = build_allergen_guide_html(lang, tr)
+
+    return f"""
+<!-- Pre-rendered SEO content — removed by app.js on load -->
+<section id="seo-content" class="container">
+<h2 class="section-title">{faq_title}</h2>
+<div class="seo-faq">
+{faq_html}
+</div>
+
+<h2 class="section-title">{cities_title}</h2>
+<div class="seo-cities">
+{cities_html}
+</div>
+
+<h2 class="section-title">{allergens_title}</h2>
+<div class="seo-allergens">
+{allergen_html}
+</div>
+</section>
+"""
+
+
+SEO_CSS = """
+/* SEO pre-rendered content (hidden when JS loads) */
+#seo-content { padding: 24px 16px; }
+#seo-content .seo-faq details { margin-bottom: 8px; border: 1px solid var(--border, #e0e0e0); border-radius: 8px; padding: 0; }
+#seo-content .seo-faq summary { padding: 12px 16px; cursor: pointer; font-weight: 600; }
+#seo-content .seo-faq details p { padding: 0 16px 12px; margin: 0; color: var(--on-surface-variant, #666); }
+#seo-content .seo-cities h4 { margin: 16px 0 4px; }
+#seo-content .seo-cities ul { margin: 0 0 8px; padding-left: 20px; }
+#seo-content .seo-cities li { margin: 2px 0; }
+.seo-allergen-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; overflow-x: auto; display: block; }
+.seo-allergen-table th, .seo-allergen-table td { padding: 6px 8px; text-align: center; border: 1px solid var(--border, #e0e0e0); white-space: nowrap; }
+.seo-allergen-table td:first-child { text-align: left; }
+.seo-allergen-table .seo-none { color: #999; }
+.seo-allergen-table .seo-low { background: #e8f5e9; color: #2e7d32; }
+.seo-allergen-table .seo-mod { background: #fff9c4; color: #f57f17; }
+.seo-allergen-table .seo-high { background: #ffe0b2; color: #e65100; }
+.seo-allergen-table .seo-vhigh { background: #ffcdd2; color: #b71c1c; }
+"""
+
+
+def inject_seo_content(html, lang, tr):
+    """Insert the SEO section before </main>."""
+    seo = build_seo_section(lang, tr)
+    return html.replace("</main>", seo + "\n</main>", 1)
+
+
+def inject_seo_css(html):
+    """Inject SEO section CSS before the closing </style> tag."""
+    return html.replace("</style>", SEO_CSS + "</style>", 1)
+
+
 def build_lang(lang):
     tr = load_translations(lang)
     html = read_template()
     html = transform_head(html, lang, tr)
+    html = translate_body(html, tr)
+    html = translate_options(html, tr)
+    html = inject_seo_content(html, lang, tr)
+    html = inject_seo_css(html)
     return html
 
 

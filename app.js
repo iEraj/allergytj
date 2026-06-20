@@ -3162,6 +3162,9 @@ async function sharePollen() {
 
 // ── Init ──
 (async function() {
+  var _seo = document.getElementById('seo-content');
+  if (_seo) _seo.remove();
+
   await loadTranslations(LANG);
   if (LANG !== "en") await loadTranslations("en");
 
