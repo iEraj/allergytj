@@ -660,12 +660,285 @@ def write_output(lang, html):
     return out_path
 
 
+# ── P2: Per-city landing pages ──
+
+CITY_SLUGS = [
+    "balkh", "bokhtar", "buston", "danghara", "dushanbe",
+    "farkhor", "ghafurov", "guliston", "hamadoni", "hisor",
+    "isfara", "ishkashim", "istaravshan", "khorog", "khujand",
+    "konibodom", "kulob", "murghab", "norak", "obigarm",
+    "panjakent", "rasht", "roghun", "shahritus", "spitamen",
+    "tursunzoda", "vahdat", "vakhsh", "vose", "yovon",
+]
+
+REGION_MULTIPLIERS = {
+    "drs":     {"tree": 1.0, "grass": 1.0, "weed": 1.0},
+    "khatlon": {"tree": 0.8, "grass": 1.3, "weed": 1.1},
+    "sughd":   {"tree": 1.0, "grass": 1.1, "weed": 0.9},
+    "gbao":    {"tree": 0.3, "grass": 0.3, "weed": 0.4},
+    "valleys": {"tree": 0.8, "grass": 0.7, "weed": 0.9},
+}
+
+CITY_SEO_TITLE = {
+    "en": "{city} Pollen Risk & Air Quality — AllergyTJ",
+    "ru": "{city} — Риск пыльцы и качество воздуха — AllergyTJ",
+    "tj": "{city} — Хатари гардолуд ва сифати ҳаво — AllergyTJ",
+}
+
+CITY_SEO_DESC = {
+    "en": "Current pollen risk and air quality for {city}, Tajikistan. Real-time US AQI, 5-day forecast, allergen guide. {region}, {elev}m elevation.",
+    "ru": "Текущий риск пыльцы и качество воздуха: {city}, Таджикистан. US AQI, 5-дневный прогноз, справочник аллергенов. {region}, {elev} м.",
+    "tj": "Хатари гардолуд ва сифати ҳаво: {city}, Тоҷикистон. US AQI, пешгӯии 5-рӯза, дастури аллергенҳо. {region}, {elev} м.",
+}
+
+CITY_SEO_HEADING = {
+    "en": "Pollen Risk & Air Quality in {city}",
+    "ru": "Риск пыльцы и качество воздуха: {city}",
+    "tj": "Хатари гардолуд ва сифати ҳаво: {city}",
+}
+
+CITY_SEO_INTRO = {
+    "en": "{city} is located in {region} at {elev}m elevation. Bloom timing shifts by approximately {shift_days} days compared to Dushanbe (800m baseline) due to elevation differences (Hopkins' Bioclimatic Law: ~2 days per 100m).",
+    "ru": "{city} расположен в регионе {region} на высоте {elev} м. Сроки цветения сдвигаются примерно на {shift_days} дней по сравнению с Душанбе (базовые 800 м) из-за разницы высот (закон Хопкинса: ~2 дня на 100 м).",
+    "tj": "{city} дар {region} дар баландии {elev} м ҷойгир аст. Вақти гулкунӣ тақрибан {shift_days} рӯз нисбат ба Душанбе (800 м) фарқ мекунад аз сабаби фарқи баландӣ (Қонуни Хопкинс: ~2 рӯз дар 100 м).",
+}
+
+CITY_SEO_DOMINANT = {
+    "en": "Dominant allergen categories",
+    "ru": "Основные категории аллергенов",
+    "tj": "Категорияҳои асосии аллергенҳо",
+}
+
+CITY_SEO_CTA = {
+    "en": "View real-time pollen and air quality data for {city} on the dashboard above.",
+    "ru": "Смотрите данные о пыльце и качестве воздуха для {city} на панели выше.",
+    "tj": "Маълумоти гардолуд ва сифати ҳаворо барои {city} дар панели боло бинед.",
+}
+
+
+def get_city_name(tr, city_idx):
+    """Get short city name (without region suffix)."""
+    full = tr.get(f"city.{city_idx}", CITY_SLUGS[city_idx].title())
+    return full.split(",")[0].strip()
+
+
+def compute_bloom_shift(elev):
+    """Hopkins' Bioclimatic Law: ~2 days per 100m from Dushanbe (800m)."""
+    return round(abs(elev - 800) / 100 * 2)
+
+
+def get_dominant_allergens(region, lang):
+    """Return sorted list of (category_label, multiplier) for a region."""
+    mults = REGION_MULTIPLIERS[region]
+    cats = sorted(mults.items(), key=lambda x: -x[1])
+    return [(CAT_LABELS[cat][lang], round(mult, 1)) for cat, mult in cats]
+
+
+def build_city_seo_html(city_idx, lang, tr):
+    """Build city-specific SEO content section."""
+    city = CITIES_DATA[city_idx]
+    region = city["region"]
+    elev = city["elev"]
+    city_name = get_city_name(tr, city_idx)
+    region_name = tr.get(f"region.{region}.full", region)
+    shift = compute_bloom_shift(elev)
+
+    heading = _h(CITY_SEO_HEADING[lang].format(city=city_name))
+    intro = _h(CITY_SEO_INTRO[lang].format(
+        city=city_name, region=region_name, elev=elev, shift_days=shift,
+    ))
+    dominant_label = _h(CITY_SEO_DOMINANT[lang])
+    cta = _h(CITY_SEO_CTA[lang].format(city=city_name))
+
+    dom_items = []
+    for label, mult in get_dominant_allergens(region, lang):
+        dom_items.append(f"    <li>{_h(label)} — {mult}×</li>")
+
+    months = [_h(tr.get(f"month.{i}", "")) for i in range(12)]
+    labels = INTENSITY_LABELS[lang]
+    mults = REGION_MULTIPLIERS[region]
+    cat_mult_map = {"tree": mults["tree"], "grass": mults["grass"], "weed": mults["weed"]}
+
+    table_rows = []
+    for sp in SEASONAL_DATA:
+        name = _h(tr.get(sp["key"], sp["key"]))
+        cat = CAT_LABELS[sp["cat"]][lang]
+        mult = cat_mult_map[sp["cat"]]
+        table_rows.append("    <tr>")
+        table_rows.append(f'      <td><strong>{name}</strong> <small>({_h(cat)} {mult}×)</small></td>')
+        for val in sp["months"]:
+            adjusted = min(4, round(val * mult))
+            label = labels[adjusted]
+            cls = ["seo-none", "seo-low", "seo-mod", "seo-high", "seo-vhigh"][adjusted]
+            table_rows.append(f'      <td class="{cls}" title="{_h(label)}">{_h(label)}</td>')
+        table_rows.append("    </tr>")
+
+    allergens_title = _h(SEO_TITLES["allergens"][lang])
+
+    return f"""
+<!-- Pre-rendered city SEO content — removed by app.js on load -->
+<section id="seo-content" class="container">
+<h2 class="section-title">{heading}</h2>
+<p>{intro}</p>
+
+<h3>{dominant_label}</h3>
+<ul>
+{chr(10).join(dom_items)}
+</ul>
+
+<h3>{allergens_title}</h3>
+<table class="seo-allergen-table">
+    <thead><tr>
+      <th></th>
+{"".join(f"      <th>{m}</th>{chr(10)}" for m in months)}    </tr></thead>
+    <tbody>
+{chr(10).join(table_rows)}
+    </tbody>
+</table>
+
+<p>{cta}</p>
+</section>
+"""
+
+
+def select_city_in_dropdown(html, city_idx):
+    """Move the 'selected' attribute to the specified city option."""
+    html = html.replace(" selected>", ">", 1)
+    count = [0]
+    def _add_selected(m):
+        if count[0] == city_idx:
+            count[0] += 1
+            return m.group(0).replace("<option ", "<option selected ", 1)
+        count[0] += 1
+        return m.group(0)
+    return re.sub(r'<option [^>]*>[^<]*</option>', _add_selected, html)
+
+
+def city_page_url(lang, slug):
+    """Build the canonical URL for a city page."""
+    prefix = "" if lang == "tj" else f"/{lang}"
+    return f"{SITE_BASE}{prefix}/city/{slug}"
+
+
+def build_city_page(lang, city_idx, base_html, tr):
+    """Generate a city-specific HTML page from the pre-built base."""
+    city = CITIES_DATA[city_idx]
+    slug = CITY_SLUGS[city_idx]
+    city_name = get_city_name(tr, city_idx)
+    region_name = tr.get(f"region.{city['region']}.full", city["region"])
+
+    html = base_html
+
+    title = CITY_SEO_TITLE[lang].format(city=city_name)
+    html = re.sub(r"<title>[^<]*</title>", f"<title>{_h(title)}</title>", html)
+
+    desc = CITY_SEO_DESC[lang].format(
+        city=city_name, region=region_name, elev=city["elev"],
+    )
+    html = replace_meta_by_id(html, "meta-desc", desc)
+
+    og_title = CITY_SEO_TITLE[lang].format(city=city_name)
+    html = replace_meta_by_id(html, "og-title", og_title)
+    html = replace_meta_by_id(html, "og-desc", desc)
+    html = replace_meta_by_id(html, "og-image-alt", og_title)
+    html = replace_meta_by_id(html, "twitter-title", og_title)
+    html = replace_meta_by_id(html, "twitter-desc", desc)
+
+    canonical = city_page_url(lang, slug)
+    html = re.sub(
+        r'(<link\s+rel="canonical"\s+href=")[^"]*(")',
+        lambda m: m.group(1) + canonical + m.group(2),
+        html,
+    )
+    html = replace_meta(html, 'property="og:url"', canonical)
+
+    html = select_city_in_dropdown(html, city_idx)
+
+    city_seo = build_city_seo_html(city_idx, lang, tr)
+    html = re.sub(
+        r'<!-- Pre-rendered SEO content.*?</section>\s*',
+        city_seo,
+        html,
+        flags=re.DOTALL,
+    )
+
+    return html
+
+
+def write_city_page(lang, city_idx, html):
+    """Write a city page HTML file to dist/."""
+    slug = CITY_SLUGS[city_idx]
+    prefix = "" if lang == "tj" else f"{lang}/"
+    out_path = os.path.join(DIST_DIR, prefix, "city", slug, "index.html")
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    with open(out_path, "w", encoding="utf-8") as f:
+        f.write(html)
+    return out_path
+
+
+# ── Sitemap generation ──
+
+def build_sitemap():
+    """Generate sitemap.xml with home pages, tab pages, and city pages."""
+    today = "2026-06-20"
+    lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',
+        '        xmlns:xhtml="http://www.w3.org/1999/xhtml">',
+    ]
+
+    def _hreflang_links(tj_path, en_path, ru_path):
+        return [
+            f'    <xhtml:link rel="alternate" hreflang="en" href="{SITE_BASE}{en_path}"/>',
+            f'    <xhtml:link rel="alternate" hreflang="ru" href="{SITE_BASE}{ru_path}"/>',
+            f'    <xhtml:link rel="alternate" hreflang="tg" href="{SITE_BASE}{tj_path}"/>',
+            f'    <xhtml:link rel="alternate" hreflang="x-default" href="{SITE_BASE}{tj_path}"/>',
+        ]
+
+    def _url_entry(loc, tj_path, en_path, ru_path, priority, changefreq="daily"):
+        entry = [f"  <url>", f"    <loc>{SITE_BASE}{loc}</loc>"]
+        entry.extend(_hreflang_links(tj_path, en_path, ru_path))
+        entry.extend([
+            f"    <lastmod>{today}</lastmod>",
+            f"    <changefreq>{changefreq}</changefreq>",
+            f"    <priority>{priority}</priority>",
+            "  </url>",
+        ])
+        return entry
+
+    # Home pages
+    for tj, en, ru, prio in [("/", "/en/", "/ru/", "1.0")]:
+        lines.extend(_url_entry(tj, tj, en, ru, prio))
+        lines.extend(_url_entry(en, tj, en, ru, prio))
+        lines.extend(_url_entry(ru, tj, en, ru, prio))
+
+    # Tab pages
+    for tab, prio, freq in [("forecast", "0.8", "daily"), ("regions", "0.8", "daily"), ("insights", "0.7", "weekly")]:
+        tj_p, en_p, ru_p = f"/{tab}", f"/en/{tab}", f"/ru/{tab}"
+        lines.extend(_url_entry(tj_p, tj_p, en_p, ru_p, prio, freq))
+        lines.extend(_url_entry(en_p, tj_p, en_p, ru_p, prio, freq))
+        lines.extend(_url_entry(ru_p, tj_p, en_p, ru_p, prio, freq))
+
+    # City pages
+    for slug in CITY_SLUGS:
+        tj_p = f"/city/{slug}"
+        en_p = f"/en/city/{slug}"
+        ru_p = f"/ru/city/{slug}"
+        lines.extend(_url_entry(tj_p, tj_p, en_p, ru_p, "0.7"))
+        lines.extend(_url_entry(en_p, tj_p, en_p, ru_p, "0.7"))
+        lines.extend(_url_entry(ru_p, tj_p, en_p, ru_p, "0.7"))
+
+    lines.append("</urlset>")
+    return "\n".join(lines) + "\n"
+
+
+# ── Static asset copying ──
+
 COPY_FILES = [
     "app.js",
     "sw.js",
     "manifest.json",
     "robots.txt",
-    "sitemap.xml",
     "og-image.png",
     "og-image.svg",
     "og-image-en.png",
@@ -703,14 +976,34 @@ def main():
     print("build_html.py — Static HTML pre-generation")
     print(f"Output directory: {DIST_DIR}\n")
 
+    # Home pages (3 languages)
+    base_pages = {}
     for lang in ["tj", "en", "ru"]:
         html = build_lang(lang)
         out_path = write_output(lang, html)
         rel_path = os.path.relpath(out_path, SCRIPT_DIR)
         print(f"  [{lang.upper()}] {rel_path}")
+        base_pages[lang] = html
+
+    # City pages (30 cities × 3 languages)
+    city_count = 0
+    for lang in ["tj", "en", "ru"]:
+        tr = load_translations(lang)
+        for idx in range(len(CITIES_DATA)):
+            city_html = build_city_page(lang, idx, base_pages[lang], tr)
+            write_city_page(lang, idx, city_html)
+            city_count += 1
+    print(f"  Generated {city_count} city pages")
+
+    # Sitemap
+    sitemap = build_sitemap()
+    sitemap_path = os.path.join(DIST_DIR, "sitemap.xml")
+    with open(sitemap_path, "w", encoding="utf-8") as f:
+        f.write(sitemap)
+    print(f"  Generated sitemap.xml ({len(CITY_SLUGS) * 3 + 12} URLs)")
 
     n = copy_static_assets()
-    print(f"\n  Copied {n} static assets to dist/")
+    print(f"  Copied {n} static assets to dist/")
     print("\nDone.")
 
 

@@ -514,6 +514,25 @@ var CITIES = [
   { idx: 29, lat: 38.3167, lng: 69.0833, elev: 655,  region: "khatlon" },  // Yovon
 ];
 
+var CITY_SLUGS = {
+  'balkh':0,'bokhtar':1,'buston':2,'danghara':3,'dushanbe':4,
+  'farkhor':5,'ghafurov':6,'guliston':7,'hamadoni':8,'hisor':9,
+  'isfara':10,'ishkashim':11,'istaravshan':12,'khorog':13,'khujand':14,
+  'konibodom':15,'kulob':16,'murghab':17,'norak':18,'obigarm':19,
+  'panjakent':20,'rasht':21,'roghun':22,'shahritus':23,'spitamen':24,
+  'tursunzoda':25,'vahdat':26,'vakhsh':27,'vose':28,'yovon':29
+};
+
+function getCityFromPath() {
+  var parts = location.pathname.split('/');
+  var ci = parts.indexOf('city');
+  if (ci >= 0 && ci + 1 < parts.length) {
+    var slug = parts[ci + 1].toLowerCase();
+    if (slug in CITY_SLUGS) return CITY_SLUGS[slug];
+  }
+  return -1;
+}
+
 // ── Regional pollen multipliers ──
 // Based on FAO crop data, land cover surveys, and vegetation studies.
 // Dushanbe/DRS is the baseline (1.0) since the pollen calendar was calibrated there.
@@ -3192,11 +3211,16 @@ async function sharePollen() {
   // Build calendar
   buildCalendar();
 
-  // Restore last selected city from localStorage (saved as lat,lng value)
-  var savedCity = localStorage.getItem("allergytj-city");
-  if (savedCity) {
-    for (var j = 0; j < sel.options.length; j++) {
-      if (sel.options[j].value === savedCity) { sel.selectedIndex = j; break; }
+  // City URL takes priority, then localStorage
+  var cityFromUrl = getCityFromPath();
+  if (cityFromUrl >= 0) {
+    sel.selectedIndex = cityFromUrl;
+  } else {
+    var savedCity = localStorage.getItem("allergytj-city");
+    if (savedCity) {
+      for (var j = 0; j < sel.options.length; j++) {
+        if (sel.options[j].value === savedCity) { sel.selectedIndex = j; break; }
+      }
     }
   }
 
