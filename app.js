@@ -62,6 +62,16 @@ document.querySelectorAll('span.icon').forEach(function(el) {
   }
 });
 
+// ── Base URL for SEO tags ──
+var SITE_BASE = "https://allergy.tj";
+
+// ── Language detection (must run before tab routing) ──
+var _pathLang = (function() {
+  var m = window.location.pathname.match(/^\/(en|ru)(\/|$)/);
+  return m ? m[1] : null;
+})();
+var LANG = _pathLang || localStorage.getItem("allergytj-lang") || "tj";
+
 // ── Tab Routing ──
 var TABS = ['dashboard','forecast','regions','insights'];
 
@@ -444,16 +454,6 @@ function renderNearbyRegions(cityIndex, now) {
   }).join('');
   document.getElementById("dash-nearby").innerHTML = html;
 }
-
-// ── Base URL for SEO tags ──
-var SITE_BASE = "https://allergy.tj";
-
-// ── i18n: Language detection and translation loading ──
-var _pathLang = (function() {
-  var m = window.location.pathname.match(/^\/(en|ru)(\/|$)/);
-  return m ? m[1] : null;
-})();
-var LANG = _pathLang || localStorage.getItem("allergytj-lang") || "tj";
 
 // Translation data loaded from lang/*.json files
 var T = { en: {}, ru: {}, tj: {} };
@@ -1720,12 +1720,12 @@ function renderForecast(daily, now, cityElev, reg) {
       '<div>' +
         '<div class="fc-card-header">' +
           '<span class="fc-card-date">' + dy.label + '</span>' +
-          '<span class="fc-card-wx">' + wxIcon(dy.fcWxCode) + '</span>' +
+          (dy.fcWxCode >= 0 ? '<span class="fc-card-wx">' + wxIcon(dy.fcWxCode) + '</span>' : '') +
         '</div>' +
         '<div class="fc-card-risk" style="color:' + dy.info.color + '">' + dy.info.label + '</div>' +
         (chipsHtml ? '<div class="fc-card-chips">' + chipsHtml + '</div>' : '') +
       '</div>' +
-      '<div class="fc-card-conditions">' + Math.round(dy.dayLow) + '\u00B0 / ' + Math.round(dy.dayTemp) + '\u00B0C \u00B7 ' + wxDescription(dy.fcWxCode) + '</div>' +
+      '<div class="fc-card-conditions">' + (dy.fcWxCode >= 0 ? Math.round(dy.dayLow) + '\u00B0 / ' + Math.round(dy.dayTemp) + '\u00B0C \u00B7 ' + wxDescription(dy.fcWxCode) : t("fc.seasonalEstimate")) + '</div>' +
     '</div>';
     if (j === 2) {
       html += '<div class="fc-tip' + tipShort + '">' +
@@ -1755,8 +1755,7 @@ function renderForecast(daily, now, cityElev, reg) {
     for (var b = 0; b < days.length; b++) {
       var barH = Math.max(4, (days[b].peak / 4) * 100);
       barsHtml += '<div class="fc-trend-col">' +
-        '<div class="fc-trend-bar" style="height:' + barH + '%;background:' + days[b].info.color + '"' +
-        ' ontouchstart="this.classList.toggle(\'active\')">' +
+        '<div class="fc-trend-bar" style="height:' + barH + '%;background:' + days[b].info.color + '">' +
           '<span class="fc-trend-tooltip">' + days[b].label + ': ' + days[b].info.label + ' (' + days[b].peak.toFixed(1) + ')</span>' +
         '</div></div>';
       labelsHtml += '<span>' + days[b].label + '</span>';
@@ -1974,7 +1973,21 @@ async function setLanguage(lang) {
       renderDashboard(overallRisk, treeRisk, grassRisk, weedRisk, null, s.cityIndex, now, _pRisk);
       renderInsights(s.cityIndex);
       renderHourlyBreakdown(null);
-      document.getElementById("forecast-title").textContent = t("section.forecastNone");
+      // Seasonal-only forecast: render 5-day cards from pollen calendar without weather
+      var synDaily = { time: [], temperature_2m_max: [], temperature_2m_min: [],
+        precipitation_sum: [], wind_speed_10m_max: [], relative_humidity_2m_mean: [], weather_code: [] };
+      for (var fi = 0; fi <= 5; fi++) {
+        var fd = new Date(now); fd.setDate(fd.getDate() + fi);
+        synDaily.time.push(fd.toISOString().split("T")[0]);
+        synDaily.temperature_2m_max.push(22);
+        synDaily.temperature_2m_min.push(15);
+        synDaily.precipitation_sum.push(0);
+        synDaily.wind_speed_10m_max.push(0);
+        synDaily.relative_humidity_2m_mean.push(50);
+        synDaily.weather_code.push(-1);
+      }
+      renderForecast(synDaily, now, elev, rg);
+      document.getElementById("forecast-title").textContent = t("section.forecast5");
     }
 
     if (s.aq) {
@@ -2283,7 +2296,10 @@ document.getElementById('notif-overlay').addEventListener('click', function(e) {
 })();
 
 document.addEventListener("touchstart", function(e) {
-  if (!e.target.closest(".fc-trend-bar")) {
+  var bar = e.target.closest(".fc-trend-bar");
+  if (bar) {
+    bar.classList.toggle("active");
+  } else {
     var active = document.querySelectorAll(".fc-trend-bar.active");
     for (var i = 0; i < active.length; i++) active[i].classList.remove("active");
   }
@@ -2589,7 +2605,7 @@ function computeRegionRisks(cityRisks) {
   return rr;
 }
 
-async function renderRegionsTab() {
+async function renderRegionsTab(skipFetch) {
   try {
     _lastRegionData = null;
     var now = new Date();
@@ -2604,7 +2620,7 @@ async function renderRegionsTab() {
     renderRegionMap(regionRisks, cityRisks);
     renderRegionSidebar(cityRisks);
     renderRegionAlert(regionRisks);
-    if (!_regionWxCache) {
+    if (!skipFetch && !_regionWxCache) {
       fetchRegionWeather().then(function(factors) {
         var cityRisks2 = computeAllCityRisks(new Date(), factors);
         var regionRisks2 = computeRegionRisks(cityRisks2);
@@ -3230,6 +3246,9 @@ async function sharePollen() {
   // Render Insights tab immediately (doesn't need API data)
   renderTimelineCalendar();
   renderActiveNow(sel.selectedIndex);
+
+  // Pre-render Regions tab so crawlers see map + city list content (skip weather fetch — fetchData handles it)
+  renderRegionsTab(true);
 
   // Auto-fetch pollen data for selected city
   fetchData();

@@ -640,12 +640,37 @@ def inject_seo_css(html):
     return html.replace("</style>", SEO_CSS + "</style>", 1)
 
 
+def replace_nav_hrefs(html, lang):
+    """Replace nav href attributes with correct language-prefixed paths."""
+    prefix = "" if lang == "tj" else f"/{lang}"
+    dash_path = prefix + "/" if prefix else "/"
+    tab_map = {
+        "/dashboard": dash_path,
+        "/forecast": prefix + "/forecast",
+        "/regions": prefix + "/regions",
+        "/insights": prefix + "/insights",
+    }
+    for old_path, new_path in tab_map.items():
+        html = html.replace(f'href="{old_path}"', f'href="{new_path}"')
+    if prefix:
+        html = html.replace(
+            'href="/" class="nav-brand"',
+            f'href="{dash_path}" class="nav-brand"',
+        )
+        html = html.replace(
+            'href="/regions" id="dash-view-all"',
+            f'href="{prefix}/regions" id="dash-view-all"',
+        )
+    return html
+
+
 def build_lang(lang):
     tr = load_translations(lang)
     html = read_template()
     html = transform_head(html, lang, tr)
     html = translate_body(html, tr)
     html = translate_options(html, tr)
+    html = replace_nav_hrefs(html, lang)
     html = inject_seo_content(html, lang, tr)
     html = inject_seo_css(html)
     return html
