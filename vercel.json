@@ -1,4 +1,5 @@
 {
+  "framework": null,
   "buildCommand": "python3 build_html.py",
   "outputDirectory": "dist",
   "rewrites": [
