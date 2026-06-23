@@ -90,8 +90,7 @@ AllergyTJ/
 ├── testing/
 │   └── build_map_paths.py  # Dev tool: GADM polygon simplification + city containment
 ├── docs/
-│   ├── ROADMAP.md      # Product roadmap and planned features
-│   └── PRD.md          # Product requirements document
+│   └── ROADMAP.md      # Product roadmap and planned features
 ├── dist/               # Build output (gitignored) — Vercel serves from here
 ├── .gitignore
 ├── CODE_OF_CONDUCT.md

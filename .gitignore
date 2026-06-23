@@ -45,6 +45,7 @@ desktop.ini
 build_prd_docx.py
 
 # Internal docs
+docs/PRD.md
 docs/PRD Prompts.md
 docs/go-public-plan.md
 docs/strategy/
