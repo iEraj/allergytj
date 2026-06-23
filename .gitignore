@@ -34,3 +34,21 @@ node_modules/
 
 # OS
 desktop.ini
+
+# Claude Code (personal config)
+.claude/
+
+# Binary document artifacts
+*.docx
+
+# Internal scripts
+build_prd_docx.py
+
+# Internal docs
+docs/PRD Prompts.md
+docs/go-public-plan.md
+docs/strategy/
+
+# Testing assets (dev tool stays accessible)
+testing/*
+!testing/build_map_paths.py

@@ -1,8 +1,8 @@
 # AllergyTJ
 
-**Seasonal allergy tracker for Tajikistan** — pollen risk forecast powered by seasonal flora data and live weather.
+**Pollen risk & air quality tracker for Tajikistan** — combines seasonal flora data, live weather, and real-time air quality monitoring for 30 cities.
 
-No pollen monitoring stations exist in Tajikistan. AllergyTJ fills the gap by estimating pollen risk from curated botanical data and real-time weather conditions.
+To my knowledge, Tajikistan does not yet have a public pollen monitoring network. AllergyTJ bridges that gap by estimating pollen risk from curated botanical data and real-time weather conditions, alongside live air quality data (US AQI, PM2.5, PM10, and 4 other pollutants) from the EU Copernicus CAMS satellite model.
 
 **Live**: [allergy.tj](https://allergy.tj)
 
@@ -66,26 +66,37 @@ AllergyTJ/
 ├── app.js              # All application JavaScript (rendering, routing, API calls)
 ├── sw.js               # Service worker (PWA caching, offline support)
 ├── manifest.json       # PWA manifest (app identity, icons, display mode)
+├── build_html.py       # Build script: generates per-language HTML + copies assets to dist/
+├── package.json        # Node config (ESM for serverless function)
 ├── lang/
 │   ├── en.json         # English translations (~402 keys)
 │   ├── ru.json         # Russian translations
 │   └── tj.json         # Tajik translations
-├── icons/              # PWA icons (10 PNGs + 1 master SVG)
+├── icons/              # PWA icons (10 PNGs + 2 master SVGs)
+│   ├── icon.svg        # Standard icon source
+│   └── icon-maskable.svg # Android adaptive icon (80% safe zone)
+├── api/
+│   └── og.js           # Vercel serverless function (bot-aware OG tags per language)
 ├── api_proxy.py        # Local dev server (Flask, serves index.html)
-├── vercel.json         # Vercel deployment config + security headers
-├── robots.txt          # Search engine crawl directives
-├── sitemap.xml         # Sitemap for search engines
-├── og-image.png        # Open Graph social preview image (1200×630)
+├── build_icons.py      # Dev tool: rasterizes SVG icons to all PWA PNGs via cairosvg
+├── vercel.json         # Vercel deployment config + security headers + language routing
+├── robots.txt          # Search engine crawl directives (incl. AI crawler allow rules)
+├── sitemap.xml         # Generated sitemap (102 URLs with hreflang alternates)
+├── og-image.png        # Tajik OG image (1200×630)
+├── og-image-en.png     # English OG image
+├── og-image-ru.png     # Russian OG image
 ├── requirements.txt    # Python dependencies (flask)
 ├── CLAUDE.md           # Development guidelines and architecture
 ├── testing/
-│   ├── build_map_paths.py  # Dev tool: GADM polygon simplification + city containment checks
-│   └── favicon-preview.html # Favicon design preview at multiple sizes
+│   └── build_map_paths.py  # Dev tool: GADM polygon simplification + city containment
 ├── docs/
 │   ├── ROADMAP.md      # Product roadmap and planned features
-│   ├── PRD.md          # Product requirements document
-│   └── go-public-plan.md  # Repo visibility audit and checklist
+│   └── PRD.md          # Product requirements document
+├── dist/               # Build output (gitignored) — Vercel serves from here
 ├── .gitignore
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── LICENSE             # MIT
 └── README.md
 ```
 
@@ -93,12 +104,14 @@ AllergyTJ/
 
 ### Vercel (production)
 
-The site is deployed as a static site on Vercel. Pushing to `master` triggers auto-deploy.
+The site deploys as a static site + one serverless function on Vercel. Pushing to `master` triggers auto-deploy.
 
-Configuration is in `vercel.json`:
-- Static output from repo root
-- Language routing rewrites (`/en/*`, `/ru/*`, `/tj/*` → `index.html`)
-- SPA rewrite (all remaining routes serve `index.html`)
+Configuration in `vercel.json`:
+- `framework: null` (prevents auto-detection)
+- `buildCommand: "python3 build_html.py"` — generates per-language HTML files + copies static assets to `dist/`
+- `outputDirectory: "dist"` — Vercel serves from the build output
+- Bot-detecting rewrites — social media bots (Telegram, Facebook, Twitter, etc.) get language-specific OG tags via `api/og.js` serverless function
+- Language routing rewrites (`/en/*`, `/ru/*` → pre-rendered HTML)
 - Security headers (CSP A+ with SHA-256 hashes, HSTS preload, X-Frame-Options, etc.)
 
 ### Manual / other hosting
@@ -125,4 +138,6 @@ Copy `index.html` and `app.js` to any static file server. Requirements:
 
 ## License
 
-© 2026 Eraj Ismatulloev. All rights reserved. Built with Claude Code.
+[MIT](LICENSE) © 2026 Eraj Ismatulloev
+
+Built solo with AI-assisted development.
