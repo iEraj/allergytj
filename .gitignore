@@ -1,4 +1,3 @@
-# Python
 __pycache__/
 *.pyc
 *.pyo
@@ -7,20 +6,12 @@ dist/
 build/
 venv/
 .venv/
-
-# Environment / secrets
 .env
 .env.*
 *.key
 *.pem
-
-# Internal docs (not for public repo)
-docs/infrastructure-pricing.md
-
-# Vercel
 .vercel/
-
-# IDE / editor
+node_modules/
 .vscode/
 .idea/
 *.swp
@@ -28,28 +19,11 @@ docs/infrastructure-pricing.md
 *~
 .DS_Store
 Thumbs.db
-
-# Node (shouldn't exist, but safety net)
-node_modules/
-
-# OS
 desktop.ini
-
-# Claude Code (personal config)
-.claude/
-
-# Binary document artifacts
+*.log
 *.docx
-
-# Internal scripts
-build_prd_docx.py
-
-# Internal docs
-docs/PRD.md
-docs/PRD Prompts.md
-docs/go-public-plan.md
-docs/strategy/
-
-# Testing assets (dev tool stays accessible)
+.claude/
+CLAUDE.md
+docs/
 testing/*
 !testing/build_map_paths.py
