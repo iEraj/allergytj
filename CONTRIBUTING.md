@@ -21,7 +21,7 @@ AllergyTJ is a solo project with a fixed development roadmap. At this time, **pu
 
 ## Development
 
-See the [README](README.md) for local setup instructions and the [ROADMAP](docs/ROADMAP.md) for planned features.
+See the [README](README.md) for local setup instructions.
 
 ## Code of Conduct
 
