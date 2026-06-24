@@ -86,12 +86,8 @@ AllergyTJ/
 ├── og-image-en.png     # English OG image
 ├── og-image-ru.png     # Russian OG image
 ├── requirements.txt    # Python dependencies (flask)
-├── CLAUDE.md           # Development guidelines and architecture
 ├── testing/
 │   └── build_map_paths.py  # Dev tool: GADM polygon simplification + city containment
-├── docs/
-│   └── ROADMAP.md      # Product roadmap and planned features
-├── dist/               # Build output (gitignored) — Vercel serves from here
 ├── .gitignore
 ├── CODE_OF_CONDUCT.md
 ├── CONTRIBUTING.md
