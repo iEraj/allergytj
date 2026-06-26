@@ -259,6 +259,11 @@
   "share.imageSaved": "Изображение сохранено, текст скопирован!",
   "share.pollenRisk": "Риск пыльцы",
   "share.checkCard": "Проверьте на",
+  "share.uvLow": "Низкий",
+  "share.uvModerate": "Умеренный",
+  "share.uvHigh": "Высокий",
+  "share.uvVeryHigh": "Оч. высокий",
+  "share.uvExtreme": "Экстремальный",
 
   "footer.authorName": "Эрадж Исматуллоев",
   "footer.allRights": "Все права защищены.",

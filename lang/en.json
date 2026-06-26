@@ -259,6 +259,11 @@
   "share.imageSaved": "Image saved, text copied!",
   "share.pollenRisk": "Pollen Risk",
   "share.checkCard": "Check yours at",
+  "share.uvLow": "Low",
+  "share.uvModerate": "Moderate",
+  "share.uvHigh": "High",
+  "share.uvVeryHigh": "Very High",
+  "share.uvExtreme": "Extreme",
 
   "footer.authorName": "Eraj Ismatulloev",
   "footer.allRights": "All rights reserved.",

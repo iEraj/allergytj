@@ -1433,6 +1433,14 @@ function uvColor(val) {
   return "#388e3c";
 }
 
+function uvShareInfo(val) {
+  if (val >= 11) return { color: "#6a1b9a", label: t("share.uvExtreme") };
+  if (val >= 8) return { color: "#c62828", label: t("share.uvVeryHigh") };
+  if (val >= 6) return { color: "#d84315", label: t("share.uvHigh") };
+  if (val >= 3) return { color: "#7a6200", label: t("share.uvModerate") };
+  return { color: "#2e7d32", label: t("share.uvLow") };
+}
+
 function renderWeather(temp, humidity, wind, todayPrecip, code, dailyCode, uv) {
   var strip = document.getElementById("weather-strip");
   var nowDesc = wxDescription(code);
@@ -2876,7 +2884,6 @@ function generateShareCard(data) {
   var ctx = canvas.getContext("2d");
   var hasAqi = data.aqi != null;
   var hasWx = data.temp != null;
-  var hasPers = data.isPersonal && data.generalRisk != null;
 
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, W, H);
@@ -2956,7 +2963,7 @@ function generateShareCard(data) {
   var sw = ctx.measureText(data.risk.toFixed(1)).width;
   ctx.font = "42px system-ui, sans-serif";
   ctx.fillStyle = "#c0c0c0";
-  ctx.fillText("/ 4", P + 50 + sw, 416);
+  ctx.fillText("/ 4", P + 40 + sw + 8, 416);
 
   ctx.font = "bold 48px system-ui, sans-serif";
   ctx.fillStyle = info.bg;
@@ -3013,76 +3020,106 @@ function generateShareCard(data) {
     ay += 90;
   }
 
-  // ── Bottom section: AQI + Weather ──
-  var by = 800;
+  // ── Bottom section: AQI + Weather + UV ──
+  var by = 815;
+  var hasUv = data.uv != null;
+  var boxH = 110;
+  var boxR = 14;
+  var boxPad = 24;
+  var _shareAqiColors = ["#1b5e20", "#7a6200", "#bf360c", "#b71c1c", "#4a148c"];
+
+  function _fitText(c, text, maxW, startFs, minFs) {
+    var fs = startFs;
+    c.font = fs + "px system-ui, sans-serif";
+    while (c.measureText(text).width > maxW && fs > minFs) {
+      fs -= 2;
+      c.font = fs + "px system-ui, sans-serif";
+    }
+    return fs;
+  }
+
+  function _drawAqiBox(x, w, ai) {
+    ctx.fillStyle = _shareAqiColors[ai.idx] || ai.color;
+    ctx.beginPath();
+    ctx.roundRect(x, by, w, boxH, boxR);
+    ctx.fill();
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 26px system-ui, sans-serif";
+    ctx.fillText("US AQI", x + boxPad, by + 40);
+    ctx.font = "bold 48px system-ui, sans-serif";
+    var numStr = String(Math.round(data.aqi));
+    ctx.fillText(numStr, x + boxPad, by + 86);
+    var nw = ctx.measureText(numStr).width;
+    var fs = _fitText(ctx, ai.label, w - nw - boxPad - 38, 26, 20);
+    ctx.font = fs + "px system-ui, sans-serif";
+    ctx.fillText(ai.label, x + boxPad + nw + 14, by + 86);
+  }
+
+  function _drawWxBox(x, w) {
+    ctx.fillStyle = "#e8ece8";
+    ctx.beginPath();
+    ctx.roundRect(x, by, w, boxH, boxR);
+    ctx.fill();
+    ctx.fillStyle = "#333";
+    var wl = Math.round(data.temp) + "°C";
+    if (data.humidity != null) wl += "  ·  " + data.humidity + "%";
+    var fs = _fitText(ctx, wl, w - boxPad * 2, 30, 22);
+    ctx.font = "bold " + fs + "px system-ui, sans-serif";
+    ctx.fillText(wl, x + boxPad, by + 40);
+    if (data.condition) {
+      ctx.fillStyle = "#555";
+      _fitText(ctx, data.condition, w - boxPad * 2, 26, 18);
+      ctx.fillText(data.condition, x + boxPad, by + 82);
+    }
+  }
+
+  function _drawUvBox(x, w) {
+    var uvi = uvShareInfo(data.uv);
+    ctx.fillStyle = uvi.color;
+    ctx.beginPath();
+    ctx.roundRect(x, by, w, boxH, boxR);
+    ctx.fill();
+    ctx.fillStyle = "#fff";
+    var uvLabel = t("wx.label.uv");
+    var lfs = _fitText(ctx, uvLabel, w - boxPad * 2, 26, 20);
+    ctx.font = "bold " + lfs + "px system-ui, sans-serif";
+    ctx.fillText(uvLabel, x + boxPad, by + 40);
+    ctx.font = "bold 48px system-ui, sans-serif";
+    var numStr = String(data.uv);
+    ctx.fillText(numStr, x + boxPad, by + 86);
+    var nw = ctx.measureText(numStr).width;
+    var fs = _fitText(ctx, uvi.label, w - nw - boxPad - 38, 26, 20);
+    ctx.font = fs + "px system-ui, sans-serif";
+    ctx.fillText(uvi.label, x + boxPad + nw + 14, by + 86);
+  }
 
   if (hasAqi && hasWx) {
     var ai = aqiInfo(data.aqi);
-    var aqW = 300;
-    ctx.fillStyle = ai.color;
-    ctx.beginPath();
-    ctx.roundRect(P, by, aqW, 100, 16);
-    ctx.fill();
-    ctx.fillStyle = "#fff";
-    ctx.font = "bold 24px system-ui, sans-serif";
-    ctx.fillText("US AQI", P + 28, by + 36);
-    ctx.font = "bold 44px system-ui, sans-serif";
-    ctx.fillText(String(Math.round(data.aqi)), P + 28, by + 80);
-    var aqnw = ctx.measureText(String(Math.round(data.aqi))).width;
-    ctx.font = "28px system-ui, sans-serif";
-    ctx.fillText(ai.label, P + 40 + aqnw, by + 78);
-
-    var wxX = P + aqW + 20;
-    ctx.fillStyle = "#f4f4f4";
-    ctx.beginPath();
-    ctx.roundRect(wxX, by, W - P - wxX, 100, 16);
-    ctx.fill();
-    ctx.font = "32px system-ui, sans-serif";
-    ctx.fillStyle = "#444";
-    var wl = Math.round(data.temp) + "°C";
-    if (data.humidity != null) wl += "  ·  " + data.humidity + "%";
-    if (data.uv != null) wl += "  ·  UV " + data.uv;
-    ctx.fillText(wl, wxX + 28, by + 42);
-    if (data.condition) {
-      ctx.font = "30px system-ui, sans-serif";
-      ctx.fillStyle = "#777";
-      ctx.fillText(data.condition, wxX + 28, by + 80);
+    if (hasUv) {
+      var gap = 16;
+      var boxW = (CW - gap * 2) / 3;
+      _drawAqiBox(P, boxW, ai);
+      _drawWxBox(P + boxW + gap, boxW);
+      _drawUvBox(P + (boxW + gap) * 2, boxW);
+    } else {
+      var aqW = 340;
+      var gap = 16;
+      _drawAqiBox(P, aqW, ai);
+      _drawWxBox(P + aqW + gap, CW - aqW - gap);
     }
   } else if (hasAqi) {
-    var ai2 = aqiInfo(data.aqi);
-    ctx.fillStyle = ai2.color;
-    ctx.beginPath();
-    ctx.roundRect(P, by, 300, 100, 16);
-    ctx.fill();
-    ctx.fillStyle = "#fff";
-    ctx.font = "bold 24px system-ui, sans-serif";
-    ctx.fillText("US AQI", P + 28, by + 36);
-    ctx.font = "bold 44px system-ui, sans-serif";
-    ctx.fillText(String(Math.round(data.aqi)), P + 28, by + 80);
-    var aqnw2 = ctx.measureText(String(Math.round(data.aqi))).width;
-    ctx.font = "28px system-ui, sans-serif";
-    ctx.fillText(ai2.label, P + 40 + aqnw2, by + 78);
+    _drawAqiBox(P, 340, aqiInfo(data.aqi));
   } else if (hasWx) {
-    ctx.fillStyle = "#f4f4f4";
-    ctx.beginPath();
-    ctx.roundRect(P, by, CW, 100, 16);
-    ctx.fill();
-    ctx.font = "32px system-ui, sans-serif";
-    ctx.fillStyle = "#444";
-    var wl2 = Math.round(data.temp) + "°C";
-    if (data.humidity != null) wl2 += "  ·  " + data.humidity + "%";
-    if (data.uv != null) wl2 += "  ·  UV " + data.uv;
-    if (data.condition) wl2 += "  ·  " + data.condition;
-    ctx.fillText(wl2, P + 28, by + 60);
+    if (hasUv) {
+      var gap = 16;
+      var halfW = (CW - gap) / 2;
+      _drawWxBox(P, halfW);
+      _drawUvBox(P + halfW + gap, halfW);
+    } else {
+      _drawWxBox(P, CW);
+    }
   }
 
-  // ── Personal risk note ──
-  if (hasPers) {
-    ctx.font = "30px system-ui, sans-serif";
-    ctx.fillStyle = "#999";
-    var gi = getRiskInfo(data.generalRisk);
-    ctx.fillText(t("profile.generalRisk") + ": " + data.generalRisk.toFixed(1) + " — " + gi.label, P, 940);
-  }
 
   return canvas;
 }
@@ -3156,7 +3193,7 @@ async function sharePollen() {
     var cur = s.wx.current;
     cardData.temp = cur.temperature_2m;
     cardData.humidity = cur.relative_humidity_2m;
-    cardData.uv = s.wx.daily && s.wx.daily.uv_index_max ? Math.round(s.wx.daily.uv_index_max[0]) : null;
+    cardData.uv = cur.uv_index != null ? Math.round(cur.uv_index) : null;
     cardData.condition = wxDescription(cur.weather_code);
   }
 
