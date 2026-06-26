@@ -2,6 +2,9 @@
   "framework": null,
   "buildCommand": "python3 build_html.py",
   "outputDirectory": "dist",
+  "crons": [
+    { "path": "/api/telegram-post", "schedule": "0 2 * * *" }
+  ],
   "rewrites": [
     { "source": "/en/:path*", "has": [{ "type": "header", "key": "user-agent", "value": "(?i).*(TelegramBot|facebookexternalhit|Twitterbot|LinkedInBot|WhatsApp|Slackbot|Discordbot|vkShare|Pinterestbot).*" }], "destination": "/api/og?lang=en" },
     { "source": "/ru/:path*", "has": [{ "type": "header", "key": "user-agent", "value": "(?i).*(TelegramBot|facebookexternalhit|Twitterbot|LinkedInBot|WhatsApp|Slackbot|Discordbot|vkShare|Pinterestbot).*" }], "destination": "/api/og?lang=ru" },

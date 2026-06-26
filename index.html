@@ -1546,6 +1546,10 @@
     border-top: 1px solid var(--border);
   }
   .note a { color: var(--muted); text-decoration: underline; }
+  .footer-socials { display: flex; justify-content: center; gap: 12px; padding-bottom: 12px; }
+  .footer-social { display: inline-flex; align-items: center; justify-content: center; color: var(--muted) !important; text-decoration: none !important; transition: color 0.2s; }
+  .footer-social:hover { color: var(--primary) !important; }
+  .footer-social .icon { width: 20px; height: 20px; }
   .note a:hover { color: var(--text); }
 
   /* Scroll-to-top button */
@@ -2606,6 +2610,7 @@
     <span data-i18n="footer.disclaimer">Pollen risk estimates based on seasonal flora data and live weather. Not medical advice. Consult a healthcare professional if you experience allergy symptoms.</span>
     <br>© 2026 <a href="https://ca.linkedin.com/in/erajismatulloev" target="_blank" rel="noopener" data-i18n="footer.authorName">Eraj Ismatulloev</a>. <span data-i18n="footer.allRights">All rights reserved.</span>
   </p>
+  <div class="footer-socials"><a href="https://t.me/allergytj" target="_blank" rel="noopener" class="footer-social" aria-label="Telegram"><span class="icon">send</span></a></div>
 </footer>
 
 <!-- Bottom Tab Bar (mobile) -->
