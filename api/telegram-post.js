@@ -134,7 +134,8 @@ export default async function handler(req, res) {
       lines.push('');
     }
     lines.push(wxLineTJ);
-    if (uvLineTJ) lines.push(uvLineTJ);
+    lines.push('');
+    if (uvLineTJ) { lines.push(uvLineTJ); lines.push(''); }
     lines.push(humWindTJ);
 
     lines.push('');
@@ -153,7 +154,8 @@ export default async function handler(req, res) {
       lines.push('');
     }
     lines.push(wxLineRU);
-    if (uvLineRU) lines.push(uvLineRU);
+    lines.push('');
+    if (uvLineRU) { lines.push(uvLineRU); lines.push(''); }
     lines.push(humWindRU);
 
     lines.push('');
@@ -172,7 +174,8 @@ export default async function handler(req, res) {
       lines.push('');
     }
     lines.push(wxLineEN);
-    if (uvLineEN) lines.push(uvLineEN);
+    lines.push('');
+    if (uvLineEN) { lines.push(uvLineEN); lines.push(''); }
     lines.push(humWindEN);
 
     lines.push('');
