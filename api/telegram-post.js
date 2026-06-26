@@ -111,13 +111,16 @@ export default async function handler(req, res) {
     // Build trilingual message
     var lines = [];
 
-    var wxLineTJ = '🌡 ' + Math.round(temp) + '°C  ·  ' + (WX_TJ[code] || '') + (tempMax != null ? '\n     ↑ ' + Math.round(tempMax) + '°  ↓ ' + Math.round(tempMin) + '°' : '');
-    var wxLineRU = '🌡 ' + Math.round(temp) + '°C  ·  ' + (WX_RU[code] || '') + (tempMax != null ? '\n     ↑ ' + Math.round(tempMax) + '°  ↓ ' + Math.round(tempMin) + '°' : '');
-    var wxLineEN = '🌡 ' + Math.round(temp) + '°C  ·  ' + (WX_EN[code] || '') + (tempMax != null ? '\n     ↑ ' + Math.round(tempMax) + '°  ↓ ' + Math.round(tempMin) + '°' : '');
-    var uvLine = uv != null ? uvEmoji(Math.round(uv)) + ' ' + Math.round(uv) : '';
-    var humWindTJ = '💧 ' + hum + '%  ·  💨 ' + Math.round(wind) + ' км/соат';
-    var humWindRU = '💧 ' + hum + '%  ·  💨 ' + Math.round(wind) + ' км/ч';
-    var humWindEN = '💧 ' + hum + '%  ·  💨 ' + Math.round(wind) + ' km/h';
+    var hiLo = tempMax != null ? '  ·  ↑ ' + Math.round(tempMax) + '°  ↓ ' + Math.round(tempMin) + '°' : '';
+    var wxLineTJ = '🌡 <b>Ҳарорат:</b> ' + Math.round(temp) + '°C  ·  ' + (WX_TJ[code] || '') + hiLo;
+    var wxLineRU = '🌡 <b>Температура:</b> ' + Math.round(temp) + '°C  ·  ' + (WX_RU[code] || '') + hiLo;
+    var wxLineEN = '🌡 <b>Temperature:</b> ' + Math.round(temp) + '°C  ·  ' + (WX_EN[code] || '') + hiLo;
+    var uvLineTJ = uv != null ? uvEmoji(Math.round(uv)) + ' <b>Индекси УФ:</b> ' + Math.round(uv) : '';
+    var uvLineRU = uv != null ? uvEmoji(Math.round(uv)) + ' <b>УФ-индекс:</b> ' + Math.round(uv) : '';
+    var uvLineEN = uv != null ? uvEmoji(Math.round(uv)) + ' <b>UV Index:</b> ' + Math.round(uv) : '';
+    var humWindTJ = '💧 <b>Намнокӣ:</b> ' + hum + '%  ·  💨 <b>Шамол:</b> ' + Math.round(wind) + ' км/соат';
+    var humWindRU = '💧 <b>Влажность:</b> ' + hum + '%  ·  💨 <b>Ветер:</b> ' + Math.round(wind) + ' км/ч';
+    var humWindEN = '💧 <b>Humidity:</b> ' + hum + '%  ·  💨 <b>Wind:</b> ' + Math.round(wind) + ' km/h';
 
     // ── Tajik section ──
     lines.push('🌿 <b>AllergyTJ — Душанбе</b>');
@@ -133,7 +136,7 @@ export default async function handler(req, res) {
     }
     lines.push(wxLineTJ);
     lines.push('');
-    if (uvLine) { lines.push(uvLine); lines.push(''); }
+    if (uvLineTJ) { lines.push(uvLineTJ); lines.push(''); }
     lines.push(humWindTJ);
 
     lines.push('');
@@ -153,7 +156,7 @@ export default async function handler(req, res) {
     }
     lines.push(wxLineRU);
     lines.push('');
-    if (uvLine) { lines.push(uvLine); lines.push(''); }
+    if (uvLineRU) { lines.push(uvLineRU); lines.push(''); }
     lines.push(humWindRU);
 
     lines.push('');
@@ -173,7 +176,7 @@ export default async function handler(req, res) {
     }
     lines.push(wxLineEN);
     lines.push('');
-    if (uvLine) { lines.push(uvLine); lines.push(''); }
+    if (uvLineEN) { lines.push(uvLineEN); lines.push(''); }
     lines.push(humWindEN);
 
     lines.push('');
