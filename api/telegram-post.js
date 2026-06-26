@@ -111,6 +111,16 @@ export default async function handler(req, res) {
     // Build trilingual message
     var lines = [];
 
+    var wxLineTJ = '🌡 ' + Math.round(temp) + '°C  ·  ' + (WX_TJ[code] || '') + (tempMax != null ? '\n     ↑ ' + Math.round(tempMax) + '°  ↓ ' + Math.round(tempMin) + '°' : '');
+    var wxLineRU = '🌡 ' + Math.round(temp) + '°C  ·  ' + (WX_RU[code] || '') + (tempMax != null ? '\n     ↑ ' + Math.round(tempMax) + '°  ↓ ' + Math.round(tempMin) + '°' : '');
+    var wxLineEN = '🌡 ' + Math.round(temp) + '°C  ·  ' + (WX_EN[code] || '') + (tempMax != null ? '\n     ↑ ' + Math.round(tempMax) + '°  ↓ ' + Math.round(tempMin) + '°' : '');
+    var uvLineTJ = uv != null ? uvEmoji(Math.round(uv)) + ' Индекси УФ: ' + Math.round(uv) : '';
+    var uvLineRU = uv != null ? uvEmoji(Math.round(uv)) + ' УФ-индекс: ' + Math.round(uv) : '';
+    var uvLineEN = uv != null ? uvEmoji(Math.round(uv)) + ' UV Index: ' + Math.round(uv) : '';
+    var humWindTJ = '💧 Намнокӣ: ' + hum + '%  ·  💨 Шамол: ' + Math.round(wind) + ' км/соат';
+    var humWindRU = '💧 Влажность: ' + hum + '%  ·  💨 Ветер: ' + Math.round(wind) + ' км/ч';
+    var humWindEN = '💧 Humidity: ' + hum + '%  ·  💨 Wind: ' + Math.round(wind) + ' km/h';
+
     // ── Tajik section ──
     lines.push('🌿 <b>AllergyTJ — Душанбе</b>');
     lines.push('📅 ' + dateStr);
@@ -119,12 +129,13 @@ export default async function handler(req, res) {
     lines.push('🌳 Дарахтон: ' + treeRisk.toFixed(1) + '  |  🌾 Алаф: ' + grassRisk.toFixed(1) + '  |  🌿 Бегона: ' + weedRisk.toFixed(1));
     lines.push('');
     if (aqi != null) {
-      lines.push(AQI_EMOJI[ai] + ' Сифати ҳаво: US AQI ' + aqi + ' — ' + AQI_TJ[ai]);
-      if (pm25 != null) lines.push('    PM2.5: ' + pm25.toFixed(1) + ' мкг/м³' + (pm10 != null ? '  |  PM10: ' + pm10.toFixed(1) + ' мкг/м³' : ''));
+      lines.push(AQI_EMOJI[ai] + ' <b>Сифати ҳаво:</b> US AQI ' + aqi + ' — ' + AQI_TJ[ai]);
+      if (pm25 != null) lines.push('     PM2.5: ' + pm25.toFixed(1) + ' мкг/м³' + (pm10 != null ? '  ·  PM10: ' + pm10.toFixed(1) + ' мкг/м³' : ''));
+      lines.push('');
     }
-    lines.push('🌡 ' + Math.round(temp) + '°C (' + (WX_TJ[code] || '') + ')' + (tempMax != null ? '  ↑' + Math.round(tempMax) + '° ↓' + Math.round(tempMin) + '°' : ''));
-    if (uv != null) lines.push(uvEmoji(Math.round(uv)) + ' Индекси УФ: ' + Math.round(uv));
-    lines.push('💧 ' + hum + '%  |  💨 ' + Math.round(wind) + ' км/с');
+    lines.push(wxLineTJ);
+    if (uvLineTJ) lines.push(uvLineTJ);
+    lines.push(humWindTJ);
 
     lines.push('');
     lines.push('— — — — — — — — — —');
@@ -137,12 +148,13 @@ export default async function handler(req, res) {
     lines.push('🌳 Деревья: ' + treeRisk.toFixed(1) + '  |  🌾 Трава: ' + grassRisk.toFixed(1) + '  |  🌿 Сорняки: ' + weedRisk.toFixed(1));
     lines.push('');
     if (aqi != null) {
-      lines.push(AQI_EMOJI[ai] + ' Качество воздуха: US AQI ' + aqi + ' — ' + AQI_RU[ai]);
-      if (pm25 != null) lines.push('    PM2.5: ' + pm25.toFixed(1) + ' мкг/м³' + (pm10 != null ? '  |  PM10: ' + pm10.toFixed(1) + ' мкг/м³' : ''));
+      lines.push(AQI_EMOJI[ai] + ' <b>Качество воздуха:</b> US AQI ' + aqi + ' — ' + AQI_RU[ai]);
+      if (pm25 != null) lines.push('     PM2.5: ' + pm25.toFixed(1) + ' мкг/м³' + (pm10 != null ? '  ·  PM10: ' + pm10.toFixed(1) + ' мкг/м³' : ''));
+      lines.push('');
     }
-    lines.push('🌡 ' + Math.round(temp) + '°C (' + (WX_RU[code] || '') + ')' + (tempMax != null ? '  ↑' + Math.round(tempMax) + '° ↓' + Math.round(tempMin) + '°' : ''));
-    if (uv != null) lines.push(uvEmoji(Math.round(uv)) + ' УФ-индекс: ' + Math.round(uv));
-    lines.push('💧 ' + hum + '%  |  💨 ' + Math.round(wind) + ' км/ч');
+    lines.push(wxLineRU);
+    if (uvLineRU) lines.push(uvLineRU);
+    lines.push(humWindRU);
 
     lines.push('');
     lines.push('— — — — — — — — — —');
@@ -155,12 +167,13 @@ export default async function handler(req, res) {
     lines.push('🌳 Trees: ' + treeRisk.toFixed(1) + '  |  🌾 Grass: ' + grassRisk.toFixed(1) + '  |  🌿 Weeds: ' + weedRisk.toFixed(1));
     lines.push('');
     if (aqi != null) {
-      lines.push(AQI_EMOJI[ai] + ' Air Quality: US AQI ' + aqi + ' — ' + AQI_EN[ai]);
-      if (pm25 != null) lines.push('    PM2.5: ' + pm25.toFixed(1) + ' µg/m³' + (pm10 != null ? '  |  PM10: ' + pm10.toFixed(1) + ' µg/m³' : ''));
+      lines.push(AQI_EMOJI[ai] + ' <b>Air Quality:</b> US AQI ' + aqi + ' — ' + AQI_EN[ai]);
+      if (pm25 != null) lines.push('     PM2.5: ' + pm25.toFixed(1) + ' µg/m³' + (pm10 != null ? '  ·  PM10: ' + pm10.toFixed(1) + ' µg/m³' : ''));
+      lines.push('');
     }
-    lines.push('🌡 ' + Math.round(temp) + '°C (' + (WX_EN[code] || '') + ')' + (tempMax != null ? '  ↑' + Math.round(tempMax) + '° ↓' + Math.round(tempMin) + '°' : ''));
-    if (uv != null) lines.push(uvEmoji(Math.round(uv)) + ' UV Index: ' + Math.round(uv));
-    lines.push('💧 ' + hum + '%  |  💨 ' + Math.round(wind) + ' km/h');
+    lines.push(wxLineEN);
+    if (uvLineEN) lines.push(uvLineEN);
+    lines.push(humWindEN);
 
     lines.push('');
     lines.push('🔗 <a href="https://allergy.tj">allergy.tj</a>');
