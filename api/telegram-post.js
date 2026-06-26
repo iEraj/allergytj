@@ -114,12 +114,10 @@ export default async function handler(req, res) {
     var wxLineTJ = '🌡 ' + Math.round(temp) + '°C  ·  ' + (WX_TJ[code] || '') + (tempMax != null ? '\n     ↑ ' + Math.round(tempMax) + '°  ↓ ' + Math.round(tempMin) + '°' : '');
     var wxLineRU = '🌡 ' + Math.round(temp) + '°C  ·  ' + (WX_RU[code] || '') + (tempMax != null ? '\n     ↑ ' + Math.round(tempMax) + '°  ↓ ' + Math.round(tempMin) + '°' : '');
     var wxLineEN = '🌡 ' + Math.round(temp) + '°C  ·  ' + (WX_EN[code] || '') + (tempMax != null ? '\n     ↑ ' + Math.round(tempMax) + '°  ↓ ' + Math.round(tempMin) + '°' : '');
-    var uvLineTJ = uv != null ? uvEmoji(Math.round(uv)) + ' Индекси УФ: ' + Math.round(uv) : '';
-    var uvLineRU = uv != null ? uvEmoji(Math.round(uv)) + ' УФ-индекс: ' + Math.round(uv) : '';
-    var uvLineEN = uv != null ? uvEmoji(Math.round(uv)) + ' UV Index: ' + Math.round(uv) : '';
-    var humWindTJ = '💧 Намнокӣ: ' + hum + '%  ·  💨 Шамол: ' + Math.round(wind) + ' км/соат';
-    var humWindRU = '💧 Влажность: ' + hum + '%  ·  💨 Ветер: ' + Math.round(wind) + ' км/ч';
-    var humWindEN = '💧 Humidity: ' + hum + '%  ·  💨 Wind: ' + Math.round(wind) + ' km/h';
+    var uvLine = uv != null ? uvEmoji(Math.round(uv)) + ' ' + Math.round(uv) : '';
+    var humWindTJ = '💧 ' + hum + '%  ·  💨 ' + Math.round(wind) + ' км/соат';
+    var humWindRU = '💧 ' + hum + '%  ·  💨 ' + Math.round(wind) + ' км/ч';
+    var humWindEN = '💧 ' + hum + '%  ·  💨 ' + Math.round(wind) + ' km/h';
 
     // ── Tajik section ──
     lines.push('🌿 <b>AllergyTJ — Душанбе</b>');
@@ -135,7 +133,7 @@ export default async function handler(req, res) {
     }
     lines.push(wxLineTJ);
     lines.push('');
-    if (uvLineTJ) { lines.push(uvLineTJ); lines.push(''); }
+    if (uvLine) { lines.push(uvLine); lines.push(''); }
     lines.push(humWindTJ);
 
     lines.push('');
@@ -155,7 +153,7 @@ export default async function handler(req, res) {
     }
     lines.push(wxLineRU);
     lines.push('');
-    if (uvLineRU) { lines.push(uvLineRU); lines.push(''); }
+    if (uvLine) { lines.push(uvLine); lines.push(''); }
     lines.push(humWindRU);
 
     lines.push('');
@@ -175,7 +173,7 @@ export default async function handler(req, res) {
     }
     lines.push(wxLineEN);
     lines.push('');
-    if (uvLineEN) { lines.push(uvLineEN); lines.push(''); }
+    if (uvLine) { lines.push(uvLine); lines.push(''); }
     lines.push(humWindEN);
 
     lines.push('');
