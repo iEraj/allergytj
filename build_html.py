@@ -383,36 +383,36 @@ def transform_head(html, lang, tr):
 # ── Phase 1.2: Pre-rendered body content ──
 
 CITIES_DATA = [
-    {"idx": 0, "region": "khatlon", "elev": 390},
-    {"idx": 1, "region": "khatlon", "elev": 430},
-    {"idx": 2, "region": "sughd", "elev": 300},
-    {"idx": 3, "region": "khatlon", "elev": 649},
-    {"idx": 4, "region": "drs", "elev": 800},
-    {"idx": 5, "region": "khatlon", "elev": 450},
-    {"idx": 6, "region": "sughd", "elev": 400},
-    {"idx": 7, "region": "sughd", "elev": 347},
-    {"idx": 8, "region": "khatlon", "elev": 440},
-    {"idx": 9, "region": "drs", "elev": 802},
-    {"idx": 10, "region": "sughd", "elev": 863},
-    {"idx": 11, "region": "gbao", "elev": 2535},
-    {"idx": 12, "region": "sughd", "elev": 992},
-    {"idx": 13, "region": "gbao", "elev": 2200},
-    {"idx": 14, "region": "sughd", "elev": 300},
-    {"idx": 15, "region": "sughd", "elev": 410},
-    {"idx": 16, "region": "khatlon", "elev": 580},
-    {"idx": 17, "region": "gbao", "elev": 3618},
-    {"idx": 18, "region": "khatlon", "elev": 885},
-    {"idx": 19, "region": "valleys", "elev": 1348},
-    {"idx": 20, "region": "sughd", "elev": 996},
-    {"idx": 21, "region": "valleys", "elev": 1355},
-    {"idx": 22, "region": "valleys", "elev": 1230},
-    {"idx": 23, "region": "khatlon", "elev": 367},
-    {"idx": 24, "region": "sughd", "elev": 350},
-    {"idx": 25, "region": "drs", "elev": 708},
-    {"idx": 26, "region": "drs", "elev": 870},
-    {"idx": 27, "region": "khatlon", "elev": 426},
-    {"idx": 28, "region": "khatlon", "elev": 475},
-    {"idx": 29, "region": "khatlon", "elev": 655},
+    {"idx": 0, "region": "khatlon", "elev": 390, "lat": 37.5882, "lng": 68.6589},
+    {"idx": 1, "region": "khatlon", "elev": 430, "lat": 37.8364, "lng": 68.7650},
+    {"idx": 2, "region": "sughd", "elev": 300, "lat": 40.2342, "lng": 69.6948},
+    {"idx": 3, "region": "khatlon", "elev": 649, "lat": 38.0975, "lng": 69.3341},
+    {"idx": 4, "region": "drs", "elev": 800, "lat": 38.5598, "lng": 68.7740},
+    {"idx": 5, "region": "khatlon", "elev": 450, "lat": 37.4922, "lng": 69.4036},
+    {"idx": 6, "region": "sughd", "elev": 400, "lat": 40.2187, "lng": 69.7247},
+    {"idx": 7, "region": "sughd", "elev": 347, "lat": 40.2647, "lng": 69.7894},
+    {"idx": 8, "region": "khatlon", "elev": 440, "lat": 37.6567, "lng": 69.6292},
+    {"idx": 9, "region": "drs", "elev": 802, "lat": 38.5253, "lng": 68.5514},
+    {"idx": 10, "region": "sughd", "elev": 863, "lat": 40.1265, "lng": 70.6253},
+    {"idx": 11, "region": "gbao", "elev": 2535, "lat": 36.7167, "lng": 71.6167},
+    {"idx": 12, "region": "sughd", "elev": 992, "lat": 39.9142, "lng": 69.0033},
+    {"idx": 13, "region": "gbao", "elev": 2200, "lat": 37.5383, "lng": 71.5128},
+    {"idx": 14, "region": "sughd", "elev": 300, "lat": 40.2833, "lng": 69.6333},
+    {"idx": 15, "region": "sughd", "elev": 410, "lat": 40.2982, "lng": 70.4194},
+    {"idx": 16, "region": "khatlon", "elev": 580, "lat": 37.9139, "lng": 69.8028},
+    {"idx": 17, "region": "gbao", "elev": 3618, "lat": 38.1702, "lng": 73.9667},
+    {"idx": 18, "region": "khatlon", "elev": 885, "lat": 38.3833, "lng": 69.3167},
+    {"idx": 19, "region": "valleys", "elev": 1348, "lat": 38.7173, "lng": 69.7088},
+    {"idx": 20, "region": "sughd", "elev": 996, "lat": 39.4952, "lng": 67.6093},
+    {"idx": 21, "region": "valleys", "elev": 1355, "lat": 39.0287, "lng": 70.3745},
+    {"idx": 22, "region": "valleys", "elev": 1230, "lat": 38.7826, "lng": 69.8708},
+    {"idx": 23, "region": "khatlon", "elev": 367, "lat": 37.4000, "lng": 67.8333},
+    {"idx": 24, "region": "sughd", "elev": 350, "lat": 40.1522, "lng": 69.3708},
+    {"idx": 25, "region": "drs", "elev": 708, "lat": 38.5065, "lng": 68.2248},
+    {"idx": 26, "region": "drs", "elev": 870, "lat": 38.5563, "lng": 69.0135},
+    {"idx": 27, "region": "khatlon", "elev": 426, "lat": 37.7149, "lng": 68.8346},
+    {"idx": 28, "region": "khatlon", "elev": 475, "lat": 37.8040, "lng": 69.6442},
+    {"idx": 29, "region": "khatlon", "elev": 655, "lat": 38.3167, "lng": 69.0833},
 ]
 
 SEASONAL_DATA = [
@@ -728,6 +728,12 @@ CITY_SEO_INTRO = {
     "tj": "{city} дар {region} дар баландии {elev} м ҷойгир аст. Вақти гулкунӣ тақрибан {shift_days} рӯз нисбат ба Душанбе (800 м) фарқ мекунад аз сабаби фарқи баландӣ (Қонуни Хопкинс: ~2 рӯз дар 100 м).",
 }
 
+CITY_SEO_INTRO_BASELINE = {
+    "en": "{city} is located in {region} at {elev}m elevation. It serves as the bloom timing baseline for all cities in Tajikistan (Hopkins' Bioclimatic Law: ~2 days shift per 100m elevation difference).",
+    "ru": "{city} расположен в регионе {region} на высоте {elev} м. Является базовой точкой для расчёта сроков цветения по всему Таджикистану (закон Хопкинса: ~2 дня сдвига на 100 м разницы высот).",
+    "tj": "{city} дар {region} дар баландии {elev} м ҷойгир аст. Ҳамчун нуқтаи асосӣ барои ҳисоб кардани вақти гулкунӣ дар тамоми Тоҷикистон хизмат мекунад (Қонуни Хопкинс: ~2 рӯз тағйирот дар ҳар 100 м фарқи баландӣ).",
+}
+
 CITY_SEO_DOMINANT = {
     "en": "Dominant allergen categories",
     "ru": "Основные категории аллергенов",
@@ -769,9 +775,14 @@ def build_city_seo_html(city_idx, lang, tr):
     shift = compute_bloom_shift(elev)
 
     heading = _h(CITY_SEO_HEADING[lang].format(city=city_name))
-    intro = _h(CITY_SEO_INTRO[lang].format(
-        city=city_name, region=region_name, elev=elev, shift_days=shift,
-    ))
+    if shift == 0:
+        intro = _h(CITY_SEO_INTRO_BASELINE[lang].format(
+            city=city_name, region=region_name, elev=elev,
+        ))
+    else:
+        intro = _h(CITY_SEO_INTRO[lang].format(
+            city=city_name, region=region_name, elev=elev, shift_days=shift,
+        ))
     dominant_label = _h(CITY_SEO_DOMINANT[lang])
     cta = _h(CITY_SEO_CTA[lang].format(city=city_name))
 
@@ -822,8 +833,39 @@ def build_city_seo_html(city_idx, lang, tr):
 </table>
 
 <p>{cta}</p>
+
+{build_nearby_cities_html(city_idx, lang, tr)}
 </section>
 """
+
+
+NEARBY_CITIES_HEADING = {
+    "en": "Other cities in {region}",
+    "ru": "Другие города в регионе {region}",
+    "tj": "Шаҳрҳои дигар дар {region}",
+}
+
+
+def build_nearby_cities_html(city_idx, lang, tr):
+    """Build internal links to other cities in the same region."""
+    city = CITIES_DATA[city_idx]
+    same_region = [c for c in CITIES_DATA if c["region"] == city["region"] and c["idx"] != city_idx]
+    if not same_region:
+        return ""
+    same_region.sort(key=lambda c: abs(c["elev"] - city["elev"]))
+    nearby = same_region[:6]
+
+    region_name = tr.get(f"region.{city['region']}.full", city["region"])
+    heading = _h(NEARBY_CITIES_HEADING[lang].format(region=region_name))
+    prefix = "" if lang == "tj" else f"/{lang}"
+
+    links = []
+    for c in nearby:
+        name = get_city_name(tr, c["idx"])
+        slug = CITY_SLUGS[c["idx"]]
+        links.append(f'  <li><a href="{prefix}/city/{slug}">{_h(name)}</a> ({c["elev"]}m)</li>')
+
+    return f'<h3>{heading}</h3>\n<ul>\n{chr(10).join(links)}\n</ul>'
 
 
 def select_city_in_dropdown(html, city_idx):
@@ -837,6 +879,47 @@ def select_city_in_dropdown(html, city_idx):
         count[0] += 1
         return m.group(0)
     return re.sub(r'<option [^>]*>[^<]*</option>', _add_selected, html)
+
+
+def build_city_jsonld(city_idx, lang, tr):
+    """Build city-specific JSON-LD (Place + WebPage) for AI answer engines."""
+    city = CITIES_DATA[city_idx]
+    slug = CITY_SLUGS[city_idx]
+    city_name = get_city_name(tr, city_idx)
+    region_name = tr.get(f"region.{city['region']}.full", city["region"])
+    prefix = "" if lang == "tj" else f"/{lang}"
+    url = f"{SITE_BASE}{prefix}/city/{slug}"
+
+    ld = {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": CITY_SEO_TITLE[lang].format(city=city_name),
+        "url": url,
+        "description": CITY_SEO_DESC[lang].format(
+            city=city_name, region=region_name, elev=city["elev"],
+        ),
+        "about": {
+            "@type": "Place",
+            "name": city_name,
+            "containedInPlace": {
+                "@type": "AdministrativeArea",
+                "name": f"{region_name}, Tajikistan",
+            },
+            "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": city["lat"],
+                "longitude": city["lng"],
+                "elevation": city["elev"],
+            },
+        },
+        "mainEntity": {
+            "@type": "Dataset",
+            "name": f"Pollen Risk & Air Quality Data — {city_name}",
+            "description": f"Seasonal pollen calendar and real-time air quality tracking for {city_name}, Tajikistan",
+            "spatialCoverage": {"@type": "Place", "name": f"{city_name}, Tajikistan"},
+        },
+    }
+    return f'<script type="application/ld+json">\n{json.dumps(ld, ensure_ascii=False, indent=2)}\n</script>'
 
 
 def city_page_url(lang, slug):
@@ -877,6 +960,43 @@ def build_city_page(lang, city_idx, base_html, tr):
     )
     html = replace_meta(html, 'property="og:url"', canonical)
 
+    # Fix hreflang to point to city page equivalents in other languages
+    tj_city_url = city_page_url("tj", slug)
+    en_city_url = city_page_url("en", slug)
+    ru_city_url = city_page_url("ru", slug)
+    html = re.sub(
+        r'(<link\s+rel="alternate"\s+hreflang="en"\s+href=")[^"]*(")',
+        lambda m: m.group(1) + en_city_url + m.group(2), html,
+    )
+    html = re.sub(
+        r'(<link\s+rel="alternate"\s+hreflang="ru"\s+href=")[^"]*(")',
+        lambda m: m.group(1) + ru_city_url + m.group(2), html,
+    )
+    html = re.sub(
+        r'(<link\s+rel="alternate"\s+hreflang="tg"\s+href=")[^"]*(")',
+        lambda m: m.group(1) + tj_city_url + m.group(2), html,
+    )
+    html = re.sub(
+        r'(<link\s+rel="alternate"\s+hreflang="x-default"\s+href=")[^"]*(")',
+        lambda m: m.group(1) + tj_city_url + m.group(2), html,
+    )
+
+    # Fix geo meta tags to reflect this city's coordinates
+    lat = city["lat"]
+    lng = city["lng"]
+    html = re.sub(
+        r'(<meta\s+name="geo\.placename"\s+content=")[^"]*(")',
+        lambda m: m.group(1) + _h(city_name) + m.group(2), html,
+    )
+    html = re.sub(
+        r'(<meta\s+name="geo\.position"\s+content=")[^"]*(")',
+        lambda m: m.group(1) + f"{lat};{lng}" + m.group(2), html,
+    )
+    html = re.sub(
+        r'(<meta\s+name="ICBM"\s+content=")[^"]*(")',
+        lambda m: m.group(1) + f"{lat}, {lng}" + m.group(2), html,
+    )
+
     html = select_city_in_dropdown(html, city_idx)
 
     city_seo = build_city_seo_html(city_idx, lang, tr)
@@ -886,6 +1006,10 @@ def build_city_page(lang, city_idx, base_html, tr):
         html,
         flags=re.DOTALL,
     )
+
+    # Inject city-specific JSON-LD before closing </head>
+    city_ld = build_city_jsonld(city_idx, lang, tr)
+    html = html.replace("</head>", city_ld + "\n</head>", 1)
 
     return html
 

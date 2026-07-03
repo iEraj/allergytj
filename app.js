@@ -95,7 +95,7 @@ function updateNavHrefs() {
   if (brand) brand.setAttribute('href', buildTabPath(LANG, 'dashboard'));
 }
 
-function switchTab(tabName, evt) {
+function switchTab(tabName, evt, skipPush) {
   if (evt) evt.preventDefault();
   document.querySelectorAll('.tab-content').forEach(function(el) {
     el.classList.remove('active');
@@ -107,7 +107,7 @@ function switchTab(tabName, evt) {
   if (target) target.classList.add('active');
   window.scrollTo({ top: 0 });
   var newPath = buildTabPath(LANG, tabName);
-  if (location.pathname !== newPath) history.pushState(null, '', newPath);
+  if (!skipPush && location.pathname !== newPath) history.pushState(null, '', newPath);
   var bcld = document.getElementById("breadcrumbld");
   if (bcld) {
     var langPrefix = LANG === 'tj' ? '' : '/' + LANG;
@@ -130,7 +130,7 @@ function switchTab(tabName, evt) {
     }
   }
   var tab = getTabFromPath();
-  switchTab(tab);
+  switchTab(tab, null, location.pathname.indexOf('/city/') >= 0);
   updateNavHrefs();
   document.querySelectorAll('.nav-links a[data-tab]').forEach(function(a) {
     a.addEventListener('click', function(e) {
@@ -1886,7 +1886,15 @@ async function setLanguage(lang) {
   LANG = lang;
   localStorage.setItem("allergytj-lang", lang);
   var currentTab = getTabFromPath();
-  history.replaceState(null, '', buildTabPath(lang, currentTab));
+  if (location.pathname.indexOf('/city/') >= 0) {
+    var parts = location.pathname.split('/');
+    var ci = parts.indexOf('city');
+    var slug = parts[ci + 1];
+    var prefix = lang === 'tj' ? '' : '/' + lang;
+    history.replaceState(null, '', prefix + '/city/' + slug);
+  } else {
+    history.replaceState(null, '', buildTabPath(lang, currentTab));
+  }
   await loadTranslations(lang);
   await loadTranslations("en");
   document.documentElement.lang = lang === "tj" ? "tg" : lang;
@@ -3241,9 +3249,14 @@ async function sharePollen() {
   await loadTranslations(LANG);
   if (LANG !== "en") await loadTranslations("en");
 
-  // Ensure URL reflects current language + tab
+  // Capture city from URL before replaceState could clobber it
+  var _initCityIdx = getCityFromPath();
+
+  // Ensure URL reflects current language + tab (skip on city pages)
   var currentTab = getTabFromPath();
-  history.replaceState(null, '', buildTabPath(LANG, currentTab));
+  if (_initCityIdx < 0) {
+    history.replaceState(null, '', buildTabPath(LANG, currentTab));
+  }
 
   document.documentElement.lang = LANG === "tj" ? "tg" : LANG;
 
@@ -3266,7 +3279,7 @@ async function sharePollen() {
   buildCalendar();
 
   // City URL takes priority, then localStorage
-  var cityFromUrl = getCityFromPath();
+  var cityFromUrl = _initCityIdx;
   if (cityFromUrl >= 0) {
     sel.selectedIndex = cityFromUrl;
   } else {
