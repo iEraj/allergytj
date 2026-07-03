@@ -486,11 +486,17 @@ def translate_body(html, tr):
     )
 
 
-def translate_options(html, tr):
-    """Translate <option> text inside the city-select dropdown."""
-    def _replace_option(m):
-        value = m.group(1)
-        return f'<option value="{value}"'
+TJ_ALPHA = "АБВГҒДЕЁЖЗИӢЙКЛМНОПРСТУӮФХҲЧҶШЪЭЮЯ"
+
+
+def _tj_sort_key(name):
+    """Sort key using Tajik alphabet order."""
+    return [TJ_ALPHA.index(c.upper()) if c.upper() in TJ_ALPHA else ord(c) + 1000
+            for c in name]
+
+
+def translate_options(html, tr, lang="tj"):
+    """Translate <option> text inside the city-select dropdown and sort alphabetically."""
     select_match = re.search(
         r'(<select\s+id="city-select"[^>]*>)(.*?)(</select>)',
         html,
@@ -499,18 +505,20 @@ def translate_options(html, tr):
     if not select_match:
         return html
     select_inner = select_match.group(2)
-    idx = 0
-    def _replace_opt_text(m):
-        nonlocal idx
+    # Extract all options, translate, collect as (translated_text, full_tag)
+    options = []
+    for m in re.finditer(r'<option\s+([^>]*)>([^<]*)</option>', select_inner):
         attrs = m.group(1)
+        idx_match = re.search(r'data-idx="(\d+)"', attrs)
+        idx = int(idx_match.group(1)) if idx_match else len(options)
         city_name = tr.get(f"city.{idx}", m.group(2))
-        idx += 1
-        return f"<option {attrs}>{_h(city_name)}</option>"
-    new_inner = re.sub(
-        r'<option\s+([^>]*)>([^<]*)</option>',
-        _replace_opt_text,
-        select_inner,
-    )
+        options.append((city_name, f"<option {attrs}>{_h(city_name)}</option>"))
+    # Sort: Tajik uses custom alphabet key, others use default string sort
+    if lang == "tj":
+        options.sort(key=lambda x: _tj_sort_key(x[0]))
+    else:
+        options.sort(key=lambda x: x[0])
+    new_inner = "\n      " + "\n      ".join(tag for _, tag in options) + "\n    "
     return html[:select_match.start(2)] + new_inner + html[select_match.end(2):]
 
 
@@ -669,7 +677,7 @@ def build_lang(lang):
     html = read_template()
     html = transform_head(html, lang, tr)
     html = translate_body(html, tr)
-    html = translate_options(html, tr)
+    html = translate_options(html, tr, lang)
     html = replace_nav_hrefs(html, lang)
     html = inject_seo_content(html, lang, tr)
     html = inject_seo_css(html)
@@ -869,14 +877,11 @@ def build_nearby_cities_html(city_idx, lang, tr):
 
 
 def select_city_in_dropdown(html, city_idx):
-    """Move the 'selected' attribute to the specified city option."""
+    """Move the 'selected' attribute to the option with matching data-idx."""
     html = html.replace(" selected>", ">", 1)
-    count = [0]
     def _add_selected(m):
-        if count[0] == city_idx:
-            count[0] += 1
+        if f'data-idx="{city_idx}"' in m.group(0):
             return m.group(0).replace("<option ", "<option selected ", 1)
-        count[0] += 1
         return m.group(0)
     return re.sub(r'<option [^>]*>[^<]*</option>', _add_selected, html)
 

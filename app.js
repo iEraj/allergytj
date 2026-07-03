@@ -73,6 +73,51 @@ var _pathLang = (function() {
 })();
 var LANG = _pathLang || localStorage.getItem("allergytj-lang") || "tj";
 
+// ── City dropdown helpers ──
+function getSelectedCityIndex() {
+  var sel = document.getElementById("city-select");
+  return parseInt(sel.options[sel.selectedIndex].dataset.idx, 10);
+}
+
+function selectCityByIndex(idx) {
+  var sel = document.getElementById("city-select");
+  for (var i = 0; i < sel.options.length; i++) {
+    if (parseInt(sel.options[i].dataset.idx, 10) === idx) {
+      sel.selectedIndex = i;
+      return;
+    }
+  }
+}
+
+var TJ_ALPHABET = "АБВГҒДЕЁЖЗИӢЙКЛМНОПРСТУӮФХҲЧҶШЪЭЮЯ";
+
+function sortCityDropdown() {
+  var sel = document.getElementById("city-select");
+  var selectedIdx = parseInt(sel.options[sel.selectedIndex].dataset.idx, 10);
+  var opts = Array.prototype.slice.call(sel.options);
+  var locale = LANG === 'tj' ? undefined : (LANG === 'ru' ? 'ru' : 'en');
+  opts.sort(function(a, b) {
+    if (LANG === 'tj') return tjCompare(a.text, b.text);
+    return a.text.localeCompare(b.text, locale);
+  });
+  while (sel.firstChild) sel.removeChild(sel.firstChild);
+  for (var i = 0; i < opts.length; i++) sel.appendChild(opts[i]);
+  selectCityByIndex(selectedIdx);
+}
+
+function tjCompare(a, b) {
+  var al = a.toLowerCase(), bl = b.toLowerCase();
+  var len = Math.min(al.length, bl.length);
+  for (var i = 0; i < len; i++) {
+    var ai = TJ_ALPHABET.indexOf(al[i].toUpperCase());
+    var bi = TJ_ALPHABET.indexOf(bl[i].toUpperCase());
+    if (ai < 0) ai = al.charCodeAt(i) + 1000;
+    if (bi < 0) bi = bl.charCodeAt(i) + 1000;
+    if (ai !== bi) return ai - bi;
+  }
+  return al.length - bl.length;
+}
+
 // ── Tab Routing ──
 var TABS = ['dashboard','forecast','regions','insights'];
 
@@ -1140,7 +1185,7 @@ async function fetchData() {
   var status = document.getElementById("status");
   var fcTitle = document.getElementById("forecast-title");
 
-  var cityIndex = sel.selectedIndex;
+  var cityIndex = getSelectedCityIndex();
   var cityElev = CITIES[cityIndex] ? CITIES[cityIndex].elev : BASELINE_ELEV;
   var reg = REGIONS[CITIES[cityIndex] ? CITIES[cityIndex].region : "drs"] || REGIONS.drs;
   localStorage.setItem("allergytj-city", sel.value);
@@ -1910,11 +1955,12 @@ async function setLanguage(lang) {
   updateMetaTags(lang);
   updateNavHrefs();
 
-  // Update city dropdown
+  // Update city dropdown text and re-sort for new language
   var sel = document.getElementById("city-select");
   for (var i = 0; i < sel.options.length; i++) {
-    sel.options[i].text = t("city." + i);
+    sel.options[i].text = t("city." + sel.options[i].dataset.idx);
   }
+  sortCityDropdown();
 
   // Rebuild calendar with translated month/allergen names
   buildCalendar();
@@ -3269,11 +3315,12 @@ async function sharePollen() {
   });
   updateMetaTags(LANG);
 
-  // Update city dropdown
+  // Update city dropdown text and sort alphabetically for current language
   var sel = document.getElementById("city-select");
   for (var i = 0; i < sel.options.length; i++) {
-    sel.options[i].text = t("city." + i);
+    sel.options[i].text = t("city." + sel.options[i].dataset.idx);
   }
+  sortCityDropdown();
 
   // Build calendar
   buildCalendar();
@@ -3281,7 +3328,7 @@ async function sharePollen() {
   // City URL takes priority, then localStorage
   var cityFromUrl = _initCityIdx;
   if (cityFromUrl >= 0) {
-    sel.selectedIndex = cityFromUrl;
+    selectCityByIndex(cityFromUrl);
   } else {
     var savedCity = localStorage.getItem("allergytj-city");
     if (savedCity) {
@@ -3296,7 +3343,7 @@ async function sharePollen() {
 
   // Render Insights tab immediately (doesn't need API data)
   renderTimelineCalendar();
-  renderActiveNow(sel.selectedIndex);
+  renderActiveNow(getSelectedCityIndex());
 
   // Pre-render Regions tab so crawlers see map + city list content (skip weather fetch — fetchData handles it)
   renderRegionsTab(true);
