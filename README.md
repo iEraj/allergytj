@@ -6,6 +6,16 @@ To my knowledge, Tajikistan does not yet have a public pollen monitoring network
 
 **Live**: [allergy.tj](https://allergy.tj)
 
+## Screenshots
+
+| Dashboard | Forecast |
+|:-:|:-:|
+| ![Dashboard](assets/desktop-dashboard.png) | ![Forecast](assets/desktop-forecast.png) |
+
+| Regions | Insights |
+|:-:|:-:|
+| ![Regions](assets/desktop-regions.png) | ![Insights](assets/desktop-insights.png) |
+
 ---
 
 ## Features
