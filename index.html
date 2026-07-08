@@ -2083,6 +2083,16 @@
   .skel-fc-card { height: 140px; border-radius: var(--radius-xl); }
   .skel-fc-tip { height: 140px; border-radius: var(--radius-xl); grid-row: span 2; }
   .skel-fc-trend { height: 160px; border-radius: var(--radius-xl); margin-top: var(--space-lg); }
+  .skel-wx-stat { height: 52px; border-radius: var(--radius-lg); }
+  .skel-profile { height: 52px; border-radius: var(--radius-md); margin-bottom: var(--space-md); }
+  .skel-trigger { height: 60px; border-radius: var(--radius-lg); margin-bottom: var(--space-sm); }
+  .skel-trigger:last-child { margin-bottom: 0; }
+  .skel-aqi-summary { display: flex; gap: 20px; align-items: center; }
+  .skel-aqi-circle { width: 80px; height: 80px; border-radius: 50%; flex-shrink: 0; }
+  .skel-aqi-lines { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .skel-aqi-line { height: 14px; border-radius: var(--radius-sm); }
+  .skel-aqi-row { height: 40px; border-radius: var(--radius-lg); }
+  .skel-nearby { height: 68px; border-radius: var(--radius-xl); }
 
   @media (max-width: 768px) {
     .nav-links { display: none; }
@@ -2262,17 +2272,28 @@
         <div class="dash-wx-desc" id="dash-wx-desc"></div>
       </div>
     </div>
-    <div class="dash-wx-stats" id="dash-wx-stats"></div>
+    <div class="dash-wx-stats" id="dash-wx-stats">
+      <div class="skeleton skel-wx-stat"></div>
+      <div class="skeleton skel-wx-stat"></div>
+      <div class="skeleton skel-wx-stat"></div>
+      <div class="skeleton skel-wx-stat"></div>
+    </div>
   </div>
 
   <!-- Allergen Profile -->
-  <div id="allergen-profile"></div>
+  <div id="allergen-profile">
+    <div class="skeleton skel-profile"></div>
+  </div>
 
   <!-- Top Triggers + Health Tip -->
   <div class="dash-triggers-tip">
     <div class="dash-triggers" id="dash-triggers">
       <h3 data-i18n="dash.topTriggers">Top Triggers Today</h3>
-      <div id="dash-trigger-rows"></div>
+      <div id="dash-trigger-rows">
+        <div class="skeleton skel-trigger"></div>
+        <div class="skeleton skel-trigger"></div>
+        <div class="skeleton skel-trigger"></div>
+      </div>
     </div>
     <div class="dash-tip" id="dash-tip">
       <div>
@@ -2292,7 +2313,19 @@
     </div>
   </div>
   <h2 class="section-title" data-i18n="section.airQuality">Air Quality</h2>
-  <div class="aqi-card" id="aqi-card"></div>
+  <div class="aqi-card" id="aqi-card">
+    <div class="skel-aqi-summary">
+      <div class="skeleton skel-aqi-circle"></div>
+      <div class="skel-aqi-lines">
+        <div class="skeleton skel-aqi-line" style="width:40%"></div>
+        <div class="skeleton skel-aqi-line" style="width:70%"></div>
+        <div class="skeleton skel-aqi-line" style="width:55%"></div>
+      </div>
+    </div>
+    <div class="skeleton skel-aqi-row"></div>
+    <div class="skeleton skel-aqi-row"></div>
+    <div class="skeleton skel-aqi-row"></div>
+  </div>
 
   <!-- Nearby Regions -->
   <div>
@@ -2300,7 +2333,11 @@
       <h2 data-i18n="dash.nearbyRegions">Nearby Regions</h2>
       <a href="/regions" id="dash-view-all"><span data-i18n="dash.viewAll">View All</span> <span class="icon">chevron_right</span></a>
     </div>
-    <div class="dash-nearby-grid" id="dash-nearby"></div>
+    <div class="dash-nearby-grid" id="dash-nearby">
+      <div class="skeleton skel-nearby"></div>
+      <div class="skeleton skel-nearby"></div>
+      <div class="skeleton skel-nearby"></div>
+    </div>
   </div>
 
 </div>

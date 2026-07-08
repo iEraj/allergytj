@@ -298,6 +298,8 @@ function renderDashboard(overallRisk, treeRisk, grassRisk, weedRisk, wxData, cit
       '<div class="dash-wx-stat"><div class="dash-wx-stat-icon">' + mIcon('air') + '</div><div class="dash-wx-stat-val">' + Math.round(wxData.wind) + ' km/h</div><div class="dash-wx-stat-label">' + t("wx.label.wind") + '</div></div>' +
       '<div class="dash-wx-stat"><div class="dash-wx-stat-icon">' + mIcon('wb_sunny') + '</div><div class="dash-wx-stat-val" style="color:' + uvC + '">' + uvVal + '</div><div class="dash-wx-stat-label">' + t("wx.label.uv") + '</div></div>' +
       '<div class="dash-wx-stat"><div class="dash-wx-stat-icon">' + mIcon('rainy') + '</div><div class="dash-wx-stat-val">' + precipVal + ' mm</div><div class="dash-wx-stat-label">' + t("wx.label.rainToday") + '</div></div>';
+  } else {
+    document.getElementById("dash-wx-stats").innerHTML = '';
   }
 
   // Top Triggers
