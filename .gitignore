@@ -27,3 +27,5 @@ CLAUDE.md
 docs/
 testing/*
 !testing/build_map_paths.py
+screenshots/
+package-lock.json
