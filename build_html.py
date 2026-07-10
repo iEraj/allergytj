@@ -11,6 +11,7 @@ Output: dist/index.html (Tajik), dist/en/index.html (EN), dist/ru/index.html (RU
 Usage: python build_html.py
 """
 
+import datetime
 import glob
 import html as html_mod
 import json
@@ -713,15 +714,15 @@ REGION_MULTIPLIERS = {
 }
 
 CITY_SEO_TITLE = {
-    "en": "{city} Pollen Risk & Air Quality — AllergyTJ",
-    "ru": "{city} — Риск пыльцы и качество воздуха — AllergyTJ",
-    "tj": "{city} — Хатари гардолуд ва сифати ҳаво — AllergyTJ",
+    "en": "Allergy in {city} Today — Pollen Forecast & AQI — AllergyTJ",
+    "ru": "Аллергия в {city} сегодня — пыльца и качество воздуха — AllergyTJ",
+    "tj": "Аллергия дар {city} имрӯз — гардолуд ва сифати ҳаво — AllergyTJ",
 }
 
 CITY_SEO_DESC = {
-    "en": "Current pollen risk and air quality for {city}, Tajikistan. Real-time US AQI, 5-day forecast, allergen guide. {region}, {elev}m elevation.",
-    "ru": "Текущий риск пыльцы и качество воздуха: {city}, Таджикистан. US AQI, 5-дневный прогноз, справочник аллергенов. {region}, {elev} м.",
-    "tj": "Хатари гардолуд ва сифати ҳаво: {city}, Тоҷикистон. US AQI, пешгӯии 5-рӯза, дастури аллергенҳо. {region}, {elev} м.",
+    "en": "Live pollen risk and air quality in {city}, Tajikistan. Check today's allergen levels, 5-day forecast, and US AQI before going outside. {region}, {elev} m.",
+    "ru": "Уровень пыльцы и качество воздуха в {city} сейчас. Прогноз аллергенов на 5 дней, индекс AQI — проверьте перед выходом. {region}, {elev} м.",
+    "tj": "Сатҳи гардолуд ва сифати ҳаво дар {city} ҳозир. Пешгӯии аллергенҳо барои 5 рӯз, индекси AQI — пеш аз баромадан санҷед. {region}, {elev} м.",
 }
 
 CITY_SEO_HEADING = {
@@ -1034,7 +1035,7 @@ def write_city_page(lang, city_idx, html):
 
 def build_sitemap():
     """Generate sitemap.xml with home pages, tab pages, and city pages."""
-    today = "2026-06-20"
+    today = datetime.date.today().isoformat()
     lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',
