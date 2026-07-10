@@ -1100,6 +1100,7 @@ COPY_FILES = [
     "og-image-en.svg",
     "og-image-ru.png",
     "og-image-ru.svg",
+    "0ccf34b16984487ba5a20b7d31f84d7a.txt",
 ]
 
 COPY_DIRS = [
