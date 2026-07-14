@@ -26,11 +26,11 @@ To my knowledge, Tajikistan does not yet have a public pollen monitoring network
 - **Pollen risk estimation** — combines seasonal pollen calendar with real-time weather (temperature, humidity, wind, precipitation)
 - **5-day forecast** — daily pollen risk outlook with allergen chips, trend chart, and contextual insight tips
 - **Regional pollen map** — interactive SVG map of Tajikistan with GADM boundaries, 30 city dots, per-region weather, city sidebar sorted by risk
-- **Push notifications** — browser-only pollen/UV alerts with quiet hours, bell icon settings overlay
+- **Push notifications** — browser-only pollen, AQI, and UV alerts with quiet hours, bell icon settings overlay
 - **Hourly breakdown** — morning/afternoon/evening risk scores using per-period weather
 - **Air quality** — live US AQI with full 6-pollutant breakdown (O₃, PM2.5, PM10, NO₂, SO₂, CO)
 - **UV index** — real-time UV data from Open-Meteo, color-coded by severity
-- **Insights tab** — "What's Active Now" allergen cards, 12-month timeline calendar, 11 knowledge cards (incl. Cross-Reactivity Guide)
+- **Insights tab** — "What's Active Now" allergen cards, 12-month timeline calendar, 12 knowledge cards (incl. Cross-Reactivity Guide, Air Pollutants Guide, AQI methodology)
 - **GPS detection** — auto-finds nearest city (HTTPS required)
 - **Zero config** — no API keys, no build step, no framework, no external fonts
 - **Trilingual** — English, Russian, and Tajik with browser auto-detection and URL-based language routing (`/en/`, `/ru/`, `/tj/`)
@@ -41,7 +41,9 @@ To my knowledge, Tajikistan does not yet have a public pollen monitoring network
 - **SEO-ready** — Open Graph image, JSON-LD (WebApplication + FAQPage + BreadcrumbList), canonical URLs with language prefixes, geo meta tags, dynamic page title per city, translation preload hints, robots.txt, sitemap.xml with language alternates, hreflang tags, brand-matched SVG favicon
 - **Secure** — A+ Mozilla HTTP Observatory; strict CSP with SHA-256 script hashes, HSTS preload, zero inline event handlers
 - **Accessible** — WCAG AA color contrast, semantic HTML landmarks, ARIA labels
-- **Share button** — share current pollen conditions via native share or clipboard copy
+- **Personal allergen profiles** — species-level selector (9 allergens), personalized risk score, annotated triggers, profile-aware notifications
+- **Shareable daily snapshots** — branded 1080×1080 PNG card (Canvas API) with risk score, allergen breakdown, AQI, weather, UV; Web Share API on mobile, download + clipboard fallback on desktop
+- **Telegram channel** — [@allergytj](https://t.me/allergytj) daily trilingual pollen and air quality updates for Dushanbe, auto-posted at 07:00 via Vercel Cron
 
 ## How It Works
 
@@ -86,9 +88,11 @@ AllergyTJ/
 │   ├── icon.svg        # Standard icon source
 │   └── icon-maskable.svg # Android adaptive icon (80% safe zone)
 ├── api/
-│   └── og.js           # Vercel serverless function (bot-aware OG tags per language)
+│   ├── og.js           # Vercel serverless function (bot-aware OG tags per language)
+│   └── telegram-post.js # Vercel serverless function (daily Telegram channel post via cron)
 ├── api_proxy.py        # Local dev server (Flask, serves index.html)
 ├── build_icons.py      # Dev tool: rasterizes SVG icons to all PWA PNGs via cairosvg
+├── indexnow_submit.py  # Dev tool: batch-submits all 102 URLs to IndexNow (Bing, Yandex)
 ├── vercel.json         # Vercel deployment config + security headers + language routing
 ├── robots.txt          # Search engine crawl directives (incl. AI crawler allow rules)
 ├── sitemap.xml         # Generated sitemap (102 URLs with hreflang alternates)

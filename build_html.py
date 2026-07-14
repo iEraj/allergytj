@@ -53,9 +53,9 @@ FAQ_DATA = [
             "tj": "Дар Тоҷикистон мониторинги гардолуд ҳаст?",
         },
         "a": {
-            "en": "Based on our research as of early 2026, we have not been able to identify any public pollen monitoring stations in Tajikistan. AllergyTJ estimates pollen risk by combining a seasonal calendar of known allergenic flora with live weather data from Open-Meteo.",
-            "ru": "По данным нашего исследования на начало 2026 года, в Таджикистане не удалось обнаружить ни одной публичной станции мониторинга пыльцы. AllergyTJ оценивает риск пыльцы, сочетая сезонный календарь известных аллергенных растений с данными погоды от Open-Meteo.",
-            "tj": "Тибқи таҳқиқоти мо дар ибтидои соли 2026, мо дар Тоҷикистон ягон истгоҳи мониторинги гардолуди оммавӣ пайдо карда натавонистем. AllergyTJ хатари гардолудро бо истифода аз тақвими мавсимии растаниҳои аллергенӣ ва маълумоти обу ҳавои зинда аз Open-Meteo баҳо медиҳад.",
+            "en": "Based on our research as of 2026, we have not been able to identify any public pollen monitoring stations in Tajikistan. AllergyTJ estimates pollen risk by combining a seasonal calendar of known allergenic flora with live weather data, and also provides real-time air quality monitoring (US AQI) via EU Copernicus CAMS satellite data.",
+            "ru": "По данным нашего исследования на 2026 год, в Таджикистане не удалось обнаружить ни одной публичной станции мониторинга пыльцы. AllergyTJ оценивает риск пыльцы, сочетая сезонный календарь известных аллергенных растений с данными погоды, а также предоставляет мониторинг качества воздуха (US AQI) на основе спутниковых данных EU Copernicus CAMS.",
+            "tj": "Тибқи таҳқиқоти мо дар соли 2026, мо дар Тоҷикистон ягон истгоҳи мониторинги гардолуди оммавӣ пайдо карда натавонистем. AllergyTJ хатари гардолудро бо истифода аз тақвими мавсимии растаниҳои аллергенӣ ва маълумоти обу ҳавои зинда баҳо медиҳад, инчунин мониторинги сифати ҳаво (US AQI) тавассути маълумоти моҳворагии EU Copernicus CAMS пешниҳод мекунад.",
         },
     },
     {
