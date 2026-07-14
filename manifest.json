@@ -1,8 +1,8 @@
 {
   "id": "/",
-  "name": "AllergyTJ — Pollen & Allergy Tracker",
+  "name": "AllergyTJ — Pollen & Air Quality Tracker",
   "short_name": "AllergyTJ",
-  "description": "Seasonal allergy and pollen risk tracker for Tajikistan",
+  "description": "Pollen risk & air quality tracker for Tajikistan — 30 cities, 5-day forecast, health guidance",
   "start_url": "/",
   "display": "standalone",
   "display_override": ["standalone"],

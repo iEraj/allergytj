@@ -4,7 +4,7 @@
   "meta.keywords": "pollen, allergy, Tajikistan, allergy Dushanbe, pollen forecast, air quality, AQI, air quality Dushanbe, AQI Tajikistan, air pollution Dushanbe, air pollution Tajikistan, air quality Khujand, AQI Khujand, air quality Bokhtar, air quality Kulob, air quality Khorog, PM2.5 Tajikistan, seasonal allergy, hay fever, pollen risk, allergy tracker, cross-reactivity, oral allergy syndrome, UV index, hourly pollen forecast, regional pollen, PWA, offline allergy tracker, Dushanbe, Khujand, Bokhtar, Kulob, Khorog, poplar pollen, mugwort, Central Asia, allergy Central Asia, pollen Central Asia",
   "og.title": "AllergyTJ — Pollen & Air Quality Tracker for Tajikistan",
   "header.title": "AllergyTJ",
-  "header.subtitle": "Seasonal allergy tracker for Tajikistan — based on seasonal data & live weather",
+  "header.subtitle": "Pollen risk & air quality tracker for Tajikistan — seasonal data, live weather & satellite monitoring",
 
   "btn.fetch": "Get Pollen Risk",
   "btn.gps": "Use GPS",
@@ -183,7 +183,7 @@
   "about.title": "About & How It Works",
   "about.toggle": "How is pollen risk calculated?",
   "about.whatIsTitle": "What is AllergyTJ?",
-  "about.whatIs": "AllergyTJ is a pollen risk estimation tool for Tajikistan, covering 30 cities across all regions of the country.",
+  "about.whatIs": "AllergyTJ is a pollen risk and air quality monitoring tool for Tajikistan. It combines seasonal pollen data with live weather and satellite-based air quality monitoring to provide real-time risk assessments, 5-day forecasts, and health guidance for 30 cities across all regions.",
   "about.sourcesTitle": "Data Sources",
   "about.sources": "Risk scores combine three inputs: a seasonal pollen calendar based on Tajikistan's known allergenic flora (poplar, willow, birch, plane tree, mulberry, grasses, mugwort, chenopod, ragweed), live weather data from Open-Meteo (temperature, humidity, wind, precipitation), and air quality data from Open-Meteo CAMS (US AQI with per-pollutant breakdown: PM2.5, PM10, ozone, NO₂, SO₂, CO).",
   "about.weatherTitle": "How Weather Affects Risk",

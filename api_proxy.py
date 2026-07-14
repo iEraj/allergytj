@@ -1,4 +1,4 @@
-"""Tajikistan Pollen Tracker — Simple Server.
+"""AllergyTJ — Local Dev Server.
 
 Serves index.html and static assets. The frontend calls Open-Meteo directly (no API key needed).
 """
@@ -25,5 +25,5 @@ def index():
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
-    print(f"Pollen Tracker running on http://localhost:{port}")
+    print(f"AllergyTJ running on http://localhost:{port}")
     app.run(debug=True, port=port)
