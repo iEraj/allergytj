@@ -487,6 +487,18 @@ def translate_body(html, tr):
     )
 
 
+def replace_h1_city_name(html, tr, city_idx):
+    """Replace the pre-rendered H1 with the correct city name + translated label."""
+    city_name = get_city_name(tr, city_idx)
+    pollen_label = t(tr, "dash.pollenAndAir")
+    new_text = _h(city_name) + " | " + _h(pollen_label)
+    return re.sub(
+        r'(<h1[^>]*id="dash-city-name"[^>]*>)[^<]*(</h1>)',
+        lambda m: m.group(1) + new_text + m.group(2),
+        html,
+    )
+
+
 TJ_ALPHA = "АБВГҒДЕЁЖЗИӢЙКЛМНОПРСТУӮФХҲЧҶШЪЭЮЯ"
 
 
@@ -678,6 +690,7 @@ def build_lang(lang):
     html = read_template()
     html = transform_head(html, lang, tr)
     html = translate_body(html, tr)
+    html = replace_h1_city_name(html, tr, 4)
     html = translate_options(html, tr, lang)
     html = replace_nav_hrefs(html, lang)
     html = inject_seo_content(html, lang, tr)
@@ -1004,6 +1017,7 @@ def build_city_page(lang, city_idx, base_html, tr):
     )
 
     html = select_city_in_dropdown(html, city_idx)
+    html = replace_h1_city_name(html, tr, city_idx)
 
     city_seo = build_city_seo_html(city_idx, lang, tr)
     html = re.sub(
