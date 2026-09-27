@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Политика конфиденциальности — AllergyTJ</title>
+<meta name="robots" content="noindex">
+<style>
+  :root {
+    --bg: #f6f7f4;
+    --text: #1a2e1f;
+    --text-sec: #4a5e50;
+    --accent: #0f5238;
+    --border: #dde5df;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #111a14;
+      --text: #e0e6e0;
+      --text-sec: #a0b0a5;
+      --accent: #a8e7c5;
+      --border: #2a3a30;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #111a14;
+    --text: #e0e6e0;
+    --text-sec: #a0b0a5;
+    --accent: #a8e7c5;
+    --border: #2a3a30;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans', sans-serif;
+    line-height: 1.7;
+    padding: 0 20px env(safe-area-inset-bottom, 0) 20px;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 48px 0 64px; }
+  a { color: var(--accent); }
+  h1 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 4px; }
+  .updated { font-size: 0.82rem; color: var(--text-sec); margin-bottom: 36px; }
+  h2 { font-size: 1.05rem; font-weight: 600; margin: 32px 0 8px; }
+  p, ul { font-size: 0.92rem; color: var(--text-sec); margin-bottom: 12px; }
+  ul { padding-left: 20px; }
+  li { margin-bottom: 4px; }
+  .back { display: inline-block; font-size: 0.85rem; margin-bottom: 24px; text-decoration: none; color: var(--accent); }
+  .back:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/ru/" class="back">&larr; Назад к AllergyTJ</a>
+
+<h1>Политика конфиденциальности</h1>
+<p class="updated">Последнее обновление: сентябрь 2026</p>
+
+<p>AllergyTJ — это статический сайт, который полностью работает в вашем браузере. Нет серверной части, нет базы данных и нет учетных записей. На этой странице описано, что происходит с вашими данными при использовании приложения.</p>
+
+<h2>Что мы собираем</h2>
+<p>Ничего. AllergyTJ не собирает, не хранит и не передает никакую личную информацию. Нет cookie, нет регистрации, нет адресов электронной почты и нет отслеживания использования.</p>
+
+<h2>Локальное хранилище</h2>
+<p>Приложение сохраняет несколько настроек на вашем устройстве через localStorage браузера. Эти данные остаются на вашем устройстве и никуда не отправляются:</p>
+<ul>
+  <li>Выбранный город</li>
+  <li>Языковые настройки</li>
+  <li>Тема (светлая или темная)</li>
+  <li>Настройки уведомлений</li>
+  <li>Отклонение предложения установки</li>
+</ul>
+<p>Вы можете очистить эти данные в любое время через настройки браузера.</p>
+
+<h2>Данные о погоде и качестве воздуха</h2>
+<p>При использовании приложения ваш браузер подключается напрямую к следующим сторонним сервисам:</p>
+<ul>
+  <li><a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> для прогнозов погоды</li>
+  <li><a href="https://open-meteo.com/en/docs/air-quality-api" target="_blank" rel="noopener">Open-Meteo Air Quality API</a> для данных AQI (EU Copernicus CAMS)</li>
+  <li><a href="https://wttr.in" target="_blank" rel="noopener">wttr.in</a> как резервный источник погоды</li>
+</ul>
+<p>Эти запросы идут напрямую из вашего браузера к этим сервисам. AllergyTJ никогда не проксирует, не перехватывает и не записывает их. У каждого сервиса своя политика конфиденциальности.</p>
+
+<h2>GPS-местоположение</h2>
+<p>Если вы нажмете кнопку местоположения, браузер запросит разрешение на доступ к вашим координатам. Если вы разрешите, приложение найдет ближайший город из фиксированного списка 30 городов Таджикистана. Ваши координаты обрабатываются локально в браузере и никогда не отправляются на серверы AllergyTJ. Только координаты ближайшего города (не ваши) используются для получения данных о погоде из Open-Meteo.</p>
+
+<h2>Push-уведомления</h2>
+<p>Уведомления генерируются локально в вашем браузере на основе текущих условий пыльцы, AQI и УФ. Нет сервера push-уведомлений. Все настройки уведомлений хранятся в localStorage на вашем устройстве. Ничего не срабатывает, пока вы явно не дадите согласие.</p>
+
+<h2>Карточка для обмена</h2>
+<p>Функция обмена создает изображение на вашем устройстве с помощью Canvas API. Если вы решите поделиться им, это происходит через встроенный механизм обмена вашего устройства или как скачивание файла. AllergyTJ не видит, не хранит и не передает изображение.</p>
+
+<h2>Хостинг</h2>
+<p>Сайт размещен на <a href="https://vercel.com" target="_blank" rel="noopener">Vercel</a>. Как и любой веб-хостинг, Vercel обрабатывает HTTP-запросы, которые включают ваш IP-адрес как часть стандартной интернет-инфраструктуры. AllergyTJ не имеет доступа к данным отдельных посетителей или IP-адресам. Vercel Speed Insights включен для сбора агрегированных метрик производительности (Core Web Vitals). Он не использует cookie и не собирает личную информацию. Подробности в <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">политике конфиденциальности Vercel</a>.</p>
+
+<h2>Service worker</h2>
+<p>Приложение устанавливает service worker для офлайн-поддержки и кэширования. Он хранит копии файлов приложения на вашем устройстве, чтобы приложение загружалось быстрее и работало без подключения к интернету. Service worker ничего не отслеживает.</p>
+
+<h2>Дети</h2>
+<p>AllergyTJ не собирает личные данные ни у кого, включая детей.</p>
+
+<h2>Изменения</h2>
+<p>Если эта политика изменится, мы обновим её здесь с указанием даты. Поскольку приложение ничего не собирает, значительные изменения маловероятны.</p>
+
+</div>
+</body>
+</html>

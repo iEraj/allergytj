@@ -139,6 +139,8 @@ function updateNavHrefs() {
   });
   var brand = document.querySelector('.nav-brand');
   if (brand) brand.setAttribute('href', buildTabPath(LANG, 'dashboard'));
+  var privacyLink = document.querySelector('a[data-i18n="footer.privacy"]');
+  if (privacyLink) privacyLink.setAttribute('href', (LANG === 'tj' ? '' : '/' + LANG) + '/privacy');
 }
 
 function switchTab(tabName, evt, skipPush) {

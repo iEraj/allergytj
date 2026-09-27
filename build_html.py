@@ -1116,6 +1116,8 @@ COPY_FILES = [
     "og-image-ru.svg",
     "0ccf34b16984487ba5a20b7d31f84d7a.txt",
     "privacy.html",
+    "privacy-en.html",
+    "privacy-ru.html",
 ]
 
 COPY_DIRS = [
