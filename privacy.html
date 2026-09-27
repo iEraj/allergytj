@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Privacy Policy — AllergyTJ</title>
+<meta name="robots" content="noindex">
+<style>
+  :root {
+    --bg: #f6f7f4;
+    --text: #1a2e1f;
+    --text-sec: #4a5e50;
+    --accent: #0f5238;
+    --border: #dde5df;
+    --card: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #111a14;
+      --text: #e0e6e0;
+      --text-sec: #a0b0a5;
+      --accent: #a8e7c5;
+      --border: #2a3a30;
+      --card: #1a2420;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #111a14;
+    --text: #e0e6e0;
+    --text-sec: #a0b0a5;
+    --accent: #a8e7c5;
+    --border: #2a3a30;
+    --card: #1a2420;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans', sans-serif;
+    line-height: 1.7;
+    padding: 0 20px env(safe-area-inset-bottom, 0) 20px;
+  }
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 48px 0 64px;
+  }
+  a { color: var(--accent); }
+  h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+  .updated {
+    font-size: 0.82rem;
+    color: var(--text-sec);
+    margin-bottom: 36px;
+  }
+  h2 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 32px 0 8px;
+  }
+  p, ul {
+    font-size: 0.92rem;
+    color: var(--text-sec);
+    margin-bottom: 12px;
+  }
+  ul {
+    padding-left: 20px;
+  }
+  li {
+    margin-bottom: 4px;
+  }
+  .back {
+    display: inline-block;
+    font-size: 0.85rem;
+    margin-bottom: 24px;
+    text-decoration: none;
+    color: var(--accent);
+  }
+  .back:hover { text-decoration: underline; }
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 36px 0;
+  }
+  .contact {
+    font-size: 0.82rem;
+    color: var(--text-sec);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="back">&larr; Back to AllergyTJ</a>
+
+<h1>Privacy Policy</h1>
+<p class="updated">Last updated: September 2026</p>
+
+<p>AllergyTJ is a static website that runs entirely in your browser. There is no backend server, no database, and no user accounts. This page explains what happens with your data when you use the app.</p>
+
+<h2>What we collect</h2>
+<p>Nothing. AllergyTJ does not collect, store, or transmit any personal information. There are no cookies, no sign-ups, no email addresses, and no usage tracking.</p>
+
+<h2>Local storage</h2>
+<p>The app saves a few preferences on your device using your browser's localStorage. This data stays on your device and is never sent anywhere:</p>
+<ul>
+  <li>Selected city</li>
+  <li>Language preference</li>
+  <li>Theme (light or dark)</li>
+  <li>Notification settings</li>
+  <li>Install prompt dismissal</li>
+</ul>
+<p>You can clear this data at any time through your browser settings.</p>
+
+<h2>Weather and air quality data</h2>
+<p>When you use the app, your browser connects directly to these third-party services:</p>
+<ul>
+  <li><a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> for weather forecasts</li>
+  <li><a href="https://open-meteo.com/en/docs/air-quality-api" target="_blank" rel="noopener">Open-Meteo Air Quality API</a> for AQI data (EU Copernicus CAMS)</li>
+  <li><a href="https://wttr.in" target="_blank" rel="noopener">wttr.in</a> as a weather fallback</li>
+</ul>
+<p>These requests go directly from your browser to those services. AllergyTJ never proxies, intercepts, or logs them. Each service has its own privacy policy.</p>
+
+<h2>GPS location</h2>
+<p>If you tap the location button, your browser will ask for permission to share your coordinates. If you grant it, the app finds the nearest city from a fixed list of 30 Tajik cities. Your coordinates are processed locally in your browser and are never sent to any AllergyTJ server. Only the nearest city's coordinates (not yours) are used to fetch weather data from Open-Meteo.</p>
+
+<h2>Push notifications</h2>
+<p>Notifications are generated locally in your browser based on current pollen, AQI, and UV conditions. There is no push notification server. All notification preferences are stored in localStorage on your device. Nothing fires until you explicitly opt in.</p>
+
+<h2>Share card</h2>
+<p>The share feature generates an image on your device using the Canvas API. If you choose to share it, that happens through your device's native share mechanism or as a file download. AllergyTJ does not see, store, or transmit the image.</p>
+
+<h2>Hosting</h2>
+<p>The site is hosted on <a href="https://vercel.com" target="_blank" rel="noopener">Vercel</a>. Like any web host, Vercel processes HTTP requests that include your IP address as part of standard internet infrastructure. AllergyTJ has no access to individual visitor data or IP addresses. Vercel Speed Insights is enabled for aggregate performance metrics (Core Web Vitals). It does not use cookies and does not collect personal information. See <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">Vercel's privacy policy</a> for details.</p>
+
+<h2>Service worker</h2>
+<p>The app installs a service worker for offline support and caching. It stores copies of the app's own files on your device so the app loads faster and works without an internet connection. The service worker does not track anything.</p>
+
+<h2>Children</h2>
+<p>AllergyTJ collects no personal data from anyone, including children.</p>
+
+<h2>Changes</h2>
+<p>If this policy changes, we will update it here with the date. Since the app collects nothing, meaningful changes are unlikely.</p>
+
+<hr>
+
+<p class="contact">
+  AllergyTJ is an open-source project (<a href="https://github.com/iEraj/allergytj" target="_blank" rel="noopener">MIT license</a>) by Eraj Ismatulloev.<br>
+  Questions: <a href="https://ca.linkedin.com/in/erajismatulloev" target="_blank" rel="noopener">LinkedIn</a>
+</p>
+
+</div>
+</body>
+</html>

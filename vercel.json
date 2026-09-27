@@ -20,6 +20,7 @@
     { "source": "/en/:path*", "destination": "/en/index.html" },
     { "source": "/ru/:path*", "destination": "/ru/index.html" },
     { "source": "/tj/:path*", "destination": "/index.html" },
+    { "source": "/privacy", "destination": "/privacy.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
