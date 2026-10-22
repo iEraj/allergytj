@@ -23,6 +23,21 @@ def index():
     return send_from_directory(".", "index.html")
 
 
+@app.route("/privacy")
+def privacy_tj():
+    return send_from_directory(".", "privacy.html")
+
+
+@app.route("/en/privacy")
+def privacy_en():
+    return send_from_directory(".", "privacy-en.html")
+
+
+@app.route("/ru/privacy")
+def privacy_ru():
+    return send_from_directory(".", "privacy-ru.html")
+
+
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
     print(f"AllergyTJ running on http://localhost:{port}")
