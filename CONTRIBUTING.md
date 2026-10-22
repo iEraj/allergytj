@@ -8,10 +8,10 @@ AllergyTJ is a solo project with a fixed development roadmap. At this time, **pu
 
 ## How You Can Help
 
-- **Report bugs** — open a [GitHub Issue](https://github.com/iEraj/allergytj/issues) with steps to reproduce
-- **Suggest features** — open an issue describing the use case
-- **Report inaccuracies** — if you notice incorrect pollen data, allergen information, or air quality descriptions, please open an issue
-- **Translation fixes** — if you spot translation errors in English, Russian, or Tajik, open an issue with the correction
+- **Report bugs** - open a [GitHub Issue](https://github.com/iEraj/allergytj/issues) with steps to reproduce
+- **Suggest features** - open an issue describing the use case
+- **Report inaccuracies** - if you notice incorrect pollen data, allergen information, or air quality descriptions, please open an issue
+- **Translation fixes** - if you spot translation errors in English, Russian, or Tajik, open an issue with the correction
 
 ## Before Opening an Issue
 
